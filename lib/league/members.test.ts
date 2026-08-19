@@ -4,7 +4,7 @@ import { resolveMembers } from './members';
 
 function standings(overrides: Partial<LeagueStandings>): LeagueStandings {
   return {
-    league: { id: 79294, name: 'Evicted', start_event: 1 },
+    league: { id: 111111, name: 'Evicted', start_event: 1 },
     standings: { results: [] },
     new_entries: { results: [] },
     ...overrides,
@@ -38,14 +38,14 @@ describe('resolveMembers', () => {
       standings({
         standings: {
           results: [
-            { entry: 394534, entry_name: 'Høgh are you?', player_name: 'Alex McGuiness' },
+            { entry: 222222, entry_name: 'Høgh are you?', player_name: 'Alex McGuiness' },
           ],
         },
       }),
     );
 
     expect(members).toEqual([
-      { entryId: 394534, managerName: 'Alex McGuiness', teamName: 'Høgh are you?' },
+      { entryId: 222222, managerName: 'Alex McGuiness', teamName: 'Høgh are you?' },
     ]);
   });
 
@@ -54,13 +54,13 @@ describe('resolveMembers', () => {
       standings({
         standings: {
           results: [
-            { entry: 394534, entry_name: 'Høgh are you?', player_name: 'Alex McGuiness' },
+            { entry: 222222, entry_name: 'Høgh are you?', player_name: 'Alex McGuiness' },
           ],
         },
         new_entries: {
           results: [
             {
-              entry: 926697,
+              entry: 333333,
               entry_name: 'Durán Durán',
               player_first_name: 'Aidan',
               player_last_name: 'McGuiness',
@@ -70,7 +70,13 @@ describe('resolveMembers', () => {
       }),
     );
 
-    expect(members.map((m) => m.entryId).sort()).toEqual([394534, 926697]);
+    expect(members).toHaveLength(2);
+    expect(members).toEqual(
+      expect.arrayContaining([
+        { entryId: 222222, managerName: 'Alex McGuiness', teamName: 'Høgh are you?' },
+        { entryId: 333333, managerName: 'Aidan McGuiness', teamName: 'Durán Durán' },
+      ]),
+    );
   });
 
   it('does not duplicate a member present in both arrays', () => {
@@ -78,16 +84,16 @@ describe('resolveMembers', () => {
       standings({
         standings: {
           results: [
-            { entry: 394534, entry_name: 'Høgh are you?', player_name: 'Alex McGuiness' },
+            { entry: 222222, entry_name: 'Høgh are you?', player_name: 'Alex Standings' },
           ],
         },
         new_entries: {
           results: [
             {
-              entry: 394534,
+              entry: 222222,
               entry_name: 'Høgh are you?',
               player_first_name: 'Alex',
-              player_last_name: 'McGuiness',
+              player_last_name: 'NewEntry',
             },
           ],
         },
@@ -95,6 +101,7 @@ describe('resolveMembers', () => {
     );
 
     expect(members).toHaveLength(1);
+    expect(members[0]?.managerName).toBe('Alex Standings');
   });
 
   it('returns an empty list for an empty league', () => {
