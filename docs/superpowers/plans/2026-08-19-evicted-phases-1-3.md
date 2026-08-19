@@ -215,9 +215,20 @@ export default defineConfig({
 });
 ```
 
+- [ ] **Step 5b: Remove the scaffold's leftovers**
+
+`create-next-app` writes `app/globals.css` and imports it from the layout. Step 4
+replaces the layout entirely, so the import is gone — delete the orphaned file and
+any `app/page.module.css` the scaffold created. Mantine's stylesheet plus the
+per-component `.module.scss` files are the only styling in this project.
+
+```bash
+rm -f app/globals.css app/page.module.css
+```
+
 - [ ] **Step 6: Add scripts to `package.json`**
 
-Ensure the `scripts` block contains exactly these entries:
+Replace the `scripts` block so it contains these entries and no others:
 
 ```json
 {
@@ -1643,13 +1654,11 @@ const smembers = vi.fn();
 const sadd = vi.fn();
 const srem = vi.fn();
 
+// `store.ts` calls the static `Redis.fromEnv()`, so the mock must expose that
+// static — a class with instance members alone would throw.
 vi.mock('@upstash/redis', () => ({
-  Redis: class {
-    hgetall = hgetall;
-    hset = hset;
-    smembers = smembers;
-    sadd = sadd;
-    srem = srem;
+  Redis: {
+    fromEnv: () => ({ hgetall, hset, smembers, sadd, srem }),
   },
 }));
 
