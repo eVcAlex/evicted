@@ -7,3 +7,9 @@ dist/
 .vercel/
 *.log
 .DS_Store
+
+# next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
