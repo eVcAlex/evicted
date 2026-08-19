@@ -6,7 +6,7 @@
 
 **Architecture:** Next.js App Router on Vercel. FPL data is fetched server-side and cached with ISR so seven visitors produce one upstream fetch. All contestable rules live in pure, I/O-free functions (`scoring.ts`, `reconcile.ts`) that are tested without mocks. Paid/unpaid state lives in Upstash Redis. Gameweek results are recorded lazily on page load rather than by cron.
 
-**Tech Stack:** Next.js 16.3.1, React 19.2.8, Mantine 9.5.1, Upstash Redis 1.38.2, Zod 4.4.3, Vitest 4.1.11, TypeScript 7.0.2, pnpm, oxlint.
+**Tech Stack:** Next.js 16.3.1, React 19.2.8, Mantine 9.5.1, Sass (`sass-embedded` 1.102.0) with CSS modules, Upstash Redis 1.38.2, Zod 4.4.3, Vitest 4.1.11, TypeScript 7.0.2, pnpm, oxlint.
 
 **Spec:** `docs/superpowers/specs/2026-08-19-evicted-fine-tracker-design.md`
 
@@ -19,6 +19,15 @@
 - All FPL requests send a browser `User-Agent` header. Without it the API can reject the request.
 - The admin PIN is never placed in a URL, query string, or link. It travels in a request header only.
 - Package manager is `pnpm`. Linter is `oxlint`, not ESLint.
+- **Styling:** custom styles live in `*.module.scss` files imported as
+  `import classes from './Component.module.scss'` and applied via `className={classes.x}`.
+  Mantine's own props (`gap`, `c`, `fw`, `size`, `ta`, `mt`) are fine and preferred for
+  spacing and typography. Inline `style={{ ... }}` objects are not used.
+- **Sass replaces the PostCSS preset's mixins.** `postcss-preset-mantine`'s `@mixin dark`,
+  `@mixin smaller-than` and `rem()` do not work inside `.scss` — Sass compiles first and
+  its own `@mixin` syntax collides. Sass equivalents live in `_mantine.scss` at the repo
+  root and are auto-injected as the `mantine` namespace, so use `@include mantine.dark { }`
+  and `mantine.rem(16)`. Both `postcss.config.cjs` and `_mantine.scss` are required.
 - Scope is phases 1–3 of the spec. Monzo reconciliation (spec §5) and squad detail (spec §4) are explicitly out of scope and get their own plans.
 
 ---
@@ -47,8 +56,11 @@ If it refuses because the directory is non-empty, answer yes to proceeding; it d
 
 ```bash
 pnpm add next@16.3.1 react@19.2.8 react-dom@19.2.8 @mantine/core@9.5.1 @mantine/hooks@9.5.1 @upstash/redis@1.38.2 zod@4.4.3
-pnpm add -D typescript@7.0.2 vitest@4.1.11 postcss postcss-preset-mantine@1.18.0 postcss-simple-vars@7.0.1 oxlint
+pnpm add -D typescript@7.0.2 vitest@4.1.11 postcss postcss-preset-mantine@1.18.0 postcss-simple-vars@7.0.1 sass-embedded@1.102.0 oxlint
 ```
+
+`sass-embedded` rather than `sass`: it is what Mantine's Sass guide specifies and what
+`sassOptions.implementation` is pointed at in the next step.
 
 - [ ] **Step 3: Create the PostCSS config**
 
@@ -69,6 +81,83 @@ module.exports = {
     },
   },
 };
+```
+
+- [ ] **Step 3b: Create the Sass helpers**
+
+Create `_mantine.scss` at the repo root. These are the Sass equivalents of the
+PostCSS preset's mixins, which do not work inside `.scss` files.
+
+```scss
+@use 'sass:math';
+
+// Must match the breakpoints in postcss.config.cjs and the Mantine theme.
+$mantine-breakpoint-xs: '36em';
+$mantine-breakpoint-sm: '48em';
+$mantine-breakpoint-md: '62em';
+$mantine-breakpoint-lg: '75em';
+$mantine-breakpoint-xl: '88em';
+
+@function rem($value) {
+  @return #{math.div(math.div($value, $value * 0 + 1), 16)}rem;
+}
+
+@mixin light {
+  [data-mantine-color-scheme='light'] & {
+    @content;
+  }
+}
+
+@mixin dark {
+  [data-mantine-color-scheme='dark'] & {
+    @content;
+  }
+}
+
+@mixin hover {
+  @media (hover: hover) {
+    &:hover {
+      @content;
+    }
+  }
+
+  @media (hover: none) {
+    &:active {
+      @content;
+    }
+  }
+}
+
+@mixin smaller-than($breakpoint) {
+  @media (max-width: $breakpoint) {
+    @content;
+  }
+}
+
+@mixin larger-than($breakpoint) {
+  @media (min-width: $breakpoint) {
+    @content;
+  }
+}
+```
+
+- [ ] **Step 3c: Point Next.js at the Sass helpers**
+
+Replace `next.config.ts` entirely. `additionalData` prepends the `@use` to every
+`.scss` file, so components never import it themselves.
+
+```ts
+import path from 'node:path';
+import type { NextConfig } from 'next';
+
+const nextConfig: NextConfig = {
+  sassOptions: {
+    implementation: 'sass-embedded',
+    additionalData: `@use "${path.join(process.cwd(), '_mantine').replace(/\\/g, '/')}" as mantine;`,
+  },
+};
+
+export default nextConfig;
 ```
 
 - [ ] **Step 4: Wire Mantine into the root layout**
@@ -905,7 +994,7 @@ git commit -m "feat: add net scoring and tie-inclusive loser selection"
 ### Task 6: Gameweek state and the pre-season view
 
 **Files:**
-- Create: `lib/league/gameweeks.ts`, `lib/league/gameweeks.test.ts`, `app/components/PreSeason.tsx`
+- Create: `lib/league/gameweeks.ts`, `lib/league/gameweeks.test.ts`, `app/components/PreSeason.tsx`, `app/components/PreSeason.module.scss`
 - Modify: `app/page.tsx`
 
 **Interfaces:**
@@ -1055,13 +1144,48 @@ export function revalidateFor(bootstrap: Bootstrap): number {
 Run: `pnpm test lib/league/gameweeks.test.ts`
 Expected: PASS, 9 tests.
 
-- [ ] **Step 5: Write the pre-season component**
+- [ ] **Step 5: Write the pre-season styles**
+
+Create `app/components/PreSeason.module.scss`. `mantine` is available without an
+import — `additionalData` injects it.
+
+```scss
+.title {
+  font-size: mantine.rem(40);
+  font-weight: 900;
+  letter-spacing: mantine.rem(-1);
+  text-transform: uppercase;
+
+  @include mantine.smaller-than($mantine-breakpoint-sm) {
+    font-size: mantine.rem(32);
+  }
+}
+
+.deadlineCard {
+  border-color: var(--mantine-color-red-8);
+}
+
+.deadlineValue {
+  font-variant-numeric: tabular-nums;
+}
+
+.memberCard {
+  transition: border-color 150ms ease;
+
+  @include mantine.hover {
+    border-color: var(--mantine-color-red-6);
+  }
+}
+```
+
+- [ ] **Step 6: Write the pre-season component**
 
 Create `app/components/PreSeason.tsx`:
 
 ```tsx
 import { Badge, Card, Group, Stack, Text, Title } from '@mantine/core';
 import type { Member } from '@/lib/league/members';
+import classes from './PreSeason.module.scss';
 
 export function PreSeason({
   members,
@@ -1075,18 +1199,20 @@ export function PreSeason({
   return (
     <Stack gap="lg">
       <div>
-        <Title order={1}>Evicted</Title>
+        <Title order={1} className={classes.title}>
+          Evicted
+        </Title>
         <Text c="dimmed" size="sm">
           Nobody has been evicted yet. {gameweekName ?? 'The season'} has not been played.
         </Text>
       </div>
 
       {deadline && (
-        <Card withBorder padding="md">
+        <Card withBorder padding="md" className={classes.deadlineCard}>
           <Text size="sm" c="dimmed">
             {gameweekName} deadline
           </Text>
-          <Text size="xl" fw={700}>
+          <Text size="xl" fw={700} className={classes.deadlineValue}>
             {new Date(deadline).toLocaleString('en-GB', {
               weekday: 'long',
               day: 'numeric',
@@ -1103,7 +1229,7 @@ export function PreSeason({
           {members.length} in the league
         </Text>
         {members.map((member) => (
-          <Card key={member.entryId} withBorder padding="sm">
+          <Card key={member.entryId} withBorder padding="sm" className={classes.memberCard}>
             <Group justify="space-between" wrap="nowrap">
               <div>
                 <Text fw={600}>{member.teamName}</Text>
@@ -1123,7 +1249,7 @@ export function PreSeason({
 }
 ```
 
-- [ ] **Step 6: Wire the home page**
+- [ ] **Step 7: Wire the home page**
 
 Replace `app/page.tsx` entirely:
 
@@ -1153,12 +1279,12 @@ export default async function HomePage() {
 }
 ```
 
-- [ ] **Step 7: Verify against the live API**
+- [ ] **Step 8: Verify against the live API**
 
 Run `pnpm dev` and open http://localhost:3000.
 Expected: the heading "Evicted", the GW1 deadline rendered as a readable date, and all seven managers listed with their team names — Høgh are you?, Jacquet Potato, Borussia Teeth, Red Djed Redemption, Durán Durán, JT, DEFCON. Stop the server.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 9: Commit**
 
 ```bash
 git add -A
@@ -1170,7 +1296,7 @@ git commit -m "feat: render pre-season member list and GW1 deadline"
 ### Task 7: Current gameweek view
 
 **Files:**
-- Create: `app/components/LoserCard.tsx`, `lib/league/summary.ts`, `lib/league/summary.test.ts`
+- Create: `app/components/LoserCard.tsx`, `app/components/LoserCard.module.scss`, `lib/league/summary.ts`, `lib/league/summary.test.ts`
 - Modify: `app/page.tsx`
 
 **Interfaces:**
@@ -1292,22 +1418,67 @@ export function buildSummary(params: {
 Run: `pnpm test lib/league/summary.test.ts`
 Expected: PASS, 4 tests.
 
-- [ ] **Step 5: Write the loser card**
+- [ ] **Step 5: Write the loser card styles**
+
+Create `app/components/LoserCard.module.scss`:
+
+```scss
+.gameweek {
+  letter-spacing: mantine.rem(1);
+}
+
+.heading {
+  font-size: mantine.rem(48);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: mantine.rem(-2);
+  text-transform: uppercase;
+
+  @include mantine.smaller-than($mantine-breakpoint-sm) {
+    font-size: mantine.rem(36);
+  }
+}
+
+.card {
+  border-width: mantine.rem(2);
+  border-color: var(--mantine-color-red-8);
+
+  @include mantine.dark {
+    background-color: var(--mantine-color-dark-8);
+  }
+}
+
+.teamName {
+  font-size: mantine.rem(28);
+  line-height: 1.1;
+
+  @include mantine.smaller-than($mantine-breakpoint-sm) {
+    font-size: mantine.rem(22);
+  }
+}
+
+.score {
+  font-variant-numeric: tabular-nums;
+}
+```
+
+- [ ] **Step 6: Write the loser card**
 
 Create `app/components/LoserCard.tsx`:
 
 ```tsx
 import { Alert, Badge, Card, Group, Stack, Text, Title } from '@mantine/core';
 import type { LoserSummary } from '@/lib/league/summary';
+import classes from './LoserCard.module.scss';
 
 export function LoserCard({ summary }: { summary: LoserSummary }) {
   return (
     <Stack gap="md">
       <div>
-        <Text size="sm" c="dimmed" tt="uppercase" fw={600}>
+        <Text size="sm" c="dimmed" tt="uppercase" fw={600} className={classes.gameweek}>
           Gameweek {summary.gameweek}
         </Text>
-        <Title order={1}>
+        <Title order={1} className={classes.heading}>
           {summary.losers.length > 1 ? 'Evicted' : 'Evictee'}
         </Title>
       </div>
@@ -1320,15 +1491,15 @@ export function LoserCard({ summary }: { summary: LoserSummary }) {
       )}
 
       {summary.losers.map(({ member, score }) => (
-        <Card key={member.entryId} withBorder padding="lg">
+        <Card key={member.entryId} withBorder padding="lg" className={classes.card}>
           <Group justify="space-between" align="flex-start" wrap="nowrap">
             <div>
-              <Text size="xl" fw={800}>
+              <Text fw={800} className={classes.teamName}>
                 {member.teamName}
               </Text>
               <Text c="dimmed">{member.managerName}</Text>
             </div>
-            <Badge size="lg" color="red" variant="filled">
+            <Badge size="lg" color="red" variant="filled" className={classes.score}>
               {score.net} pts
             </Badge>
           </Group>
@@ -1348,7 +1519,7 @@ export function LoserCard({ summary }: { summary: LoserSummary }) {
 }
 ```
 
-- [ ] **Step 6: Wire the home page to show live results when they exist**
+- [ ] **Step 7: Wire the home page to show live results when they exist**
 
 Replace `app/page.tsx` entirely:
 
@@ -1406,12 +1577,12 @@ export default async function HomePage() {
 }
 ```
 
-- [ ] **Step 7: Run the full test suite**
+- [ ] **Step 8: Run the full test suite**
 
 Run: `pnpm test`
 Expected: PASS, all tests.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 9: Commit**
 
 ```bash
 git add -A
@@ -2223,11 +2394,28 @@ export function NavLinks() {
 
 - [ ] **Step 6: Write the balances table**
 
-Create `app/components/BalancesTable.tsx`:
+Create `app/components/BalancesTable.module.scss`:
+
+```scss
+.table {
+  font-variant-numeric: tabular-nums;
+}
+
+.owed {
+  font-size: mantine.rem(16);
+}
+
+.manager {
+  min-width: mantine.rem(140);
+}
+```
+
+Then create `app/components/BalancesTable.tsx`:
 
 ```tsx
 import { Badge, Table, Text } from '@mantine/core';
 import type { Balance } from '@/lib/league/balances';
+import classes from './BalancesTable.module.scss';
 
 function pounds(pence: number): string {
   return `£${(pence / 100).toFixed(2)}`;
@@ -2235,10 +2423,10 @@ function pounds(pence: number): string {
 
 export function BalancesTable({ balances }: { balances: Balance[] }) {
   return (
-    <Table striped highlightOnHover>
+    <Table striped highlightOnHover className={classes.table}>
       <Table.Thead>
         <Table.Tr>
-          <Table.Th>Manager</Table.Th>
+          <Table.Th className={classes.manager}>Manager</Table.Th>
           <Table.Th ta="right">Lost</Table.Th>
           <Table.Th ta="right">Paid</Table.Th>
           <Table.Th ta="right">Owes</Table.Th>
@@ -2267,7 +2455,7 @@ export function BalancesTable({ balances }: { balances: Balance[] }) {
                   Clear
                 </Badge>
               ) : (
-                <Text fw={700} c="red">
+                <Text fw={700} c="red" className={classes.owed}>
                   {pounds(balance.owedPence)}
                 </Text>
               )}
