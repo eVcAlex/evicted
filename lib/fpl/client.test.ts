@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { fetchBootstrap, fetchHistory } from './client';
+import { LEAGUE_ID } from '@/lib/config';
+import { fetchBootstrap, fetchHistory, fetchStandings } from './client';
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -47,5 +48,18 @@ describe('fetchHistory', () => {
     await fetchHistory(394534, 60);
     const [url] = spy.mock.calls[0];
     expect(url).toBe('https://fantasy.premierleague.com/api/entry/394534/history/');
+  });
+});
+
+describe('fetchStandings', () => {
+  it('requests the league standings path built from LEAGUE_ID', async () => {
+    const spy = stubFetch({
+      league: { id: LEAGUE_ID, name: 'Evicted', start_event: 1 },
+      standings: { results: [] },
+      new_entries: { results: [] },
+    });
+    await fetchStandings(60);
+    const [url] = spy.mock.calls[0];
+    expect(url).toBe(`https://fantasy.premierleague.com/api/leagues-classic/${LEAGUE_ID}/standings/`);
   });
 });
