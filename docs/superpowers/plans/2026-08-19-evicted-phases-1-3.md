@@ -2787,6 +2787,15 @@ git push
 
 Once GW1 is scored (from 2026-08-22), revisit and confirm against real data:
 
+- **Re-capture the fixtures and re-run the schema tests.** This is the priority item, not
+  a nicety. Task 2's fixtures were captured pre-season, so `standings.results` and
+  `history.current` were both empty — which means `standingsRowSchema` (`entry`,
+  `entry_name`, `player_name`) and `gameweekEntrySchema` (`event`, `points`,
+  `event_transfers_cost`, `total_points`, `points_on_bench`) parsed **zero rows** and
+  their tests passed vacuously. `gameweekEntrySchema` is the schema the entire net-score
+  derivation rests on. If any field name is wrong, nothing in the suite currently catches
+  it. Re-capture `standings.json` and `history.json` against a scored gameweek, confirm
+  both schemas parse non-empty arrays, and add an assertion that reads an actual row.
 - The current gameweek view names a real evictee with correct gross, hits and net.
 - `settledGameweeks` flips only after `data_checked`, not merely `finished`.
 - Members have moved from `new_entries` into `standings` and the resolver handles it.
