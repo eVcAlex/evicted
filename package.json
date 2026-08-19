@@ -2,6 +2,7 @@
   "name": "evicted",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -28,7 +29,7 @@
     "postcss-preset-mantine": "1.18.0",
     "postcss-simple-vars": "7.0.1",
     "sass-embedded": "1.102.0",
-    "typescript": "^7.0.2",
+    "typescript": "7.0.2",
     "vitest": "4.1.11"
   },
   "packageManager": "pnpm@10.33.0"
