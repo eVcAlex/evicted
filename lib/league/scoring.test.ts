@@ -59,7 +59,7 @@ describe('findLosers', () => {
       { entryId: 2, gross: 34, hits: 4, net: 30 },
       { entryId: 3, gross: 45, hits: 0, net: 45 },
     ]);
-    expect(losers.sort()).toEqual([1, 2]);
+    expect(losers.sort((a, b) => a - b)).toEqual([1, 2]);
   });
 
   it('picks the manager whose hits dragged them below a lower gross scorer', () => {

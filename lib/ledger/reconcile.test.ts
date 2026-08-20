@@ -25,4 +25,8 @@ describe('gameweeksNeedingRecord', () => {
   it('sorts ascending even when settled arrives unsorted', () => {
     expect(gameweeksNeedingRecord([5, 3, 4], [])).toEqual([3, 4, 5]);
   });
+
+  it('orders a two-digit gameweek correctly, not lexicographically', () => {
+    expect(gameweeksNeedingRecord([10, 2, 1], [])).toEqual([1, 2, 10]);
+  });
 });
