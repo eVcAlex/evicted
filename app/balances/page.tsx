@@ -15,7 +15,8 @@ export default async function BalancesPage() {
     safeGetPaid(),
   ]);
 
-  const degraded = resultsState.degraded || paidState.degraded;
+  const { degraded: resultsDegraded } = resultsState;
+  const { degraded: paidDegraded } = paidState;
 
   const balances = buildBalances({
     members: resolveMembers(standings),
@@ -32,12 +33,19 @@ export default async function BalancesPage() {
       <Text c="dimmed" size="sm" mb="lg">
         £2 per gameweek finished bottom.
       </Text>
-      {degraded && (
-        <Alert color="orange" variant="light" title="Payment status unavailable" mb="lg">
-          Could not reach the payment store. Amounts shown may be out of date.
+      {resultsDegraded ? (
+        <Alert color="orange" variant="light" title="Balances unavailable" mb="lg">
+          Could not reach the results store. The table below does not reflect who
+          actually owes money — treat every row as unknown, not clear.
         </Alert>
+      ) : (
+        paidDegraded && (
+          <Alert color="orange" variant="light" title="Payment status unavailable" mb="lg">
+            Could not reach the payment store. Amounts shown may be out of date.
+          </Alert>
+        )
       )}
-      <BalancesTable balances={balances} />
+      <BalancesTable balances={balances} resultsDegraded={resultsDegraded} />
     </Container>
   );
 }

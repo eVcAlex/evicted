@@ -8,7 +8,13 @@ function pounds(pence: number): string {
   return `£${(pence / 100).toFixed(2)}`;
 }
 
-export function BalancesTable({ balances }: { balances: Balance[] }) {
+export function BalancesTable({
+  balances,
+  resultsDegraded,
+}: {
+  balances: Balance[];
+  resultsDegraded: boolean;
+}) {
   return (
     <Table striped highlightOnHover className={classes.table}>
       <Table.Thead>
@@ -30,23 +36,45 @@ export function BalancesTable({ balances }: { balances: Balance[] }) {
                 {balance.member.managerName}
               </Text>
             </Table.Td>
-            <Table.Td ta="right">{balance.lost.length}</Table.Td>
-            <Table.Td ta="right">
-              <Text size="sm" c="dimmed">
-                {pounds(balance.paidPence)}
-              </Text>
-            </Table.Td>
-            <Table.Td ta="right">
-              {balance.owedPence === 0 ? (
-                <Badge color="green" variant="light">
-                  Clear
-                </Badge>
-              ) : (
-                <Text fw={700} c="red" className={classes.owed}>
-                  {pounds(balance.owedPence)}
-                </Text>
-              )}
-            </Table.Td>
+            {resultsDegraded ? (
+              <>
+                <Table.Td ta="right">
+                  <Text size="sm" c="dimmed">
+                    &mdash;
+                  </Text>
+                </Table.Td>
+                <Table.Td ta="right">
+                  <Text size="sm" c="dimmed">
+                    &mdash;
+                  </Text>
+                </Table.Td>
+                <Table.Td ta="right">
+                  <Badge color="gray" variant="light">
+                    Unknown
+                  </Badge>
+                </Table.Td>
+              </>
+            ) : (
+              <>
+                <Table.Td ta="right">{balance.lost.length}</Table.Td>
+                <Table.Td ta="right">
+                  <Text size="sm" c="dimmed">
+                    {pounds(balance.paidPence)}
+                  </Text>
+                </Table.Td>
+                <Table.Td ta="right">
+                  {balance.owedPence === 0 ? (
+                    <Badge color="green" variant="light">
+                      Clear
+                    </Badge>
+                  ) : (
+                    <Text fw={700} c="red" className={classes.owed}>
+                      {pounds(balance.owedPence)}
+                    </Text>
+                  )}
+                </Table.Td>
+              </>
+            )}
           </Table.Tr>
         ))}
       </Table.Tbody>
