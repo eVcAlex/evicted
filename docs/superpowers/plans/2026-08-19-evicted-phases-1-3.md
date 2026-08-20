@@ -2284,6 +2284,7 @@ Create `lib/league/balances.test.ts`:
 
 ```ts
 import { describe, expect, it } from 'vitest';
+import type { GameweekResult } from '@/lib/ledger/store';
 import { buildBalances } from './balances';
 
 const members = [
@@ -2291,7 +2292,10 @@ const members = [
   { entryId: 2, managerName: 'Joe Taylor', teamName: 'JT' },
 ];
 
-const results = new Map([
+// The explicit type argument is required: without it TypeScript infers a union
+// from the differing `scores` object literals, which vitest tolerates but `tsc`
+// rejects during `pnpm build`.
+const results = new Map<number, GameweekResult>([
   [1, { losers: [1], scores: { 1: 30 }, recordedAt: '2026-08-24T00:00:00Z' }],
   [2, { losers: [1], scores: { 1: 25 }, recordedAt: '2026-08-31T00:00:00Z' }],
   [3, { losers: [2], scores: { 2: 20 }, recordedAt: '2026-09-07T00:00:00Z' }],
@@ -2400,9 +2404,14 @@ Expected: PASS, 6 tests.
 
 - [ ] **Step 5: Write the nav component**
 
-Create `app/components/NavLinks.tsx`:
+Create `app/components/NavLinks.tsx`. The `'use client'` directive is **required**:
+Mantine's `Anchor` with `component={Link}` passes a component reference as a prop, which
+cannot cross the React Server Component boundary. Without it the page 500s at runtime
+while still building and type-checking cleanly.
 
 ```tsx
+'use client';
+
 import Link from 'next/link';
 import { Group, Anchor } from '@mantine/core';
 
