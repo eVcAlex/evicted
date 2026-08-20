@@ -74,6 +74,13 @@ describe('revalidateFor', () => {
     expect(revalidateFor(b)).toBe(3600);
   });
 
+  it('keeps refreshing while a finished gameweek waits on bonus points', () => {
+    const b = bootstrap([
+      event(1, { is_current: true, finished: true, data_checked: false }),
+    ]);
+    expect(revalidateFor(b)).toBe(60);
+  });
+
   it('backs off to an hour before the season starts', () => {
     expect(revalidateFor(bootstrap([event(1)]))).toBe(3600);
   });
