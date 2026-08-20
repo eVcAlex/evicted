@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@mantine/core';
-
-const PIN_STORAGE_KEY = 'evicted-admin-pin';
+import { PIN_STORAGE_KEY } from '@/lib/adminPinStorage';
 
 export function AdminToggle({
   gameweek,
