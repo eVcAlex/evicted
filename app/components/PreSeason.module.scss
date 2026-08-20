@@ -1,0 +1,26 @@
+.title {
+  font-size: mantine.rem(40);
+  font-weight: 900;
+  letter-spacing: mantine.rem(-1);
+  text-transform: uppercase;
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    font-size: mantine.rem(32);
+  }
+}
+
+.deadlineCard {
+  border-color: var(--mantine-color-red-8);
+}
+
+.deadlineValue {
+  font-variant-numeric: tabular-nums;
+}
+
+.memberCard {
+  transition: border-color 150ms ease;
+
+  @include mantine.hover {
+    border-color: var(--mantine-color-red-6);
+  }
+}

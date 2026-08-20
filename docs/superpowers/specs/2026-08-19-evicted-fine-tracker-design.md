@@ -16,9 +16,15 @@ Everything below was checked against the live API on 2026-08-19, not assumed.
 | GW1 deadline | 2026-08-21T17:30:00Z |
 | League | `79294`, name "Evicted", `league_type: "x"` (invitational), `start_event: 1` |
 | Admin entry | `394534` — Alex McGuiness, "Høgh are you?" |
-| Members | 7, currently in `new_entries.results`; `standings.results` is empty |
+| Members | **Dynamic.** 7 at first capture, 9 by 15:00 the same day; all in `new_entries.results`, `standings.results` empty |
 
-The seven managers:
+**Membership is not fixed.** Two managers joined within hours of the first capture and
+one renamed their team, all on 2026-08-19. Churn should be expected until the GW1
+deadline (2026-08-21T17:30:00Z). Nothing in the app hardcodes the roster — it renders
+whatever the API returns — but any document, fixture or test asserting a *count* is a
+snapshot, not a fact, and will go stale.
+
+The nine managers as of 2026-08-19:
 
 | Entry | Manager | Team |
 |---|---|---|
@@ -28,7 +34,9 @@ The seven managers:
 | 1358366 | Jack Simpson | Red Djed Redemption |
 | 926697 | Aidan McGuiness | Durán Durán |
 | 597768 | Joe Taylor | JT |
-| 567357 | Finn Taylor | ☢️ DEFCON ☢️ |
+| 567357 | Finn Taylor | ☢️DEFCON Merchant☢️ |
+| 6404523 | Struan Hall | Egg Fried Reus |
+| 6333176 | Matthew Greenaway | BaldySins |
 
 ### Consequences
 
@@ -61,8 +69,19 @@ reports both `finished` and `data_checked` for that gameweek.
   fallback exists if the group prefers it (lowest net, then lowest gross, then worse
   overall rank); not implemented.
 - **Fine** — £2 per gameweek lost. One exported constant, `FINE_PENCE = 200`.
-- **Eligibility** — a manager is eligible from the first gameweek present in their
-  `history.current[]`. Mid-season joiners are not retroactively fined.
+- **Eligibility** — a manager is eligible from the gameweek during which they joined
+  **this league**, derived from the `joined_time` field FPL supplies on each member.
+
+  This corrects a contradiction in an earlier version of this spec, which said both
+  "eligible from the first gameweek present in their `history.current[]`" and
+  "mid-season joiners are not retroactively fined". Those conflict: `history.current[]`
+  starts at the manager's first **FPL** gameweek, not their first gameweek in this
+  league. Someone who has played FPL since GW1 but joins this league at GW10 has nine
+  gameweeks of history that predate their membership, and the first rule would fine
+  them for weeks they were never in the league. The join-time rule is the intended one,
+  and the one the group agreed. Membership here is demonstrably dynamic — the league
+  went from 7 to 9 members within a day of being set up — so this is a live concern,
+  not a hypothetical.
 - **Dead teams** — no floor. A manager who stops setting a team loses repeatedly and
   is fined repeatedly. This is a social problem, not a software one.
 
@@ -177,9 +196,12 @@ from an undocumented field.
 remainder under £2 is held as credit and surfaced on the balances table — silently
 discarding someone's money is the one bug guaranteed to cause an argument.
 
-**Known ambiguity:** two Taylors (Joe, Finn) and two McGuinesses (Alex, Aidan) out of
-seven. A transfer arriving as "MR TAYLOR" cannot be attributed. Ambiguous matches go
-to a pending queue the admin approves with one tap rather than being guessed.
+**Known ambiguity:** two Taylors (Joe, Finn) and two McGuinesses (Alex, Aidan) — now
+out of nine rather than seven, but the clash is unchanged. A transfer arriving as
+"MR TAYLOR" cannot be attributed. Ambiguous matches go to a pending queue the admin
+approves with one tap rather than being guessed. Note that a growing league makes the
+name-alias table a maintained thing, not a one-off: each new member needs an alias
+entry before their payments can be matched.
 
 **Filters**, all confirmed in the docs: top-ups arrive positive with `is_load: true`;
 refunds and reversals arrive positive with `is_load: false`; declined transactions

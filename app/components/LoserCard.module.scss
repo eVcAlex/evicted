@@ -1,0 +1,37 @@
+.gameweek {
+  letter-spacing: mantine.rem(1);
+}
+
+.heading {
+  font-size: mantine.rem(48);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: mantine.rem(-2);
+  text-transform: uppercase;
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    font-size: mantine.rem(36);
+  }
+}
+
+.card {
+  border-width: mantine.rem(2);
+  border-color: var(--mantine-color-red-8);
+
+  @include mantine.dark {
+    background-color: var(--mantine-color-dark-8);
+  }
+}
+
+.teamName {
+  font-size: mantine.rem(28);
+  line-height: 1.1;
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    font-size: mantine.rem(22);
+  }
+}
+
+.score {
+  font-variant-numeric: tabular-nums;
+}

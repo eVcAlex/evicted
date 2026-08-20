@@ -28,6 +28,11 @@
   its own `@mixin` syntax collides. Sass equivalents live in `_mantine.scss` at the repo
   root and are auto-injected as the `mantine` namespace, so use `@include mantine.dark { }`
   and `mantine.rem(16)`. Both `postcss.config.cjs` and `_mantine.scss` are required.
+- **Everything from `_mantine.scss` is namespaced — variables included.** Because
+  `next.config.ts` injects `@use "_mantine" as mantine`, the breakpoint variables are
+  reachable only as `mantine.$mantine-breakpoint-sm`, never bare. Writing
+  `@include mantine.smaller-than($mantine-breakpoint-sm)` fails to compile with
+  "Undefined variable": the mixin is namespaced but the argument was not.
 - Scope is phases 1–3 of the spec. Monzo reconciliation (spec §5) and squad detail (spec §4) are explicitly out of scope and get their own plans.
 
 ---
@@ -147,18 +152,26 @@ Replace `next.config.ts` entirely. `additionalData` prepends the `@use` to every
 `.scss` file, so components never import it themselves.
 
 ```ts
-import path from 'node:path';
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   sassOptions: {
     implementation: 'sass-embedded',
-    additionalData: `@use "${path.join(process.cwd(), '_mantine').replace(/\\/g, '/')}" as mantine;`,
+    loadPaths: [process.cwd()],
+    additionalData: '@use "_mantine" as mantine;',
   },
 };
 
 export default nextConfig;
 ```
+
+**Do not use Mantine's documented form here.** Their guide builds an absolute path
+with `path.join(process.cwd(), '_mantine').replace(/\\/g, '/')` and interpolates it
+into the `@use`. On Windows that yields `C:/Users/.../_mantine`, and Dart Sass parses
+the leading `C:` as a URI *scheme* rather than a drive letter, so the import never
+resolves and every `.scss` file in the project fails to compile with "Can't find
+stylesheet to import". Resolving through `loadPaths` with a bare relative specifier
+sidesteps the ambiguity and works on every platform.
 
 - [ ] **Step 4: Wire Mantine into the root layout**
 
@@ -215,9 +228,20 @@ export default defineConfig({
 });
 ```
 
+- [ ] **Step 5b: Remove the scaffold's leftovers**
+
+`create-next-app` writes `app/globals.css` and imports it from the layout. Step 4
+replaces the layout entirely, so the import is gone — delete the orphaned file and
+any `app/page.module.css` the scaffold created. Mantine's stylesheet plus the
+per-component `.module.scss` files are the only styling in this project.
+
+```bash
+rm -f app/globals.css app/page.module.css
+```
+
 - [ ] **Step 6: Add scripts to `package.json`**
 
-Ensure the `scripts` block contains exactly these entries:
+Replace the `scripts` block so it contains these entries and no others:
 
 ```json
 {
@@ -1156,7 +1180,7 @@ import — `additionalData` injects it.
   letter-spacing: mantine.rem(-1);
   text-transform: uppercase;
 
-  @include mantine.smaller-than($mantine-breakpoint-sm) {
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
     font-size: mantine.rem(32);
   }
 }
@@ -1434,7 +1458,7 @@ Create `app/components/LoserCard.module.scss`:
   letter-spacing: mantine.rem(-2);
   text-transform: uppercase;
 
-  @include mantine.smaller-than($mantine-breakpoint-sm) {
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
     font-size: mantine.rem(36);
   }
 }
@@ -1452,7 +1476,7 @@ Create `app/components/LoserCard.module.scss`:
   font-size: mantine.rem(28);
   line-height: 1.1;
 
-  @include mantine.smaller-than($mantine-breakpoint-sm) {
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
     font-size: mantine.rem(22);
   }
 }
@@ -1602,7 +1626,9 @@ git commit -m "feat: render the current gameweek evictee with provisional marker
 - Produces:
   - `interface GameweekResult { losers: number[]; scores: Record<number, number>; recordedAt: string }`
   - `getResults(): Promise<Map<number, GameweekResult>>`
-  - `saveResult(gameweek: number, result: GameweekResult): Promise<void>`
+  - `saveResult(gameweek: number, result: GameweekResult): Promise<boolean>` — resolves
+    `true` if the result was written, `false` if a result for that gameweek already
+    existed and was therefore left untouched
   - `getPaid(): Promise<Set<string>>` where members are `` `${gameweek}:${entryId}` ``
   - `setPaid(gameweek: number, entryId: number, paid: boolean): Promise<void>`
   - `paidKey(gameweek: number, entryId: number): string`
@@ -1643,13 +1669,11 @@ const smembers = vi.fn();
 const sadd = vi.fn();
 const srem = vi.fn();
 
+// `store.ts` calls the static `Redis.fromEnv()`, so the mock must expose that
+// static — a class with instance members alone would throw.
 vi.mock('@upstash/redis', () => ({
-  Redis: class {
-    hgetall = hgetall;
-    hset = hset;
-    smembers = smembers;
-    sadd = sadd;
-    srem = srem;
+  Redis: {
+    fromEnv: () => ({ hgetall, hset, smembers, sadd, srem }),
   },
 }));
 
@@ -1931,8 +1955,12 @@ export async function recordSettledGameweeks(params: {
       recordedAt: new Date().toISOString(),
     };
 
-    await saveResult(gameweek, result);
-    results.set(gameweek, result);
+    // `saveResult` refuses to overwrite a gameweek that is already recorded.
+    // Only reflect the new result locally if it was actually persisted, so the
+    // page never renders a result the store did not accept.
+    if (await saveResult(gameweek, result)) {
+      results.set(gameweek, result);
+    }
   }
 
   return results;
@@ -2256,6 +2284,7 @@ Create `lib/league/balances.test.ts`:
 
 ```ts
 import { describe, expect, it } from 'vitest';
+import type { GameweekResult } from '@/lib/ledger/store';
 import { buildBalances } from './balances';
 
 const members = [
@@ -2263,7 +2292,10 @@ const members = [
   { entryId: 2, managerName: 'Joe Taylor', teamName: 'JT' },
 ];
 
-const results = new Map([
+// The explicit type argument is required: without it TypeScript infers a union
+// from the differing `scores` object literals, which vitest tolerates but `tsc`
+// rejects during `pnpm build`.
+const results = new Map<number, GameweekResult>([
   [1, { losers: [1], scores: { 1: 30 }, recordedAt: '2026-08-24T00:00:00Z' }],
   [2, { losers: [1], scores: { 1: 25 }, recordedAt: '2026-08-31T00:00:00Z' }],
   [3, { losers: [2], scores: { 2: 20 }, recordedAt: '2026-09-07T00:00:00Z' }],
@@ -2372,9 +2404,14 @@ Expected: PASS, 6 tests.
 
 - [ ] **Step 5: Write the nav component**
 
-Create `app/components/NavLinks.tsx`:
+Create `app/components/NavLinks.tsx`. The `'use client'` directive is **required**:
+Mantine's `Anchor` with `component={Link}` passes a component reference as a prop, which
+cannot cross the React Server Component boundary. Without it the page 500s at runtime
+while still building and type-checking cleanly.
 
 ```tsx
+'use client';
+
 import Link from 'next/link';
 import { Group, Anchor } from '@mantine/core';
 
@@ -2410,9 +2447,19 @@ Create `app/components/BalancesTable.module.scss`:
 }
 ```
 
-Then create `app/components/BalancesTable.tsx`:
+Then create `app/components/BalancesTable.tsx`. The `'use client'` directive is
+**required**, for a reason distinct from `NavLinks`: this component reaches Mantine's
+compound sub-components by property access (`Table.Thead`, `Table.Tr`, `Table.Th`,
+`Table.Tbody`, `Table.Td`). Turbopack's RSC client-reference proxy renders `Table` fine
+as a bare tag but resolves property access on it to `undefined`, so the page 500s at
+runtime while building and type-checking cleanly.
+
+**The general rule:** a Server Component may render a Mantine component as a bare tag,
+but reaching a sub-component through dot notation requires a client boundary.
 
 ```tsx
+'use client';
+
 import { Badge, Table, Text } from '@mantine/core';
 import type { Balance } from '@/lib/league/balances';
 import classes from './BalancesTable.module.scss';
@@ -2778,6 +2825,21 @@ git push
 
 Once GW1 is scored (from 2026-08-22), revisit and confirm against real data:
 
+- **The fixture count assertion will break, and that is expected.** `schemas.test.ts`
+  asserts the two member arrays sum to `7`, which was true when captured. The league
+  reached 9 members the same afternoon. On re-capture, change that assertion to compare
+  against the fixture's own contents rather than a literal — a count of live members is
+  a snapshot, not an invariant, and hardcoding one guarantees a false failure every time
+  somebody joins.
+- **Re-capture the fixtures and re-run the schema tests.** This is the priority item, not
+  a nicety. Task 2's fixtures were captured pre-season, so `standings.results` and
+  `history.current` were both empty — which means `standingsRowSchema` (`entry`,
+  `entry_name`, `player_name`) and `gameweekEntrySchema` (`event`, `points`,
+  `event_transfers_cost`, `total_points`, `points_on_bench`) parsed **zero rows** and
+  their tests passed vacuously. `gameweekEntrySchema` is the schema the entire net-score
+  derivation rests on. If any field name is wrong, nothing in the suite currently catches
+  it. Re-capture `standings.json` and `history.json` against a scored gameweek, confirm
+  both schemas parse non-empty arrays, and add an assertion that reads an actual row.
 - The current gameweek view names a real evictee with correct gross, hits and net.
 - `settledGameweeks` flips only after `data_checked`, not merely `finished`.
 - Members have moved from `new_entries` into `standings` and the resolver handles it.
