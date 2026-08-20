@@ -69,8 +69,19 @@ reports both `finished` and `data_checked` for that gameweek.
   fallback exists if the group prefers it (lowest net, then lowest gross, then worse
   overall rank); not implemented.
 - **Fine** — £2 per gameweek lost. One exported constant, `FINE_PENCE = 200`.
-- **Eligibility** — a manager is eligible from the first gameweek present in their
-  `history.current[]`. Mid-season joiners are not retroactively fined.
+- **Eligibility** — a manager is eligible from the gameweek during which they joined
+  **this league**, derived from the `joined_time` field FPL supplies on each member.
+
+  This corrects a contradiction in an earlier version of this spec, which said both
+  "eligible from the first gameweek present in their `history.current[]`" and
+  "mid-season joiners are not retroactively fined". Those conflict: `history.current[]`
+  starts at the manager's first **FPL** gameweek, not their first gameweek in this
+  league. Someone who has played FPL since GW1 but joins this league at GW10 has nine
+  gameweeks of history that predate their membership, and the first rule would fine
+  them for weeks they were never in the league. The join-time rule is the intended one,
+  and the one the group agreed. Membership here is demonstrably dynamic — the league
+  went from 7 to 9 members within a day of being set up — so this is a live concern,
+  not a hypothetical.
 - **Dead teams** — no floor. A manager who stops setting a team loses repeatedly and
   is fined repeatedly. This is a social problem, not a software one.
 
