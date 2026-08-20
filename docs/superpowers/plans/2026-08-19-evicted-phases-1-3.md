@@ -2800,6 +2800,12 @@ git push
 
 Once GW1 is scored (from 2026-08-22), revisit and confirm against real data:
 
+- **The fixture count assertion will break, and that is expected.** `schemas.test.ts`
+  asserts the two member arrays sum to `7`, which was true when captured. The league
+  reached 9 members the same afternoon. On re-capture, change that assertion to compare
+  against the fixture's own contents rather than a literal — a count of live members is
+  a snapshot, not an invariant, and hardcoding one guarantees a false failure every time
+  somebody joins.
 - **Re-capture the fixtures and re-run the schema tests.** This is the priority item, not
   a nicety. Task 2's fixtures were captured pre-season, so `standings.results` and
   `history.current` were both empty — which means `standingsRowSchema` (`entry`,

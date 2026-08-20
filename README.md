@@ -10,7 +10,9 @@ Separate from `fpl-tracker`, which is a personal team viewer.
 
 ## League
 
-- ID `79294`, invitational, `start_event: 1`, 7 managers — verified against the API
+- ID `79294`, invitational, `start_event: 1`. Membership is **dynamic**: 7 at first
+  capture, 9 hours later on the same day, with one team renamed. Expect churn until the
+  GW1 deadline (2026-08-21T17:30:00Z). Nothing hardcodes the roster.
 - Admin entry `394534` (Alex McGuiness, "Høgh are you?")
 - Pre-season, members appear in `new_entries.results`; they only move to
   `standings.results` once GW1 is scored, and the two arrays have different

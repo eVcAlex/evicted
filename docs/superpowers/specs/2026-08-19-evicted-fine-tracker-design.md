@@ -16,9 +16,15 @@ Everything below was checked against the live API on 2026-08-19, not assumed.
 | GW1 deadline | 2026-08-21T17:30:00Z |
 | League | `79294`, name "Evicted", `league_type: "x"` (invitational), `start_event: 1` |
 | Admin entry | `394534` — Alex McGuiness, "Høgh are you?" |
-| Members | 7, currently in `new_entries.results`; `standings.results` is empty |
+| Members | **Dynamic.** 7 at first capture, 9 by 15:00 the same day; all in `new_entries.results`, `standings.results` empty |
 
-The seven managers:
+**Membership is not fixed.** Two managers joined within hours of the first capture and
+one renamed their team, all on 2026-08-19. Churn should be expected until the GW1
+deadline (2026-08-21T17:30:00Z). Nothing in the app hardcodes the roster — it renders
+whatever the API returns — but any document, fixture or test asserting a *count* is a
+snapshot, not a fact, and will go stale.
+
+The nine managers as of 2026-08-19:
 
 | Entry | Manager | Team |
 |---|---|---|
@@ -28,7 +34,9 @@ The seven managers:
 | 1358366 | Jack Simpson | Red Djed Redemption |
 | 926697 | Aidan McGuiness | Durán Durán |
 | 597768 | Joe Taylor | JT |
-| 567357 | Finn Taylor | ☢️ DEFCON ☢️ |
+| 567357 | Finn Taylor | ☢️DEFCON Merchant☢️ |
+| 6404523 | Struan Hall | Egg Fried Reus |
+| 6333176 | Matthew Greenaway | BaldySins |
 
 ### Consequences
 
@@ -177,9 +185,12 @@ from an undocumented field.
 remainder under £2 is held as credit and surfaced on the balances table — silently
 discarding someone's money is the one bug guaranteed to cause an argument.
 
-**Known ambiguity:** two Taylors (Joe, Finn) and two McGuinesses (Alex, Aidan) out of
-seven. A transfer arriving as "MR TAYLOR" cannot be attributed. Ambiguous matches go
-to a pending queue the admin approves with one tap rather than being guessed.
+**Known ambiguity:** two Taylors (Joe, Finn) and two McGuinesses (Alex, Aidan) — now
+out of nine rather than seven, but the clash is unchanged. A transfer arriving as
+"MR TAYLOR" cannot be attributed. Ambiguous matches go to a pending queue the admin
+approves with one tap rather than being guessed. Note that a growing league makes the
+name-alias table a maintained thing, not a one-off: each new member needs an alias
+entry before their payments can be matched.
 
 **Filters**, all confirmed in the docs: top-ups arrive positive with `is_load: true`;
 refunds and reversals arrive positive with `is_load: false`; declined transactions
