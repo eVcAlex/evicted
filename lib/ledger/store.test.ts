@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const hgetall = vi.fn();
-const hset = vi.fn();
+const hsetnx = vi.fn();
 const smembers = vi.fn();
 const sadd = vi.fn();
 const srem = vi.fn();
@@ -10,7 +10,7 @@ const srem = vi.fn();
 // static — a class with instance members alone would throw.
 vi.mock('@upstash/redis', () => ({
   Redis: {
-    fromEnv: () => ({ hgetall, hset, smembers, sadd, srem }),
+    fromEnv: () => ({ hgetall, hsetnx, smembers, sadd, srem }),
   },
 }));
 
@@ -42,10 +42,17 @@ describe('getResults', () => {
 });
 
 describe('saveResult', () => {
-  it('writes under the gameweek field', async () => {
+  it('writes under the gameweek field when none exists yet', async () => {
+    hsetnx.mockResolvedValue(1);
     const result = { losers: [1], scores: { 1: 30 }, recordedAt: '2026-09-01T00:00:00Z' };
-    await saveResult(5, result);
-    expect(hset).toHaveBeenCalledWith('evicted:results', { '5': result });
+    expect(await saveResult(5, result)).toBe(true);
+    expect(hsetnx).toHaveBeenCalledWith('evicted:results', '5', result);
+  });
+
+  it('leaves an existing gameweek untouched', async () => {
+    hsetnx.mockResolvedValue(0);
+    const result = { losers: [1], scores: { 1: 30 }, recordedAt: '2026-09-01T00:00:00Z' };
+    expect(await saveResult(5, result)).toBe(false);
   });
 });
 

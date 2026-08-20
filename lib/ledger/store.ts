@@ -34,14 +34,20 @@ export async function getResults(): Promise<Map<number, GameweekResult>> {
 }
 
 /**
- * Results are written once and never rewritten — a settled gameweek does not
- * change.
+ * Records a gameweek's result, refusing to overwrite one that already exists.
+ *
+ * A settled gameweek does not change, and rewriting one would alter who owes
+ * money after the fact. Correcting a genuinely wrong result is a deliberate
+ * manual operation against the store, not something a page load can do.
+ *
+ * @returns true if written, false if a result for this gameweek already existed
  */
 export async function saveResult(
   gameweek: number,
   result: GameweekResult,
-): Promise<void> {
-  await redisClient().hset(RESULTS_KEY, { [String(gameweek)]: result });
+): Promise<boolean> {
+  const written = await redisClient().hsetnx(RESULTS_KEY, String(gameweek), result);
+  return written === 1;
 }
 
 export async function getPaid(): Promise<Set<string>> {
