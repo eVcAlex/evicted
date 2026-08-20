@@ -6,13 +6,24 @@ const smembers = vi.fn();
 const sadd = vi.fn();
 const srem = vi.fn();
 
-// `store.ts` calls the static `Redis.fromEnv()`, so the mock must expose that
-// static — a class with instance members alone would throw.
+// `store.ts` constructs `new Redis({ url, token, retry })`, so the mock must be
+// a constructible class — an object with instance members alone would throw.
 vi.mock('@upstash/redis', () => ({
-  Redis: {
-    fromEnv: () => ({ hgetall, hsetnx, smembers, sadd, srem }),
+  Redis: class {
+    hgetall = hgetall;
+    hsetnx = hsetnx;
+    smembers = smembers;
+    sadd = sadd;
+    srem = srem;
   },
 }));
+
+// `store.ts` refuses to build a client without credentials, so that an
+// unconfigured deployment degrades instantly instead of spending seconds
+// retrying a request that cannot succeed. These are the values the mock
+// ignores; only their presence matters.
+vi.stubEnv('UPSTASH_REDIS_REST_URL', 'https://mock.upstash.invalid');
+vi.stubEnv('UPSTASH_REDIS_REST_TOKEN', 'mock-token');
 
 const { getPaid, getResults, paidKey, saveResult, setPaid } = await import('./store');
 
