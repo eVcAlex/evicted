@@ -1,3 +1,5 @@
+'use client';
+
 import { Badge, Table, Text } from '@mantine/core';
 import type { Balance } from '@/lib/league/balances';
 import classes from './BalancesTable.module.scss';
