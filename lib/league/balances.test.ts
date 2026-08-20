@@ -3,8 +3,8 @@ import type { GameweekResult } from '@/lib/ledger/store';
 import { buildBalances } from './balances';
 
 const members = [
-  { entryId: 1, managerName: 'Finn Taylor', teamName: 'DEFCON' },
-  { entryId: 2, managerName: 'Joe Taylor', teamName: 'JT' },
+  { entryId: 1, managerName: 'Finn Taylor', teamName: 'DEFCON', joinedTime: null },
+  { entryId: 2, managerName: 'Joe Taylor', teamName: 'JT', joinedTime: null },
 ];
 
 const results = new Map<number, GameweekResult>([
@@ -53,5 +53,61 @@ describe('buildBalances', () => {
   it('orders by amount owed, highest first', () => {
     const balances = buildBalances({ members, results, paid: new Set() });
     expect(balances[0].member.entryId).toBe(1);
+  });
+
+  it('marks current members as still in the league', () => {
+    const balances = buildBalances({ members, results, paid: new Set() });
+    expect(balances.every((b) => b.departed === false)).toBe(true);
+  });
+
+  // Leaving the league does not settle the debt.
+  it('keeps a manager who has left the league but still owes money', () => {
+    const withLeaver = new Map(results);
+    withLeaver.set(4, {
+      losers: [99],
+      scores: { 99: 12 },
+      recordedAt: '2026-09-14T00:00:00Z',
+    });
+
+    const balances = buildBalances({ members, results: withLeaver, paid: new Set() });
+    const leaver = balances.find((b) => b.member.entryId === 99);
+
+    expect(leaver?.departed).toBe(true);
+    expect(leaver?.owedPence).toBe(200);
+    expect(leaver?.lost).toEqual([4]);
+  });
+
+  it('identifies a departed manager by entry id, the only name left', () => {
+    const withLeaver = new Map([
+      [1, { losers: [99], scores: { 99: 12 }, recordedAt: '2026-09-14T00:00:00Z' }],
+    ]);
+
+    const balances = buildBalances({ members, results: withLeaver, paid: new Set() });
+    expect(balances.find((b) => b.departed)?.member.teamName).toBe('Entry 99');
+  });
+
+  it('lets a departed manager be marked as paid', () => {
+    const withLeaver = new Map([
+      [1, { losers: [99], scores: { 99: 12 }, recordedAt: '2026-09-14T00:00:00Z' }],
+    ]);
+
+    const balances = buildBalances({
+      members,
+      results: withLeaver,
+      paid: new Set(['1:99']),
+    });
+    const leaver = balances.find((b) => b.member.entryId === 99);
+
+    expect(leaver?.owedPence).toBe(0);
+    expect(leaver?.paidPence).toBe(200);
+  });
+
+  it('does not resurrect an entry that merely appears in a gameweek score', () => {
+    const withStranger = new Map([
+      [1, { losers: [1], scores: { 1: 30, 77: 60 }, recordedAt: '2026-08-24T00:00:00Z' }],
+    ]);
+
+    const balances = buildBalances({ members, results: withStranger, paid: new Set() });
+    expect(balances.some((b) => b.member.entryId === 77)).toBe(false);
   });
 });
