@@ -4,7 +4,17 @@ import { findLosers, type GameweekScore } from './scoring';
 export interface LoserSummary {
   gameweek: number;
   provisional: boolean;
+  /**
+   * Every manager tied at the lowest net score. Empty when nobody has a score
+   * for the gameweek yet — the deadline passes hours before the first match.
+   */
   losers: Array<{ member: Member; score: GameweekScore }>;
+  /**
+   * True when more than one manager has a score and every one of them is the
+   * same. While the gameweek is still provisional this is the "everyone is on
+   * zero" state, which is not a nine-way eviction.
+   */
+  allTied: boolean;
 }
 
 export function buildSummary(params: {
@@ -24,5 +34,8 @@ export function buildSummary(params: {
     return [{ member, score }];
   });
 
-  return { gameweek, provisional, losers };
+  const allTied =
+    scores.length > 1 && scores.every((score) => score.net === scores[0].net);
+
+  return { gameweek, provisional, losers, allTied };
 }

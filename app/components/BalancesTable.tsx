@@ -1,7 +1,8 @@
 'use client';
 
-import { Badge, Table, Text } from '@mantine/core';
+import { Badge, Group, Stack, Table, Text } from '@mantine/core';
 import type { Balance } from '@/lib/league/balances';
+import { AdminToggle } from './AdminToggle';
 import classes from './BalancesTable.module.scss';
 
 function pounds(pence: number): string {
@@ -32,9 +33,15 @@ export function BalancesTable({
               <Text fw={600} size="sm">
                 {balance.member.teamName}
               </Text>
-              <Text size="xs" c="dimmed">
-                {balance.member.managerName}
-              </Text>
+              {balance.departed ? (
+                <Badge color="gray" variant="light" size="xs">
+                  No longer in the league
+                </Badge>
+              ) : (
+                <Text size="xs" c="dimmed">
+                  {balance.member.managerName}
+                </Text>
+              )}
             </Table.Td>
             {resultsDegraded ? (
               <>
@@ -68,9 +75,25 @@ export function BalancesTable({
                       Clear
                     </Badge>
                   ) : (
-                    <Text fw={700} c="red" className={classes.owed}>
-                      {pounds(balance.owedPence)}
-                    </Text>
+                    <Stack gap={4} align="flex-end">
+                      <Text fw={700} c="red" className={classes.owed}>
+                        {pounds(balance.owedPence)}
+                      </Text>
+                      {/* One toggle per unpaid gameweek: this is the view that
+                          supports settling a whole season at once, and the
+                          gameweek card only ever offers the current gameweek. */}
+                      <Group gap={4} justify="flex-end" className={classes.toggles}>
+                        {balance.unpaid.map((gameweek) => (
+                          <AdminToggle
+                            key={gameweek}
+                            gameweek={gameweek}
+                            entryId={balance.member.entryId}
+                            paid={false}
+                            label={`GW${gameweek}`}
+                          />
+                        ))}
+                      </Group>
+                    </Stack>
                   )}
                 </Table.Td>
               </>

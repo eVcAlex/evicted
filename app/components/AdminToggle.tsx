@@ -9,10 +9,13 @@ export function AdminToggle({
   gameweek,
   entryId,
   paid,
+  label,
 }: {
   gameweek: number;
   entryId: number;
   paid: boolean;
+  /** Overrides the default "Mark paid" wording — used per gameweek on balances. */
+  label?: string;
 }) {
   const [busy, setBusy] = useState(false);
 
@@ -37,8 +40,18 @@ export function AdminToggle({
         return;
       }
 
-      window.localStorage.removeItem(PIN_STORAGE_KEY);
-      window.alert('Rejected. Wrong PIN?');
+      // Only 401 means the PIN was wrong. Treating every failure as an auth
+      // failure threw away a valid saved PIN whenever the store was down, and
+      // told the admin the opposite of what had actually happened.
+      if (response.status === 401) {
+        window.localStorage.removeItem(PIN_STORAGE_KEY);
+        window.alert('Rejected. Wrong PIN?');
+        return;
+      }
+
+      window.alert(
+        `Could not save that (error ${response.status}). Your PIN is fine — try again shortly.`,
+      );
     } catch {
       window.alert('Network error. Please try again.');
     } finally {
@@ -48,7 +61,7 @@ export function AdminToggle({
 
   return (
     <Button size="xs" variant="subtle" loading={busy} onClick={toggle}>
-      Mark {paid ? 'unpaid' : 'paid'}
+      {label ?? `Mark ${paid ? 'unpaid' : 'paid'}`}
     </Button>
   );
 }
