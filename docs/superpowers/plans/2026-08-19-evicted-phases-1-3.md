@@ -2447,9 +2447,19 @@ Create `app/components/BalancesTable.module.scss`:
 }
 ```
 
-Then create `app/components/BalancesTable.tsx`:
+Then create `app/components/BalancesTable.tsx`. The `'use client'` directive is
+**required**, for a reason distinct from `NavLinks`: this component reaches Mantine's
+compound sub-components by property access (`Table.Thead`, `Table.Tr`, `Table.Th`,
+`Table.Tbody`, `Table.Td`). Turbopack's RSC client-reference proxy renders `Table` fine
+as a bare tag but resolves property access on it to `undefined`, so the page 500s at
+runtime while building and type-checking cleanly.
+
+**The general rule:** a Server Component may render a Mantine component as a bare tag,
+but reaching a sub-component through dot notation requires a client boundary.
 
 ```tsx
+'use client';
+
 import { Badge, Table, Text } from '@mantine/core';
 import type { Balance } from '@/lib/league/balances';
 import classes from './BalancesTable.module.scss';
