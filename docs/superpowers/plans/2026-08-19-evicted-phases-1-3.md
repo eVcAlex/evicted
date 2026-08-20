@@ -1626,7 +1626,9 @@ git commit -m "feat: render the current gameweek evictee with provisional marker
 - Produces:
   - `interface GameweekResult { losers: number[]; scores: Record<number, number>; recordedAt: string }`
   - `getResults(): Promise<Map<number, GameweekResult>>`
-  - `saveResult(gameweek: number, result: GameweekResult): Promise<void>`
+  - `saveResult(gameweek: number, result: GameweekResult): Promise<boolean>` — resolves
+    `true` if the result was written, `false` if a result for that gameweek already
+    existed and was therefore left untouched
   - `getPaid(): Promise<Set<string>>` where members are `` `${gameweek}:${entryId}` ``
   - `setPaid(gameweek: number, entryId: number, paid: boolean): Promise<void>`
   - `paidKey(gameweek: number, entryId: number): string`
@@ -1953,8 +1955,12 @@ export async function recordSettledGameweeks(params: {
       recordedAt: new Date().toISOString(),
     };
 
-    await saveResult(gameweek, result);
-    results.set(gameweek, result);
+    // `saveResult` refuses to overwrite a gameweek that is already recorded.
+    // Only reflect the new result locally if it was actually persisted, so the
+    // page never renders a result the store did not accept.
+    if (await saveResult(gameweek, result)) {
+      results.set(gameweek, result);
+    }
   }
 
   return results;
