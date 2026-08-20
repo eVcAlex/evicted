@@ -1,10 +1,10 @@
-import path from 'node:path';
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   sassOptions: {
     implementation: 'sass-embedded',
-    additionalData: `@use "${path.join(process.cwd(), '_mantine').replace(/\\/g, '/')}" as mantine;`,
+    loadPaths: [process.cwd()],
+    additionalData: '@use "_mantine" as mantine;',
   },
 };
 

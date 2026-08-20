@@ -1,10 +1,23 @@
-import { Stack, Text, Title } from '@mantine/core';
+import { Container } from '@mantine/core';
+import { fetchBootstrap, fetchStandings } from '@/lib/fpl/client';
+import { nextGameweek, revalidateFor } from '@/lib/league/gameweeks';
+import { resolveMembers } from '@/lib/league/members';
+import { PreSeason } from './components/PreSeason';
 
-export default function Home() {
+export default async function HomePage() {
+  const bootstrap = await fetchBootstrap(3600);
+  const revalidate = revalidateFor(bootstrap);
+  const standings = await fetchStandings(revalidate);
+  const members = resolveMembers(standings);
+  const next = nextGameweek(bootstrap);
+
   return (
-    <Stack gap="sm" ta="center" mt="xl">
-      <Title order={1}>Evicted</Title>
-      <Text c="dimmed">Who finished bottom this week, and have they paid up.</Text>
-    </Stack>
+    <Container size="sm" py="xl">
+      <PreSeason
+        members={members}
+        deadline={next?.deadline_time ?? null}
+        gameweekName={next?.name ?? null}
+      />
+    </Container>
   );
 }
