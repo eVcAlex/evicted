@@ -19,3 +19,8 @@ export const monzoWebhookEnvelopeSchema = z.object({
   data: z.unknown(),
 });
 export type MonzoWebhookEnvelope = z.infer<typeof monzoWebhookEnvelopeSchema>;
+
+export const monzoAccountsResponseSchema = z.object({
+  accounts: z.array(z.object({ id: z.string() })),
+});
+

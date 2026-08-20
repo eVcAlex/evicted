@@ -9,11 +9,16 @@ import { NavLinks } from '../components/NavLinks';
 
 export const dynamic = 'force-dynamic';
 
-export default async function BalancesPage() {
-  const [standings, resultsState, paidState] = await Promise.all([
+export default async function BalancesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ monzo?: string }>;
+}) {
+  const [standings, resultsState, paidState, params] = await Promise.all([
     fetchStandings(3600),
     safeGetResults(),
     safeGetPaid(),
+    searchParams,
   ]);
 
   const { degraded: resultsDegraded } = resultsState;
@@ -45,6 +50,18 @@ export default async function BalancesPage() {
             Could not reach the payment store. Amounts shown may be out of date.
           </Alert>
         )
+      )}
+      {params.monzo === 'connected' && (
+        <Alert color="green" variant="light" title="Monzo connected" mb="lg">
+          Webhook registered. Capture-phase only — send a test payment, then check
+          /api/monzo/captured.
+        </Alert>
+      )}
+      {params.monzo === 'webhook_registration_failed' && (
+        <Alert color="red" variant="light" title="Monzo connected, but webhook registration failed" mb="lg">
+          The account is authorised, but nothing will arrive until this is retried.
+          Check server logs for the cause.
+        </Alert>
       )}
       <BalancesTable balances={balances} resultsDegraded={resultsDegraded} />
       <Text c="dimmed" size="xs" mt="lg">
