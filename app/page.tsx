@@ -1,16 +1,24 @@
-import { Container } from '@mantine/core';
+import { Alert, Container } from '@mantine/core';
 import { fetchBootstrap, fetchHistory, fetchStandings } from '@/lib/fpl/client';
 import { currentGameweek, nextGameweek, revalidateFor } from '@/lib/league/gameweeks';
 import { resolveMembers } from '@/lib/league/members';
 import { recordSettledGameweeks } from '@/lib/league/record';
 import { scoresForGameweek } from '@/lib/league/scoring';
 import { buildSummary } from '@/lib/league/summary';
-import { getPaid } from '@/lib/ledger/store';
+import { safeGetPaid } from '@/lib/ledger/safe';
 import { LoserCard } from './components/LoserCard';
 import { NavLinks } from './components/NavLinks';
 import { PreSeason } from './components/PreSeason';
 
 export const dynamic = 'force-dynamic';
+
+function PaymentStoreNotice() {
+  return (
+    <Alert color="orange" variant="light" title="Payment status unavailable" mb="lg">
+      Could not reach the payment store. Amounts shown may be out of date.
+    </Alert>
+  );
+}
 
 export default async function HomePage() {
   const bootstrap = await fetchBootstrap(3600);
@@ -21,9 +29,11 @@ export default async function HomePage() {
 
   if (!current) {
     const next = nextGameweek(bootstrap);
+    const { degraded } = await safeGetPaid();
     return (
       <Container size="sm" py="xl">
         <NavLinks />
+        {degraded && <PaymentStoreNotice />}
         <PreSeason
           members={members}
           deadline={next?.deadline_time ?? null}
@@ -51,11 +61,12 @@ export default async function HomePage() {
     scores: scoresForGameweek(histories, current.id),
   });
 
-  const paid = await getPaid();
+  const { paid, degraded } = await safeGetPaid();
 
   return (
     <Container size="sm" py="xl">
       <NavLinks />
+      {degraded && <PaymentStoreNotice />}
       <LoserCard summary={summary} paid={paid} />
     </Container>
   );
