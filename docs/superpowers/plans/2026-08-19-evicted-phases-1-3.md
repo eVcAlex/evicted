@@ -28,6 +28,11 @@
   its own `@mixin` syntax collides. Sass equivalents live in `_mantine.scss` at the repo
   root and are auto-injected as the `mantine` namespace, so use `@include mantine.dark { }`
   and `mantine.rem(16)`. Both `postcss.config.cjs` and `_mantine.scss` are required.
+- **Everything from `_mantine.scss` is namespaced — variables included.** Because
+  `next.config.ts` injects `@use "_mantine" as mantine`, the breakpoint variables are
+  reachable only as `mantine.$mantine-breakpoint-sm`, never bare. Writing
+  `@include mantine.smaller-than($mantine-breakpoint-sm)` fails to compile with
+  "Undefined variable": the mixin is namespaced but the argument was not.
 - Scope is phases 1–3 of the spec. Monzo reconciliation (spec §5) and squad detail (spec §4) are explicitly out of scope and get their own plans.
 
 ---
@@ -147,18 +152,26 @@ Replace `next.config.ts` entirely. `additionalData` prepends the `@use` to every
 `.scss` file, so components never import it themselves.
 
 ```ts
-import path from 'node:path';
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   sassOptions: {
     implementation: 'sass-embedded',
-    additionalData: `@use "${path.join(process.cwd(), '_mantine').replace(/\\/g, '/')}" as mantine;`,
+    loadPaths: [process.cwd()],
+    additionalData: '@use "_mantine" as mantine;',
   },
 };
 
 export default nextConfig;
 ```
+
+**Do not use Mantine's documented form here.** Their guide builds an absolute path
+with `path.join(process.cwd(), '_mantine').replace(/\\/g, '/')` and interpolates it
+into the `@use`. On Windows that yields `C:/Users/.../_mantine`, and Dart Sass parses
+the leading `C:` as a URI *scheme* rather than a drive letter, so the import never
+resolves and every `.scss` file in the project fails to compile with "Can't find
+stylesheet to import". Resolving through `loadPaths` with a bare relative specifier
+sidesteps the ambiguity and works on every platform.
 
 - [ ] **Step 4: Wire Mantine into the root layout**
 
@@ -1167,7 +1180,7 @@ import — `additionalData` injects it.
   letter-spacing: mantine.rem(-1);
   text-transform: uppercase;
 
-  @include mantine.smaller-than($mantine-breakpoint-sm) {
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
     font-size: mantine.rem(32);
   }
 }
@@ -1445,7 +1458,7 @@ Create `app/components/LoserCard.module.scss`:
   letter-spacing: mantine.rem(-2);
   text-transform: uppercase;
 
-  @include mantine.smaller-than($mantine-breakpoint-sm) {
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
     font-size: mantine.rem(36);
   }
 }
@@ -1463,7 +1476,7 @@ Create `app/components/LoserCard.module.scss`:
   font-size: mantine.rem(28);
   line-height: 1.1;
 
-  @include mantine.smaller-than($mantine-breakpoint-sm) {
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
     font-size: mantine.rem(22);
   }
 }
