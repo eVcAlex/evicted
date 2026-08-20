@@ -1,8 +1,15 @@
 import { Alert, Badge, Card, Group, Stack, Text, Title } from '@mantine/core';
 import type { LoserSummary } from '@/lib/league/summary';
+import { AdminToggle } from './AdminToggle';
 import classes from './LoserCard.module.scss';
 
-export function LoserCard({ summary }: { summary: LoserSummary }) {
+export function LoserCard({
+  summary,
+  paid,
+}: {
+  summary: LoserSummary;
+  paid: Set<string>;
+}) {
   return (
     <Stack gap="md">
       <div>
@@ -42,6 +49,17 @@ export function LoserCard({ summary }: { summary: LoserSummary }) {
             <Text size="sm" c={score.hits > 0 ? 'red' : 'dimmed'}>
               Hits &minus;{score.hits}
             </Text>
+          </Group>
+
+          <Group justify="space-between" mt="md">
+            <Badge color={paid.has(`${summary.gameweek}:${member.entryId}`) ? 'green' : 'red'} variant="light">
+              {paid.has(`${summary.gameweek}:${member.entryId}`) ? 'Settled' : 'Owes £2'}
+            </Badge>
+            <AdminToggle
+              gameweek={summary.gameweek}
+              entryId={member.entryId}
+              paid={paid.has(`${summary.gameweek}:${member.entryId}`)}
+            />
           </Group>
         </Card>
       ))}

@@ -5,6 +5,7 @@ import { resolveMembers } from '@/lib/league/members';
 import { recordSettledGameweeks } from '@/lib/league/record';
 import { scoresForGameweek } from '@/lib/league/scoring';
 import { buildSummary } from '@/lib/league/summary';
+import { getPaid } from '@/lib/ledger/store';
 import { LoserCard } from './components/LoserCard';
 import { PreSeason } from './components/PreSeason';
 
@@ -48,9 +49,11 @@ export default async function HomePage() {
     scores: scoresForGameweek(histories, current.id),
   });
 
+  const paid = await getPaid();
+
   return (
     <Container size="sm" py="xl">
-      <LoserCard summary={summary} />
+      <LoserCard summary={summary} paid={paid} />
     </Container>
   );
 }
