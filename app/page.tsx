@@ -2,10 +2,13 @@ import { Container } from '@mantine/core';
 import { fetchBootstrap, fetchHistory, fetchStandings } from '@/lib/fpl/client';
 import { currentGameweek, nextGameweek, revalidateFor } from '@/lib/league/gameweeks';
 import { resolveMembers } from '@/lib/league/members';
+import { recordSettledGameweeks } from '@/lib/league/record';
 import { scoresForGameweek } from '@/lib/league/scoring';
 import { buildSummary } from '@/lib/league/summary';
 import { LoserCard } from './components/LoserCard';
 import { PreSeason } from './components/PreSeason';
+
+export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
   const bootstrap = await fetchBootstrap(3600);
@@ -35,6 +38,8 @@ export default async function HomePage() {
       ),
     ),
   );
+
+  await recordSettledGameweeks({ bootstrap, histories });
 
   const summary = buildSummary({
     gameweek: current.id,
