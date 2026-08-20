@@ -24,21 +24,26 @@ export function AdminToggle({
     }
 
     setBusy(true);
-    const response = await fetch('/api/admin/toggle', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-admin-pin': pin },
-      body: JSON.stringify({ gameweek, entryId, paid: !paid }),
-    });
-    setBusy(false);
+    try {
+      const response = await fetch('/api/admin/toggle', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-admin-pin': pin },
+        body: JSON.stringify({ gameweek, entryId, paid: !paid }),
+      });
 
-    if (response.ok) {
-      window.localStorage.setItem(PIN_STORAGE_KEY, pin);
-      window.location.reload();
-      return;
+      if (response.ok) {
+        window.localStorage.setItem(PIN_STORAGE_KEY, pin);
+        window.location.reload();
+        return;
+      }
+
+      window.localStorage.removeItem(PIN_STORAGE_KEY);
+      window.alert('Rejected. Wrong PIN?');
+    } catch {
+      window.alert('Network error. Please try again.');
+    } finally {
+      setBusy(false);
     }
-
-    window.localStorage.removeItem(PIN_STORAGE_KEY);
-    window.alert('Rejected. Wrong PIN?');
   }
 
   return (

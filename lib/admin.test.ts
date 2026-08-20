@@ -28,6 +28,10 @@ describe('checkPin', () => {
     expect(checkPin('correct-horse-battery')).toBe(false);
   });
 
+  it('rejects a wrong pin of the same length', () => {
+    expect(checkPin('wrong-horse-x')).toBe(false);
+  });
+
   it('rejects everything when no pin is configured', () => {
     delete process.env.ADMIN_PIN;
     expect(checkPin('anything')).toBe(false);
