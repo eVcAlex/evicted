@@ -32,6 +32,8 @@ export const newEntryRowSchema = z.object({
   entry_name: z.string(),
   player_first_name: z.string(),
   player_last_name: z.string(),
+  /** When this entry joined this league. Absent from `standings.results`. */
+  joined_time: z.string(),
 });
 
 export const leagueStandingsSchema = z.object({

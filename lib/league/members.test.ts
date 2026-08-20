@@ -20,6 +20,7 @@ describe('resolveMembers', () => {
             {
               entry: 567357,
               entry_name: 'DEFCON',
+              joined_time: '2026-07-23T20:19:14.725454Z',
               player_first_name: 'Finn',
               player_last_name: 'Taylor',
             },
@@ -29,7 +30,12 @@ describe('resolveMembers', () => {
     );
 
     expect(members).toEqual([
-      { entryId: 567357, managerName: 'Finn Taylor', teamName: 'DEFCON' },
+      {
+        entryId: 567357,
+        managerName: 'Finn Taylor',
+        teamName: 'DEFCON',
+        joinedTime: '2026-07-23T20:19:14.725454Z',
+      },
     ]);
   });
 
@@ -45,7 +51,12 @@ describe('resolveMembers', () => {
     );
 
     expect(members).toEqual([
-      { entryId: 222222, managerName: 'Alex McGuiness', teamName: 'Høgh are you?' },
+      {
+        entryId: 222222,
+        managerName: 'Alex McGuiness',
+        teamName: 'Høgh are you?',
+        joinedTime: null,
+      },
     ]);
   });
 
@@ -62,6 +73,7 @@ describe('resolveMembers', () => {
             {
               entry: 333333,
               entry_name: 'Durán Durán',
+              joined_time: '2026-10-01T09:00:00Z',
               player_first_name: 'Aidan',
               player_last_name: 'McGuiness',
             },
@@ -73,8 +85,18 @@ describe('resolveMembers', () => {
     expect(members).toHaveLength(2);
     expect(members).toEqual(
       expect.arrayContaining([
-        { entryId: 222222, managerName: 'Alex McGuiness', teamName: 'Høgh are you?' },
-        { entryId: 333333, managerName: 'Aidan McGuiness', teamName: 'Durán Durán' },
+        {
+          entryId: 222222,
+          managerName: 'Alex McGuiness',
+          teamName: 'Høgh are you?',
+          joinedTime: null,
+        },
+        {
+          entryId: 333333,
+          managerName: 'Aidan McGuiness',
+          teamName: 'Durán Durán',
+          joinedTime: '2026-10-01T09:00:00Z',
+        },
       ]),
     );
   });
@@ -92,6 +114,7 @@ describe('resolveMembers', () => {
             {
               entry: 222222,
               entry_name: 'Høgh are you?',
+              joined_time: '2026-07-23T16:37:00Z',
               player_first_name: 'Alex',
               player_last_name: 'NewEntry',
             },
@@ -102,6 +125,31 @@ describe('resolveMembers', () => {
 
     expect(members).toHaveLength(1);
     expect(members[0]?.managerName).toBe('Alex Standings');
+  });
+
+  it('keeps the join time when a member appears in both arrays', () => {
+    const members = resolveMembers(
+      standings({
+        standings: {
+          results: [
+            { entry: 222222, entry_name: 'Høgh are you?', player_name: 'Alex Standings' },
+          ],
+        },
+        new_entries: {
+          results: [
+            {
+              entry: 222222,
+              entry_name: 'Høgh are you?',
+              joined_time: '2026-07-23T16:37:00Z',
+              player_first_name: 'Alex',
+              player_last_name: 'NewEntry',
+            },
+          ],
+        },
+      }),
+    );
+
+    expect(members[0]?.joinedTime).toBe('2026-07-23T16:37:00Z');
   });
 
   it('returns an empty list for an empty league', () => {

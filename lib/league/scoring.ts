@@ -1,4 +1,5 @@
 import type { EntryHistory } from '@/lib/fpl/schemas';
+import { isEligible } from './eligibility';
 
 export interface GameweekScore {
   entryId: number;
@@ -8,18 +9,27 @@ export interface GameweekScore {
 }
 
 /**
- * Net score for every manager who played the given gameweek.
+ * Net score for every manager who played the given gameweek *as a member of
+ * this league*.
  *
- * Managers absent from a gameweek are omitted rather than scored as zero: a
- * manager who joined the league in GW10 is not liable for GW1 to GW9.
+ * Two separate exclusions apply. A manager with no entry for the gameweek is
+ * omitted rather than scored as zero. A manager who had not yet joined the
+ * league is omitted even when their FPL history covers the gameweek — see
+ * `eligibility.ts`; `history.current[]` starts at their first FPL gameweek, not
+ * their first gameweek here.
+ *
+ * `eligibleFrom` is optional: omitting it applies no membership restriction.
  */
 export function scoresForGameweek(
   histories: Map<number, EntryHistory>,
   gameweek: number,
+  eligibleFrom?: Map<number, number>,
 ): GameweekScore[] {
   const scores: GameweekScore[] = [];
 
   for (const [entryId, history] of histories) {
+    if (!isEligible(eligibleFrom, entryId, gameweek)) continue;
+
     const entry = history.current.find((e) => e.event === gameweek);
     if (!entry) continue;
 

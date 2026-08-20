@@ -82,3 +82,22 @@ describe('findLosers', () => {
     expect(findLosers([])).toEqual([]);
   });
 });
+
+describe('scoresForGameweek eligibility', () => {
+  it('excludes a manager from gameweeks before they joined the league', () => {
+    const histories = new Map([
+      [1, history([{ event: 1, points: 20 }, { event: 10, points: 40 }])],
+    ]);
+    const eligibleFrom = new Map([[1, 10]]);
+
+    expect(scoresForGameweek(histories, 1, eligibleFrom)).toEqual([]);
+    expect(scoresForGameweek(histories, 10, eligibleFrom).map((s) => s.entryId)).toEqual([
+      1,
+    ]);
+  });
+
+  it('leaves a founding member scored for every gameweek', () => {
+    const histories = new Map([[1, history([{ event: 1, points: 20 }])]]);
+    expect(scoresForGameweek(histories, 1, new Map([[1, 1]]))).toHaveLength(1);
+  });
+});
