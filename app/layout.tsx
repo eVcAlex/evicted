@@ -2,10 +2,12 @@ import '@mantine/core/styles.css';
 
 import {
   ColorSchemeScript,
+  Container,
   MantineProvider,
   createTheme,
   mantineHtmlProps,
 } from '@mantine/core';
+import { Header } from './components/Header';
 
 export const metadata = {
   title: 'Evicted',
@@ -25,7 +27,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <MantineProvider theme={theme} defaultColorScheme="dark">
-          {children}
+          <Header />
+          <Container size="sm" py="xl">
+            {children}
+          </Container>
         </MantineProvider>
       </body>
     </html>

@@ -1,4 +1,4 @@
-import { Container, Title } from '@mantine/core';
+import { Title } from '@mantine/core';
 import { AdminPanel } from '../components/AdminPanel';
 
 export const dynamic = 'force-dynamic';
@@ -11,11 +11,11 @@ export const dynamic = 'force-dynamic';
  */
 export default function AdminPage() {
   return (
-    <Container size="sm" py="xl">
+    <>
       <Title order={1} mb="lg">
         Admin
       </Title>
       <AdminPanel />
-    </Container>
+    </>
   );
 }

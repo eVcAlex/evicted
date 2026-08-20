@@ -1,17 +1,21 @@
-.table {
-  font-variant-numeric: tabular-nums;
+.row {
+  transition: border-color 150ms ease;
+
+  @include mantine.hover {
+    border-color: var(--mantine-color-dark-3);
+  }
 }
 
 .owed {
-  font-size: mantine.rem(16);
+  font-size: mantine.rem(18);
+  font-variant-numeric: tabular-nums;
 }
 
-.manager {
-  min-width: mantine.rem(140);
+.meta {
+  font-variant-numeric: tabular-nums;
 }
 
 /* A season's worth of unpaid gameweeks has to wrap on a phone, not scroll. */
 .toggles {
   flex-wrap: wrap;
-  max-width: mantine.rem(180);
 }

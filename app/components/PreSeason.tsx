@@ -1,4 +1,4 @@
-import { Badge, Card, Group, Stack, Text, Title } from '@mantine/core';
+import { Avatar, Badge, Card, Group, Stack, Text, Title } from '@mantine/core';
 import type { Member } from '@/lib/league/members';
 import classes from './PreSeason.module.scss';
 
@@ -15,10 +15,10 @@ export function PreSeason({
     <Stack gap="lg">
       <div>
         <Title order={1} className={classes.title}>
-          Evicted
+          Nobody yet
         </Title>
         <Text c="dimmed" size="sm">
-          Nobody has been evicted yet. {gameweekName ?? 'The season'} has not been played.
+          {gameweekName ?? 'The season'} has not been played.
         </Text>
       </div>
 
@@ -46,12 +46,15 @@ export function PreSeason({
         {members.map((member) => (
           <Card key={member.entryId} withBorder padding="sm" className={classes.memberCard}>
             <Group justify="space-between" wrap="nowrap">
-              <div>
-                <Text fw={600}>{member.teamName}</Text>
-                <Text size="sm" c="dimmed">
-                  {member.managerName}
-                </Text>
-              </div>
+              <Group gap="sm" wrap="nowrap">
+                <Avatar name={member.teamName} color="initials" radius="xl" />
+                <div>
+                  <Text fw={600}>{member.teamName}</Text>
+                  <Text size="sm" c="dimmed">
+                    {member.managerName}
+                  </Text>
+                </div>
+              </Group>
               <Badge variant="light" color="gray">
                 &mdash;
               </Badge>

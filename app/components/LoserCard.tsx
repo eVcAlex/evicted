@@ -1,4 +1,4 @@
-import { Alert, Badge, Card, Group, Stack, Text, Title } from '@mantine/core';
+import { Alert, Avatar, Badge, Card, Group, Stack, Text, Title } from '@mantine/core';
 import { paidKey } from '@/lib/ledger/store';
 import type { LoserSummary } from '@/lib/league/summary';
 import { AdminToggle } from './AdminToggle';
@@ -64,12 +64,15 @@ export function LoserCard({
           return (
             <Card key={member.entryId} withBorder padding="lg" className={classes.card}>
               <Group justify="space-between" align="flex-start" wrap="nowrap">
-                <div>
-                  <Text fw={800} className={classes.teamName}>
-                    {member.teamName}
-                  </Text>
-                  <Text c="dimmed">{member.managerName}</Text>
-                </div>
+                <Group gap="sm" wrap="nowrap" align="flex-start">
+                  <Avatar name={member.teamName} color="initials" radius="xl" size="lg" />
+                  <div>
+                    <Text fw={800} className={classes.teamName}>
+                      {member.teamName}
+                    </Text>
+                    <Text c="dimmed">{member.managerName}</Text>
+                  </div>
+                </Group>
                 <Badge size="lg" color="red" variant="filled" className={classes.score}>
                   {score.net} pts
                 </Badge>

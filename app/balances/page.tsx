@@ -1,10 +1,10 @@
-import { Alert, Container, Text, Title } from '@mantine/core';
+import { Alert, Text, Title } from '@mantine/core';
 import { fetchStandings } from '@/lib/fpl/client';
 import { resolveMembers } from '@/lib/league/members';
 import { buildBalances } from '@/lib/league/balances';
 import { safeGetPaid, safeGetResults } from '@/lib/ledger/safe';
 import { BalancesTable } from '../components/BalancesTable';
-import { NavLinks } from '../components/NavLinks';
+import classes from './page.module.scss';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,9 +25,8 @@ export default async function BalancesPage() {
   });
 
   return (
-    <Container size="sm" py="xl">
-      <NavLinks />
-      <Title order={1} mb="xs">
+    <>
+      <Title order={1} className={classes.title} mb="xs">
         Balances
       </Title>
       <Text c="dimmed" size="sm" mb="lg">
@@ -46,6 +45,6 @@ export default async function BalancesPage() {
         )
       )}
       <BalancesTable balances={balances} resultsDegraded={resultsDegraded} />
-    </Container>
+    </>
   );
 }

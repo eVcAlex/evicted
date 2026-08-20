@@ -1,4 +1,4 @@
-import { Alert, Container } from '@mantine/core';
+import { Alert } from '@mantine/core';
 import { fetchBootstrap, fetchHistory, fetchStandings } from '@/lib/fpl/client';
 import type { EntryHistory } from '@/lib/fpl/schemas';
 import { eligibleFromByEntry } from '@/lib/league/eligibility';
@@ -8,7 +8,6 @@ import { scoresForGameweek } from '@/lib/league/scoring';
 import { buildSummary } from '@/lib/league/summary';
 import { safeGetPaid, safeRecordSettledGameweeks } from '@/lib/ledger/safe';
 import { LoserCard } from './components/LoserCard';
-import { NavLinks } from './components/NavLinks';
 import { PreSeason } from './components/PreSeason';
 
 export const dynamic = 'force-dynamic';
@@ -50,15 +49,14 @@ export default async function HomePage() {
     const next = nextGameweek(bootstrap);
     const { degraded } = await safeGetPaid();
     return (
-      <Container size="sm" py="xl">
-        <NavLinks />
+      <>
         {degraded && <PaymentStoreNotice />}
         <PreSeason
           members={members}
           deadline={next?.deadline_time ?? null}
           gameweekName={next?.name ?? null}
         />
-      </Container>
+      </>
     );
   }
 
@@ -87,10 +85,9 @@ export default async function HomePage() {
   const { paid, degraded: paidDegraded } = await safeGetPaid();
 
   return (
-    <Container size="sm" py="xl">
-      <NavLinks />
+    <>
       {(paidDegraded || recordDegraded) && <PaymentStoreNotice />}
       <LoserCard summary={summary} paid={paid} degraded={paidDegraded} />
-    </Container>
+    </>
   );
 }

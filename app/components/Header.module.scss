@@ -1,0 +1,65 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--mantine-color-dark-6);
+  border-bottom: mantine.rem(1) solid var(--mantine-color-dark-4);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: mantine.rem(12);
+  padding-top: mantine.rem(14);
+  padding-bottom: mantine.rem(14);
+}
+
+.dot {
+  width: mantine.rem(9);
+  height: mantine.rem(9);
+  border-radius: 50%;
+  background-color: var(--mantine-color-red-6);
+  flex-shrink: 0;
+}
+
+.wordmark {
+  font-weight: 900;
+  font-size: mantine.rem(15);
+  letter-spacing: mantine.rem(2.5);
+}
+
+.tabs {
+  background-color: var(--mantine-color-dark-8);
+  border-radius: var(--mantine-radius-md);
+  padding: mantine.rem(3);
+}
+
+.tab {
+  padding: mantine.rem(6) mantine.rem(13);
+  border-radius: calc(var(--mantine-radius-md) - mantine.rem(2));
+  font-size: mantine.rem(13);
+  font-weight: 600;
+  color: var(--mantine-color-dimmed);
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
+
+  @include mantine.hover {
+    color: var(--mantine-color-text);
+  }
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    padding-left: mantine.rem(10);
+    padding-right: mantine.rem(10);
+  }
+}
+
+.tabActive {
+  background-color: var(--mantine-color-red-8);
+  color: white;
+
+  @include mantine.hover {
+    color: white;
+  }
+}
