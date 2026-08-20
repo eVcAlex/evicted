@@ -7,6 +7,7 @@ import { scoresForGameweek } from '@/lib/league/scoring';
 import { buildSummary } from '@/lib/league/summary';
 import { getPaid } from '@/lib/ledger/store';
 import { LoserCard } from './components/LoserCard';
+import { NavLinks } from './components/NavLinks';
 import { PreSeason } from './components/PreSeason';
 
 export const dynamic = 'force-dynamic';
@@ -22,6 +23,7 @@ export default async function HomePage() {
     const next = nextGameweek(bootstrap);
     return (
       <Container size="sm" py="xl">
+        <NavLinks />
         <PreSeason
           members={members}
           deadline={next?.deadline_time ?? null}
@@ -53,6 +55,7 @@ export default async function HomePage() {
 
   return (
     <Container size="sm" py="xl">
+      <NavLinks />
       <LoserCard summary={summary} paid={paid} />
     </Container>
   );
