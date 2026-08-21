@@ -1,0 +1,15 @@
+.toggle {
+  color: var(--text-dim);
+
+  @include mantine.hover {
+    color: var(--text);
+  }
+}
+
+.subscribed {
+  color: var(--mantine-color-violet-4);
+
+  @include mantine.hover {
+    color: var(--mantine-color-violet-3);
+  }
+}

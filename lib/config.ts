@@ -14,6 +14,14 @@ export const FINE_PENCE = 200;
  */
 export const MONZO_ME_URL = process.env.MONZO_ME_URL ?? null;
 
+/** Web Push VAPID identity. Unset until generated — push sends no-op without it. */
+export const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY ?? null;
+export const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY ?? null;
+export const VAPID_SUBJECT = process.env.VAPID_SUBJECT ?? null;
+
+/** Shared secret the GitHub Actions settlement check authenticates with. */
+export const CRON_SECRET = process.env.CRON_SECRET ?? null;
+
 /** Base URL for the official FPL API. */
 export const FPL_BASE = 'https://fantasy.premierleague.com/api';
 

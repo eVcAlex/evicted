@@ -1,5 +1,6 @@
 import {
   recordSettledGameweeks,
+  type NewlyRecordedGameweek,
   type RecordParams,
 } from '@/lib/league/record';
 import { getPaid, getResults, type GameweekResult } from './store';
@@ -46,12 +47,14 @@ export async function safeGetResults(): Promise<{
  */
 export async function safeRecordSettledGameweeks(params: RecordParams): Promise<{
   results: Map<number, GameweekResult>;
+  newlyRecorded: NewlyRecordedGameweek[];
   degraded: boolean;
 }> {
   try {
-    return { results: await recordSettledGameweeks(params), degraded: false };
+    const { results, newlyRecorded } = await recordSettledGameweeks(params);
+    return { results, newlyRecorded, degraded: false };
   } catch (error) {
     console.error('safeRecordSettledGameweeks failed', error);
-    return { results: new Map(), degraded: true };
+    return { results: new Map(), newlyRecorded: [], degraded: true };
   }
 }

@@ -88,7 +88,7 @@ beforeEach(() => {
 
 describe('recordSettledGameweeks', () => {
   it('records a settled gameweek from complete data', async () => {
-    const results = await recordSettledGameweeks({
+    const { results } = await recordSettledGameweeks({
       bootstrap: settled(1),
       members,
       eligibleFrom,
@@ -99,6 +99,41 @@ describe('recordSettledGameweeks', () => {
     expect(saveResult.mock.calls[0][0]).toBe(1);
     expect(saveResult.mock.calls[0][1].losers).toEqual([2]);
     expect(results.get(1)?.scores).toEqual({ 1: 50, 2: 20, 3: 40 });
+  });
+
+  it('reports the newly-recorded gameweek with a full summary and quip-ready data', async () => {
+    const { newlyRecorded } = await recordSettledGameweeks({
+      bootstrap: settled(1),
+      members,
+      eligibleFrom,
+      fetchHistories: complete,
+    });
+
+    expect(newlyRecorded).toHaveLength(1);
+    const [entry] = newlyRecorded;
+    expect(entry.summary.gameweek).toBe(1);
+    expect(entry.summary.losers).toHaveLength(1);
+    expect(entry.summary.losers[0].member.entryId).toBe(2);
+    // Entry 2's gross/hits/bench survive here even though `GameweekResult`
+    // (what's actually persisted) only keeps net.
+    expect(entry.summary.losers[0].score.gross).toBe(20);
+    expect(entry.previousLosses.size).toBe(0);
+  });
+
+  it('gives each gameweek in a multi-week catch-up its own previousLosses snapshot', async () => {
+    // Entry 2 is bottom in both gameweeks 1 and 2 (see `complete`), so its
+    // gameweek-2 notification should see gameweek 1 as a prior loss, while
+    // gameweek 1's own notification sees none yet.
+    const { newlyRecorded } = await recordSettledGameweeks({
+      bootstrap: settled(1, 2),
+      members,
+      eligibleFrom,
+      fetchHistories: complete,
+    });
+
+    expect(newlyRecorded).toHaveLength(2);
+    expect(newlyRecorded[0].previousLosses.get(2)).toBeUndefined();
+    expect(newlyRecorded[1].previousLosses.get(2)).toEqual([1]);
   });
 
   it('refuses to record a gameweek a member has no score for', async () => {
@@ -183,7 +218,7 @@ describe('recordSettledGameweeks', () => {
     getResults.mockResolvedValue(new Map([[1, existing]]));
     const fetchHistories = vi.fn(complete);
 
-    const results = await recordSettledGameweeks({
+    const { results, newlyRecorded } = await recordSettledGameweeks({
       bootstrap: settled(1),
       members,
       eligibleFrom,
@@ -193,6 +228,7 @@ describe('recordSettledGameweeks', () => {
     expect(saveResult).not.toHaveBeenCalled();
     expect(fetchHistories).not.toHaveBeenCalled();
     expect(results.get(1)).toBe(existing);
+    expect(newlyRecorded).toEqual([]);
   });
 
   it('fills a multi-week gap oldest first', async () => {
@@ -209,7 +245,7 @@ describe('recordSettledGameweeks', () => {
   it('only reflects a result locally once the store has accepted it', async () => {
     saveResult.mockResolvedValue(false);
 
-    const results = await recordSettledGameweeks({
+    const { results, newlyRecorded } = await recordSettledGameweeks({
       bootstrap: settled(1),
       members,
       eligibleFrom,
@@ -218,6 +254,7 @@ describe('recordSettledGameweeks', () => {
 
     expect(saveResult).toHaveBeenCalledTimes(1);
     expect(results.has(1)).toBe(false);
+    expect(newlyRecorded).toEqual([]);
   });
 
   it('propagates a store failure rather than recording from nothing', async () => {

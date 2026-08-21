@@ -1,0 +1,16 @@
+name: Check for a settled gameweek
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping the settlement check
+        run: |
+          curl -sf -X POST \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            https://evicted-flax.vercel.app/api/cron/check-settled

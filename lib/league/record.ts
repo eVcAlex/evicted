@@ -3,8 +3,10 @@ import { gameweeksNeedingRecord } from '@/lib/ledger/reconcile';
 import { getResults, saveResult, type GameweekResult } from '@/lib/ledger/store';
 import { isEligible } from './eligibility';
 import { settledGameweeks } from './gameweeks';
+import { lossesByEntry } from './history';
 import type { Member } from './members';
 import { findLosers, scoresForGameweek } from './scoring';
+import { buildSummary, type LoserSummary } from './summary';
 
 export interface RecordParams {
   bootstrap: Bootstrap;
@@ -28,13 +30,27 @@ export interface RecordParams {
 }
 
 /**
+ * A gameweek recorded for the first time on this call, with enough context
+ * to build a notification for it — `GameweekResult` (what's actually
+ * persisted) keeps only net scores, not the gross/hits/bench a quip needs.
+ * `previousLosses` is a snapshot from *before* this gameweek was added, so a
+ * multi-gameweek catch-up gets correct per-gameweek streak language instead
+ * of one snapshot merged forward across all of them.
+ */
+export interface NewlyRecordedGameweek {
+  summary: LoserSummary;
+  previousLosses: Map<number, number[]>;
+}
+
+/**
  * The lazy alternative to a cron. Any gameweek that has settled since the last
  * page view is computed and written now, oldest first. Already-recorded
  * gameweeks are never rewritten.
  */
-export async function recordSettledGameweeks(
-  params: RecordParams,
-): Promise<Map<number, GameweekResult>> {
+export async function recordSettledGameweeks(params: RecordParams): Promise<{
+  results: Map<number, GameweekResult>;
+  newlyRecorded: NewlyRecordedGameweek[];
+}> {
   const { bootstrap, members, eligibleFrom, fetchHistories } = params;
 
   const results = await getResults();
@@ -42,9 +58,10 @@ export async function recordSettledGameweeks(
 
   // Nothing to record: do not pay for a second round of history fetches on
   // every page load just to leave the store exactly as we found it.
-  if (pending.length === 0) return results;
+  if (pending.length === 0) return { results, newlyRecorded: [] };
 
   const histories = await fetchHistories();
+  const newlyRecorded: NewlyRecordedGameweek[] = [];
 
   for (const gameweek of pending) {
     // Who *should* have a score, derived from the members list rather than from
@@ -82,9 +99,17 @@ export async function recordSettledGameweeks(
     // Only reflect the new result locally if it was actually persisted, so the
     // page never renders a result the store did not accept.
     if (await saveResult(gameweek, result)) {
+      // Snapshotted before `.set()` below, so a multi-gameweek catch-up gives
+      // each gameweek's notification the streak history as it stood right
+      // before that gameweek, not one final state shared across all of them.
+      const previousLosses = lossesByEntry(results);
       results.set(gameweek, result);
+      newlyRecorded.push({
+        summary: buildSummary({ gameweek, provisional: false, members, scores }),
+        previousLosses,
+      });
     }
   }
 
-  return results;
+  return { results, newlyRecorded };
 }

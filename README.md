@@ -43,11 +43,39 @@ Separate from `fpl-tracker`, which is a personal team viewer.
   (`points`, `event_transfers_cost` per GW). Replaces the per-gameweek picks
   loop: 7 requests, not 7 x 38.
 
-Gameweek completion is detected lazily on page load. Hobby crons run once daily
-with ±59 min precision, which buys nothing over the first page view of the day.
+Gameweek completion is detected lazily on page load — still true for
+rendering, where it costs nothing to wait for the first visit. Push
+notifications are the exception: see "PWA & notifications" below for why that
+path also gets a scheduled trigger.
 
 `event_total` in league standings is not relied upon — net is derived from
 `history`, which is unambiguous.
+
+## PWA & notifications
+
+Installable, and pushes a notification for the week's loser as soon as a
+gameweek settles — reusing the exact same quip logic as the live card
+(`lib/push/send.ts` calls `quipFor` the same way `LoserCard.tsx` does).
+
+- `lib/league/record.ts` returns `newlyRecorded` alongside the usual results
+  map — the gameweek(s) written for the first time on *this* call, with full
+  `LoserSummary` data (gross/hits/bench), not just the trimmed net-only
+  `GameweekResult` the ledger persists.
+- Settlement itself is still the lazy on-visit check above — cheap and
+  correct for rendering. But a notification that might arrive hours late
+  because nobody happened to open the app defeats the point of it, and Hobby
+  cron's once-daily ±59 min precision doesn't help. So
+  `.github/workflows/check-settled.yml` pings `/api/cron/check-settled`
+  (guarded by `CRON_SECRET`) every ~10 min instead — free, no new account.
+  Both paths funnel through the same `saveResult` `HSETNX`, so a real visitor
+  and the scheduled check landing at once can't double-send.
+- Subscriptions are anonymous per-device (`evicted:push` Redis hash), same
+  trust model as the rest of the app — no accounts. A stale subscription
+  (404/410 on send) is pruned automatically rather than retried forever.
+- `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` / `VAPID_SUBJECT` / `CRON_SECRET`
+  need setting in Vercel's Production env vars (see `.env.local` for the
+  values already generated for this deployment); `CRON_SECRET` also needs to
+  exist as a GitHub Actions repo secret of the same name.
 
 ## Monzo (later phase)
 

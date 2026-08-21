@@ -1,20 +1,17 @@
 import { Alert } from '@mantine/core';
-import { fetchBootstrap, fetchHistory, fetchStandings } from '@/lib/fpl/client';
-import type { EntryHistory } from '@/lib/fpl/schemas';
+import { fetchBootstrap, fetchStandings } from '@/lib/fpl/client';
+import { checkAndNotifySettled, loadHistories } from '@/lib/league/checkAndNotify';
 import { eligibleFromByEntry } from '@/lib/league/eligibility';
 import { currentGameweek, nextGameweek, revalidateFor } from '@/lib/league/gameweeks';
 import { lossesByEntry } from '@/lib/league/history';
-import { resolveMembers, type Member } from '@/lib/league/members';
+import { resolveMembers } from '@/lib/league/members';
 import { scoresForGameweek } from '@/lib/league/scoring';
 import { buildSummary } from '@/lib/league/summary';
-import { safeGetPaid, safeRecordSettledGameweeks } from '@/lib/ledger/safe';
+import { safeGetPaid } from '@/lib/ledger/safe';
 import { LoserCard } from './components/LoserCard';
 import { PreSeason } from './components/PreSeason';
 
 export const dynamic = 'force-dynamic';
-
-/** Recording must not read the render path's cache entry — see `record.ts`. */
-const REVALIDATE_FOR_RECORDING = 0;
 
 function PaymentStoreNotice() {
   return (
@@ -22,20 +19,6 @@ function PaymentStoreNotice() {
       Could not reach the payment store. Payment state below is unknown, not
       settled, and recently finished gameweeks may not have been recorded yet.
     </Alert>
-  );
-}
-
-async function loadHistories(
-  members: Member[],
-  revalidate: number,
-): Promise<Map<number, EntryHistory>> {
-  return new Map(
-    await Promise.all(
-      members.map(
-        async (member) =>
-          [member.entryId, await fetchHistory(member.entryId, revalidate)] as const,
-      ),
-    ),
   );
 }
 
@@ -69,15 +52,14 @@ export default async function HomePage() {
 
   const histories = await loadHistories(members, revalidate);
 
-  // Reused, not refetched: `safeRecordSettledGameweeks` already reads the full
+  // Reused, not refetched: `checkAndNotifySettled` already reads the full
   // ledger to decide what's pending, so the same map that came back covers
   // every gameweek recorded before this one — exactly the history a quip
   // needs to notice a streak.
-  const { results: recordedResults, degraded: recordDegraded } = await safeRecordSettledGameweeks({
+  const { results: recordedResults, degraded: recordDegraded } = await checkAndNotifySettled({
     bootstrap,
     members,
     eligibleFrom,
-    fetchHistories: () => loadHistories(members, REVALIDATE_FOR_RECORDING),
   });
   const previousLosses = lossesByEntry(recordedResults);
 

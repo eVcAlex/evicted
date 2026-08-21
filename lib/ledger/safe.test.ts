@@ -54,13 +54,20 @@ describe('safeGetResults', () => {
 });
 
 describe('safeRecordSettledGameweeks', () => {
-  it('passes the recorded map through when the store answers', async () => {
+  it('passes the recorded map and newly-recorded list through when the store answers', async () => {
     const result = { losers: [1], scores: { 1: 30 }, recordedAt: '2026-08-24T00:00:00.000Z' };
-    recordSettledGameweeks.mockResolvedValue(new Map([[1, result]]));
+    const newlyRecorded = [
+      {
+        summary: { gameweek: 1, provisional: false, losers: [], allTied: false, runnerUpNet: null },
+        previousLosses: new Map(),
+      },
+    ];
+    recordSettledGameweeks.mockResolvedValue({ results: new Map([[1, result]]), newlyRecorded });
 
-    const { results, degraded } = await safeRecordSettledGameweeks(recordParams);
+    const { results, newlyRecorded: got, degraded } = await safeRecordSettledGameweeks(recordParams);
 
     expect(results.get(1)).toEqual(result);
+    expect(got).toBe(newlyRecorded);
     expect(degraded).toBe(false);
   });
 
@@ -70,9 +77,10 @@ describe('safeRecordSettledGameweeks', () => {
     const logged = vi.spyOn(console, 'error').mockImplementation(() => {});
     recordSettledGameweeks.mockRejectedValue(new Error('no credentials'));
 
-    const { results, degraded } = await safeRecordSettledGameweeks(recordParams);
+    const { results, newlyRecorded, degraded } = await safeRecordSettledGameweeks(recordParams);
 
     expect(results.size).toBe(0);
+    expect(newlyRecorded).toEqual([]);
     expect(degraded).toBe(true);
     expect(logged).toHaveBeenCalledOnce();
     logged.mockRestore();
