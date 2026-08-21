@@ -12,7 +12,7 @@
 /* The signature moment: a solid filled card, lifted with one neutral
  * shadow — no gradient, no glow, no rotation. */
 .hero {
-  @include card.hero($accent: red);
+  @include card.hero($accent: violet);
   padding: mantine.rem(24) mantine.rem(24) mantine.rem(22);
 }
 
@@ -159,7 +159,7 @@
   font-family: var(--font-body);
   font-size: mantine.rem(13);
   font-weight: 700;
-  color: var(--mantine-color-red-8);
+  color: var(--mantine-color-violet-8);
   background-color: #fff;
   border-radius: mantine.rem(6);
   padding: mantine.rem(8) mantine.rem(16);

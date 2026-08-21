@@ -45,7 +45,7 @@ const plexMono = IBM_Plex_Mono({
  * dark-9 is --bg, dark-7 is --surface, dark-4 is --border.
  */
 const theme = createTheme({
-  primaryColor: 'red',
+  primaryColor: 'violet',
   defaultRadius: 6,
   fontFamily: 'var(--font-body)',
   headings: { fontFamily: 'var(--font-display)', fontWeight: '800' },
@@ -62,7 +62,20 @@ const theme = createTheme({
       '#131519',
       '#101215',
     ],
-    /** Eviction / danger — the one hue that owns urgency in this system. */
+    /** The one brand accent — the eviction hero, header rule, marks, tags. */
+    violet: [
+      '#f3effe',
+      '#e0d4fc',
+      '#c9b3fa',
+      '#b090f7',
+      '#9c73f5',
+      '#8a58f0',
+      '#7c3aed',
+      '#6425d1',
+      '#4c1d95',
+      '#341454',
+    ],
+    /** Genuine errors/failures only — data unavailable, could not load. */
     red: [
       '#ffe4e6',
       '#ffb8bd',

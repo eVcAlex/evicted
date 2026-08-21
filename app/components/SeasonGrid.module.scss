@@ -24,7 +24,7 @@
   font-size: mantine.rem(11);
   font-weight: 600;
   letter-spacing: mantine.rem(0.5);
-  color: var(--mantine-color-red-4);
+  color: var(--mantine-color-violet-4);
   text-align: center;
   white-space: nowrap;
   border-bottom: mantine.rem(1) solid var(--border);
@@ -73,7 +73,7 @@
   font-family: var(--font-mono);
   font-size: mantine.rem(11);
   font-weight: 600;
-  color: var(--mantine-color-red-4);
+  color: var(--mantine-color-violet-4);
   font-variant-numeric: tabular-nums;
 }
 
@@ -97,7 +97,7 @@
 }
 
 .evicted {
-  background-color: var(--mantine-color-red-6);
+  background-color: var(--mantine-color-violet-6);
 }
 
 .played {

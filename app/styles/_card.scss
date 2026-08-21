@@ -21,7 +21,7 @@
 /// The one filled, elevated block per page — the evicted card, the
 /// pre-season splash, the deadline notice. Solid fill, one neutral shadow
 /// for lift, no gradient.
-@mixin hero($accent: red) {
+@mixin hero($accent: violet) {
   background-color: var(--mantine-color-#{$accent}-8);
   border-radius: mantine.rem(6);
   color: #fff;

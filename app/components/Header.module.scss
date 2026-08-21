@@ -1,10 +1,10 @@
-/* Solid ground, one red rule beneath — no blur, no floating pill. */
+/* Solid ground, one violet rule beneath — no blur, no floating pill. */
 .header {
   position: sticky;
   top: 0;
   z-index: 100;
   background-color: var(--bg);
-  border-bottom: mantine.rem(2) solid var(--mantine-color-red-6);
+  border-bottom: mantine.rem(2) solid var(--mantine-color-violet-6);
 }
 
 .inner {
@@ -30,7 +30,7 @@
   height: mantine.rem(14);
   flex-shrink: 0;
   border-radius: mantine.rem(3);
-  background-color: var(--mantine-color-red-6);
+  background-color: var(--mantine-color-violet-6);
 }
 
 .wordmark {
@@ -71,5 +71,5 @@
 
 .tabActive {
   color: var(--text);
-  border-color: var(--mantine-color-red-6);
+  border-color: var(--mantine-color-violet-6);
 }

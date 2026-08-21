@@ -1,7 +1,7 @@
 @use '../styles/card';
 
 .hero {
-  @include card.hero($accent: red);
+  @include card.hero($accent: violet);
   padding: mantine.rem(28) mantine.rem(24) mantine.rem(30);
 }
 

@@ -80,14 +80,14 @@
   font-weight: 700;
   letter-spacing: mantine.rem(0.5);
   text-transform: uppercase;
-  color: var(--mantine-color-red-1);
-  background-color: var(--mantine-color-red-8);
+  color: var(--mantine-color-violet-1);
+  background-color: var(--mantine-color-violet-8);
   border-radius: mantine.rem(4);
   padding: mantine.rem(3) mantine.rem(10);
   text-decoration: none;
   transition: background-color 150ms ease;
 
   @include mantine.hover {
-    background-color: var(--mantine-color-red-7);
+    background-color: var(--mantine-color-violet-7);
   }
 }
