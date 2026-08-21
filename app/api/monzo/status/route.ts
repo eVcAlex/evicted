@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { checkPin } from '@/lib/admin';
-import { getCapturedPayloads, getTokens } from '@/lib/monzo/store';
+import { getCapturedPayloads, getPending, getTokens } from '@/lib/monzo/store';
 
 export async function GET(request: Request) {
   if (!checkPin(request.headers.get('x-admin-pin'))) {
@@ -8,11 +8,16 @@ export async function GET(request: Request) {
   }
 
   try {
-    const [tokens, captured] = await Promise.all([getTokens(), getCapturedPayloads()]);
+    const [tokens, captured, pending] = await Promise.all([
+      getTokens(),
+      getCapturedPayloads(),
+      getPending(),
+    ]);
     return NextResponse.json({
       connected: tokens !== null,
       expiresAt: tokens?.expires_at ?? null,
       capturedCount: captured.length,
+      pendingCount: pending.length,
     });
   } catch (error) {
     console.error('monzo status failed', error);

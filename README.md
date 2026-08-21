@@ -77,20 +77,36 @@ gameweek settles — reusing the exact same quip logic as the live card
   values already generated for this deployment); `CRON_SECRET` also needs to
   exist as a GitHub Actions repo secret of the same name.
 
-## Monzo (later phase)
+## Monzo
 
-Flags and admin toggle ship first; the webhook is purely additive.
+The webhook (`app/api/monzo/webhook/route.ts`) both captures every raw
+payload (admin-only audit log, `evicted:monzo:capture`) and runs the matcher
+(`lib/monzo/matcher.ts`) against inbound credits.
 
-- Match inbound £2 (and multiples) credits, attribute by sender name, queue
-  anything ambiguous for one-tap approval
-- **Names clash**: two Taylors (Joe, Finn) and two McGuinesses (Alex, Aidan) out
-  of 7. Surname alone cannot attribute a payment.
-- `counterparty` is **undocumented** in Monzo's API reference. Before building
-  the matcher, send £2 from another account and log the real payload.
-- Filter carefully: top-ups are positive with `is_load: true`; refunds and
-  reversals are positive with `is_load: false`; declined transactions carry
-  `decline_reason`
+- **Filter**: only a positive, non-top-up (`is_load: false`), non-declined
+  (`decline_reason` absent) credit that is an exact multiple of `FINE_PENCE`
+  is even considered. Everything else — card spending, top-ups, declines,
+  odd amounts — is ignored before any name matching happens.
+- **Dedupe**: Monzo redelivers on every state change a transaction goes
+  through (six webhooks were observed for one real transaction while
+  capturing the payload shape). `markTransactionSeen` (`evicted:monzo:seen`,
+  a Redis `SADD`) makes sure only the first delivery of a given transaction
+  id is ever processed.
+- **Match**: by the sender's full name (`counterparty.name`), case-insensitive
+  — Monzo sends inbound names in caps but outbound in title case.
+  **Names clash**: two Taylors (Joe, Finn) and two McGuinesses (Alex, Aidan)
+  out of 7, which is exactly why this matches on full name, not surname.
+- **Auto-apply vs. queue**: a match only auto-applies (marks gameweeks paid)
+  when the sender matches exactly one member *and* the credit exactly covers
+  whole gameweeks they actually have unpaid — applied oldest-first. Anything
+  that doesn't clear that bar (ambiguous name match, or a matched member who
+  owes less than they paid) lands in a pending queue
+  (`evicted:monzo:pending`, admin-viewable in `/admin` with a dismiss
+  action) instead of being guessed at or silently dropped. An unrecognised
+  sender name is neither applied nor queued — most credits into a personal
+  account are unrelated to the league, and queuing every one would bury the
+  genuine cases.
 - Access tokens expire after 6h; refresh tokens are single-use and rotate, so the
-  new one must be persisted on every refresh or auth dies until reauthorised
-- The webhook fires for *every* transaction on the account. Filter hard, log
-  nothing else.
+  new one must be persisted on every refresh or auth dies until reauthorised.
+- `counterparty` is undocumented in Monzo's API reference — the shape above
+  was confirmed from a real captured payload, not guessed from the docs.

@@ -8,6 +8,20 @@ interface MonzoStatus {
   connected: boolean;
   expiresAt: string | null;
   capturedCount: number;
+  pendingCount: number;
+}
+
+interface PendingMatch {
+  id: string;
+  receivedAt: string;
+  amountPence: number;
+  counterpartyName: string;
+  reason: 'ambiguous' | 'no-debt';
+  candidates: string[];
+}
+
+function pendingReasonLabel(reason: PendingMatch['reason']): string {
+  return reason === 'ambiguous' ? 'Name matched more than one member' : 'No matching debt owed';
 }
 
 /**
@@ -20,6 +34,8 @@ export function AdminPanel() {
   const [registerResult, setRegisterResult] = useState<string | null>(null);
   const [registering, setRegistering] = useState(false);
   const [captured, setCaptured] = useState<unknown[] | null>(null);
+  const [pending, setPending] = useState<PendingMatch[] | null>(null);
+  const [dismissing, setDismissing] = useState<string | null>(null);
   const [justConnected, setJustConnected] = useState(false);
 
   useEffect(() => {
@@ -68,6 +84,28 @@ export function AdminPanel() {
     setCaptured(body.payloads ?? []);
   }
 
+  async function viewPending() {
+    if (!pin) return;
+    const res = await fetch('/api/monzo/pending', { headers: { 'x-admin-pin': pin } });
+    const body = await res.json();
+    setPending(body.pending ?? []);
+  }
+
+  async function dismissPending(id: string) {
+    if (!pin) return;
+    setDismissing(id);
+    try {
+      await fetch('/api/monzo/pending', {
+        method: 'DELETE',
+        headers: { 'x-admin-pin': pin, 'content-type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
+      setPending((current) => current?.filter((entry) => entry.id !== id) ?? null);
+    } finally {
+      setDismissing(null);
+    }
+  }
+
   if (!pin) {
     return <Button onClick={unlock}>Enter admin PIN</Button>;
   }
@@ -85,7 +123,7 @@ export function AdminPanel() {
 
       <div>
         <Text fw={500} mb="xs">
-          Monzo (capture phase)
+          Monzo
         </Text>
         {status === 'loading' && <Text size="sm" c="dimmed">Loading…</Text>}
         {status === 'error' && <Text size="sm" c="red">Could not reach the store.</Text>}
@@ -94,7 +132,8 @@ export function AdminPanel() {
             {status.connected
               ? `Connected. Token expires ${new Date(status.expiresAt!).toLocaleString()}.`
               : 'Not connected.'}{' '}
-            {status.capturedCount} payload{status.capturedCount === 1 ? '' : 's'} captured.
+            {status.capturedCount} payload{status.capturedCount === 1 ? '' : 's'} captured,{' '}
+            {status.pendingCount} pending review.
           </Text>
         )}
 
@@ -109,6 +148,9 @@ export function AdminPanel() {
           <Button onClick={register} loading={registering} variant="outline">
             Register webhook
           </Button>
+          <Button onClick={viewPending} variant="outline">
+            View pending matches
+          </Button>
           <Button onClick={viewCaptured} variant="subtle">
             View captured payloads
           </Button>
@@ -118,6 +160,32 @@ export function AdminPanel() {
           <Text size="sm" mt="xs" c={registerResult.startsWith('Registered') ? 'green' : 'red'}>
             {registerResult}
           </Text>
+        )}
+
+        {pending && (
+          <Stack gap="xs" mt="md">
+            {pending.length === 0 && (
+              <Text size="sm" c="dimmed">
+                Nothing pending.
+              </Text>
+            )}
+            {pending.map((entry) => (
+              <Group key={entry.id} justify="space-between" wrap="nowrap">
+                <Text size="sm">
+                  £{(entry.amountPence / 100).toFixed(2)} from {entry.counterpartyName} —{' '}
+                  {pendingReasonLabel(entry.reason)} ({entry.candidates.join(', ')})
+                </Text>
+                <Button
+                  size="xs"
+                  variant="subtle"
+                  loading={dismissing === entry.id}
+                  onClick={() => dismissPending(entry.id)}
+                >
+                  Dismiss
+                </Button>
+              </Group>
+            ))}
+          </Stack>
         )}
 
         {captured && (

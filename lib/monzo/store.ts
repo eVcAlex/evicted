@@ -2,9 +2,14 @@ import { Redis } from '@upstash/redis';
 
 const TOKEN_KEY = 'evicted:monzo';
 const CAPTURE_KEY = 'evicted:monzo:capture';
+const SEEN_TX_KEY = 'evicted:monzo:seen';
+const PENDING_KEY = 'evicted:monzo:pending';
 
 /** Kept under 100 so the capture phase can't grow the key without bound. */
 const MAX_CAPTURED_PAYLOADS = 100;
+
+/** Kept under 50 — this only grows on matches that need a human, which should be rare. */
+const MAX_PENDING = 50;
 
 export interface MonzoTokens extends Record<string, string> {
   access_token: string;
@@ -72,4 +77,53 @@ export async function appendCapturedPayload(payload: unknown): Promise<void> {
 
 export async function getCapturedPayloads(): Promise<CapturedPayload[]> {
   return redisClient().lrange<CapturedPayload>(CAPTURE_KEY, 0, MAX_CAPTURED_PAYLOADS - 1);
+}
+
+/**
+ * SADD is atomic, so two near-simultaneous deliveries of the same transaction
+ * can't both see "not seen yet" and double-apply a match. Necessary because
+ * Monzo redelivers on every state change — six webhooks were observed for one
+ * transaction while capturing the real payload shape (category settling,
+ * `settled` timestamp landing, etc.), all sharing one `data.id`.
+ */
+export async function markTransactionSeen(txId: string): Promise<boolean> {
+  const added = await redisClient().sadd(SEEN_TX_KEY, txId);
+  return added === 1;
+}
+
+export interface PendingMatch {
+  /** The Monzo transaction id — already unique, so it doubles as this entry's id. */
+  id: string;
+  receivedAt: string;
+  amountPence: number;
+  counterpartyName: string;
+  reason: 'ambiguous' | 'no-debt';
+  /** Team name(s) of the member(s) this could be, for a human to read. */
+  candidates: string[];
+}
+
+export async function appendPending(entry: PendingMatch): Promise<void> {
+  const r = redisClient();
+  await r.lpush(PENDING_KEY, entry);
+  await r.ltrim(PENDING_KEY, 0, MAX_PENDING - 1);
+}
+
+export async function getPending(): Promise<PendingMatch[]> {
+  return redisClient().lrange<PendingMatch>(PENDING_KEY, 0, MAX_PENDING - 1);
+}
+
+/**
+ * Removes one entry once an admin has manually resolved it (via the balances
+ * paid toggle) or decided it needs no action. Redis lists have no "remove by
+ * field" primitive, so this reads the whole (bounded, ≤50) list, filters out
+ * the dismissed id, and rewrites it — simplest correct option at this size.
+ */
+export async function dismissPending(id: string): Promise<void> {
+  const r = redisClient();
+  const all = await r.lrange<PendingMatch>(PENDING_KEY, 0, MAX_PENDING - 1);
+  const remaining = all.filter((entry) => entry.id !== id);
+  await r.del(PENDING_KEY);
+  if (remaining.length > 0) {
+    await r.rpush(PENDING_KEY, ...remaining);
+  }
 }
