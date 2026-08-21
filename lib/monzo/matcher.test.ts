@@ -78,6 +78,13 @@ describe('matchSender', () => {
     expect(matchSender('A Random Friend', members)).toEqual({ outcome: 'no-match' });
   });
 
+  it('resolves a known bank-name alias to the registered manager name', () => {
+    expect(matchSender('ALEXANDER MCGUINESS', members)).toEqual({
+      outcome: 'matched',
+      member: members[0],
+    });
+  });
+
   it('reports ambiguous when more than one member shares a normalised name', () => {
     const clashing = [...members, member(5, 'alex   mcguiness')];
     expect(matchSender('Alex McGuiness', clashing)).toEqual({

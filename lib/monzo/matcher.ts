@@ -6,6 +6,22 @@ function normalizeName(name: string): string {
   return name.trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
+/**
+ * A bank account's legal name and someone's FPL manager name can genuinely
+ * differ — confirmed live: Alex's account sends "ALEXANDER MCGUINESS", not
+ * the registered "Alex McGuiness". Resolved here as an explicit, known
+ * synonym rather than by loosening the match itself (e.g. matching on first
+ * name or surname alone), which would reopen the exact ambiguity full-name
+ * matching exists to avoid — two Taylors, two McGuinesses.
+ */
+const NAME_ALIASES: Record<string, string> = {
+  'alexander mcguiness': 'alex mcguiness',
+};
+
+function resolveAlias(normalized: string): string {
+  return NAME_ALIASES[normalized] ?? normalized;
+}
+
 export interface EligibleCredit {
   txId: string;
   amountPence: number;
@@ -45,7 +61,7 @@ export type SenderMatch =
  * title case, so an exact-case compare would miss real matches.
  */
 export function matchSender(counterpartyName: string, members: Member[]): SenderMatch {
-  const target = normalizeName(counterpartyName);
+  const target = resolveAlias(normalizeName(counterpartyName));
   const matches = members.filter((member) => normalizeName(member.managerName) === target);
   if (matches.length === 0) return { outcome: 'no-match' };
   if (matches.length > 1) return { outcome: 'ambiguous', members: matches };
