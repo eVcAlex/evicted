@@ -92,6 +92,22 @@ describe('matchSender', () => {
       members: [members[0], clashing[4]],
     });
   });
+
+  it('prefers an admin-approved alias over name matching entirely', () => {
+    // A sender name that wouldn't otherwise match anyone still resolves once
+    // an admin has approved it once via the pending queue.
+    expect(matchSender('A Random Friend', members, 3)).toEqual({
+      outcome: 'matched',
+      member: members[2],
+    });
+  });
+
+  it('falls back to ordinary matching when the aliased member has left the league', () => {
+    expect(matchSender('Aidan McGuiness', members, 999)).toEqual({
+      outcome: 'matched',
+      member: members[1],
+    });
+  });
 });
 
 describe('planApplication', () => {

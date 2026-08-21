@@ -6,6 +6,8 @@ const ltrim = vi.fn();
 const lrange = vi.fn();
 const del = vi.fn();
 const rpush = vi.fn();
+const hgetall = vi.fn();
+const hset = vi.fn();
 
 vi.mock('@upstash/redis', () => ({
   Redis: class {
@@ -15,13 +17,16 @@ vi.mock('@upstash/redis', () => ({
     lrange = lrange;
     del = del;
     rpush = rpush;
+    hgetall = hgetall;
+    hset = hset;
   },
 }));
 
 vi.stubEnv('UPSTASH_REDIS_REST_URL', 'https://mock.upstash.invalid');
 vi.stubEnv('UPSTASH_REDIS_REST_TOKEN', 'mock-token');
 
-const { appendPending, dismissPending, getPending, markTransactionSeen } = await import('./store');
+const { appendPending, dismissPending, getAliases, getPending, markTransactionSeen, saveAlias } =
+  await import('./store');
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -48,7 +53,10 @@ describe('appendPending / getPending', () => {
       amountPence: 200,
       counterpartyName: 'A Random Friend',
       reason: 'ambiguous' as const,
-      candidates: ['Team A', 'Team B'],
+      candidates: [
+        { entryId: 1, teamName: 'Team A' },
+        { entryId: 2, teamName: 'Team B' },
+      ],
     };
     await appendPending(entry);
     expect(lpush).toHaveBeenCalledWith('evicted:monzo:pending', entry);
@@ -87,5 +95,22 @@ describe('dismissPending', () => {
 
     expect(del).toHaveBeenCalledWith('evicted:monzo:pending');
     expect(rpush).not.toHaveBeenCalled();
+  });
+});
+
+describe('getAliases / saveAlias', () => {
+  it('returns an empty map when nothing has been approved yet', async () => {
+    hgetall.mockResolvedValue(null);
+    expect(await getAliases()).toEqual({});
+  });
+
+  it('reads back approved sender aliases', async () => {
+    hgetall.mockResolvedValue({ 'alexander mcguiness': 394534 });
+    expect(await getAliases()).toEqual({ 'alexander mcguiness': 394534 });
+  });
+
+  it('writes a new alias under the normalised sender name', async () => {
+    await saveAlias('alexander mcguiness', 394534);
+    expect(hset).toHaveBeenCalledWith('evicted:monzo:aliases', { 'alexander mcguiness': 394534 });
   });
 });

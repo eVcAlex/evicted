@@ -101,13 +101,21 @@ payload (admin-only audit log, `evicted:monzo:capture`) and runs the matcher
   whole gameweeks they actually have unpaid — applied oldest-first. Anything
   that doesn't clear that bar (ambiguous name match, a matched member who
   owes less than they paid, or no name match at all) lands in a pending queue
-  (`evicted:monzo:pending`, admin-viewable in `/admin` with a dismiss
-  action) instead of being guessed at or silently dropped. A sender name not
-  matching any member is *not* the same as "unrelated to the league" — a
-  bank account's legal name and someone's FPL manager name can genuinely
-  differ (confirmed live: "ALEXANDER MCGUINESS" vs the registered "Alex
-  McGuiness" didn't match), so those get surfaced for a human to attribute
-  rather than dropped on the assumption they're noise.
+  (`evicted:monzo:pending`, admin-viewable in `/admin`) instead of being
+  guessed at or silently dropped. A sender name not matching any member is
+  *not* the same as "unrelated to the league" — a bank account's legal name
+  and someone's FPL manager name can genuinely differ (confirmed live:
+  "ALEXANDER MCGUINESS" vs the registered "Alex McGuiness" didn't match), so
+  those get surfaced for a human to attribute rather than dropped on the
+  assumption they're noise.
+- Two ways to resolve a pending entry, deliberately different: **Approve**
+  (pick who it is, apply it if they're owed, and remember the sender name via
+  `evicted:monzo:aliases` — every future credit from that name auto-applies
+  without revisiting the queue) versus **Remove** (one-off, forgets nothing
+  because it never learned anything). A known-static alias
+  (`lib/monzo/matcher.ts`'s `NAME_ALIASES`) covers Alex's own account for the
+  same reason; `evicted:monzo:aliases` is the same idea, but built up live by
+  the admin instead of hardcoded.
 - Access tokens expire after 6h; refresh tokens are single-use and rotate, so the
   new one must be persisted on every refresh or auth dies until reauthorised.
 - `counterparty` is undocumented in Monzo's API reference — the shape above

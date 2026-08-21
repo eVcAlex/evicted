@@ -2,7 +2,7 @@ import { FINE_PENCE } from '@/lib/config';
 import type { Member } from '@/lib/league/members';
 import { monzoTransactionDataSchema } from './schemas';
 
-function normalizeName(name: string): string {
+export function normalizeName(name: string): string {
   return name.trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
@@ -59,8 +59,23 @@ export type SenderMatch =
  * Case-insensitive: a real captured payload showed Monzo sending inbound
  * counterparty names in caps ("ALEXANDER MCGUINESS") but outbound ones in
  * title case, so an exact-case compare would miss real matches.
+ *
+ * `aliasedEntryId` is an admin-confirmed identity for this exact sender name
+ * (from a prior "Approve" in the pending queue) — checked first, since it's
+ * a stronger signal than any name comparison. Falls through to ordinary
+ * matching if the aliased member is no longer in the current member list
+ * (e.g. they've since left the league).
  */
-export function matchSender(counterpartyName: string, members: Member[]): SenderMatch {
+export function matchSender(
+  counterpartyName: string,
+  members: Member[],
+  aliasedEntryId?: number,
+): SenderMatch {
+  if (aliasedEntryId !== undefined) {
+    const aliased = members.find((member) => member.entryId === aliasedEntryId);
+    if (aliased) return { outcome: 'matched', member: aliased };
+  }
+
   const target = resolveAlias(normalizeName(counterpartyName));
   const matches = members.filter((member) => normalizeName(member.managerName) === target);
   if (matches.length === 0) return { outcome: 'no-match' };

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Alert, Button, Code, Group, Stack, Text } from '@mantine/core';
+import { Alert, Button, Code, Group, Select, Stack, Text } from '@mantine/core';
 import { PIN_STORAGE_KEY } from '@/lib/adminPinStorage';
 
 interface MonzoStatus {
@@ -11,13 +11,18 @@ interface MonzoStatus {
   pendingCount: number;
 }
 
+interface PendingCandidate {
+  entryId: number;
+  teamName: string;
+}
+
 interface PendingMatch {
   id: string;
   receivedAt: string;
   amountPence: number;
   counterpartyName: string;
   reason: 'ambiguous' | 'no-debt' | 'no-match';
-  candidates: string[];
+  candidates: PendingCandidate[];
 }
 
 function pendingReasonLabel(reason: PendingMatch['reason']): string {
@@ -42,7 +47,10 @@ export function AdminPanel() {
   const [registering, setRegistering] = useState(false);
   const [captured, setCaptured] = useState<unknown[] | null>(null);
   const [pending, setPending] = useState<PendingMatch[] | null>(null);
+  const [members, setMembers] = useState<PendingCandidate[]>([]);
+  const [selected, setSelected] = useState<Record<string, number | undefined>>({});
   const [dismissing, setDismissing] = useState<string | null>(null);
+  const [approving, setApproving] = useState<string | null>(null);
   const [justConnected, setJustConnected] = useState(false);
 
   useEffect(() => {
@@ -93,12 +101,18 @@ export function AdminPanel() {
 
   async function viewPending() {
     if (!pin) return;
-    const res = await fetch('/api/monzo/pending', { headers: { 'x-admin-pin': pin } });
-    const body = await res.json();
-    setPending(body.pending ?? []);
+    const [pendingRes, membersRes] = await Promise.all([
+      fetch('/api/monzo/pending', { headers: { 'x-admin-pin': pin } }),
+      fetch('/api/monzo/members', { headers: { 'x-admin-pin': pin } }),
+    ]);
+    const pendingBody = await pendingRes.json();
+    const membersBody = await membersRes.json();
+    setPending(pendingBody.pending ?? []);
+    setMembers(membersBody.members ?? []);
   }
 
-  async function dismissPending(id: string) {
+  /** One-off: removes the entry, remembers nothing about the sender. */
+  async function removePending(id: string) {
     if (!pin) return;
     setDismissing(id);
     try {
@@ -110,6 +124,26 @@ export function AdminPanel() {
       setPending((current) => current?.filter((entry) => entry.id !== id) ?? null);
     } finally {
       setDismissing(null);
+    }
+  }
+
+  /** Attributes the credit to the chosen member and remembers the sender for next time. */
+  async function approvePending(id: string) {
+    if (!pin) return;
+    const entryId = selected[id];
+    if (!entryId) return;
+    setApproving(id);
+    try {
+      const res = await fetch('/api/monzo/pending', {
+        method: 'POST',
+        headers: { 'x-admin-pin': pin, 'content-type': 'application/json' },
+        body: JSON.stringify({ id, entryId }),
+      });
+      if (res.ok) {
+        setPending((current) => current?.filter((entry) => entry.id !== id) ?? null);
+      }
+    } finally {
+      setApproving(null);
     }
   }
 
@@ -170,29 +204,69 @@ export function AdminPanel() {
         )}
 
         {pending && (
-          <Stack gap="xs" mt="md">
+          <Stack gap="sm" mt="md">
             {pending.length === 0 && (
               <Text size="sm" c="dimmed">
                 Nothing pending.
               </Text>
             )}
-            {pending.map((entry) => (
-              <Group key={entry.id} justify="space-between" wrap="nowrap">
-                <Text size="sm">
-                  £{(entry.amountPence / 100).toFixed(2)} from {entry.counterpartyName} —{' '}
-                  {pendingReasonLabel(entry.reason)}
-                  {entry.candidates.length > 0 ? ` (${entry.candidates.join(', ')})` : ''}
-                </Text>
-                <Button
-                  size="xs"
-                  variant="subtle"
-                  loading={dismissing === entry.id}
-                  onClick={() => dismissPending(entry.id)}
-                >
-                  Dismiss
-                </Button>
-              </Group>
-            ))}
+            {pending.map((entry) => {
+              // 'no-match' has no candidates of its own — the admin picks from
+              // the full roster instead. 'ambiguous' and 'no-debt' already
+              // know who it might be, so offer just those.
+              const options = (entry.reason === 'no-match' ? members : entry.candidates).map(
+                (candidate) => ({ value: String(candidate.entryId), label: candidate.teamName }),
+              );
+              const canApprove = entry.reason !== 'no-debt';
+
+              return (
+                <Stack key={entry.id} gap={6}>
+                  <Text size="sm">
+                    £{(entry.amountPence / 100).toFixed(2)} from {entry.counterpartyName} —{' '}
+                    {pendingReasonLabel(entry.reason)}
+                    {entry.candidates.length > 0
+                      ? ` (${entry.candidates.map((c) => c.teamName).join(', ')})`
+                      : ''}
+                  </Text>
+                  <Group gap="xs" wrap="nowrap">
+                    {canApprove && (
+                      <>
+                        <Select
+                          placeholder="Who is this?"
+                          data={options}
+                          value={selected[entry.id] != null ? String(selected[entry.id]) : null}
+                          onChange={(value) =>
+                            setSelected((current) => ({
+                              ...current,
+                              [entry.id]: value ? Number(value) : undefined,
+                            }))
+                          }
+                          size="xs"
+                          w={220}
+                        />
+                        <Button
+                          size="xs"
+                          variant="filled"
+                          disabled={!selected[entry.id]}
+                          loading={approving === entry.id}
+                          onClick={() => approvePending(entry.id)}
+                        >
+                          Approve
+                        </Button>
+                      </>
+                    )}
+                    <Button
+                      size="xs"
+                      variant="subtle"
+                      loading={dismissing === entry.id}
+                      onClick={() => removePending(entry.id)}
+                    >
+                      Remove
+                    </Button>
+                  </Group>
+                </Stack>
+              );
+            })}
           </Stack>
         )}
 

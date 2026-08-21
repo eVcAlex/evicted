@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server';
 import { fetchStandings } from '@/lib/fpl/client';
-import { buildBalances } from '@/lib/league/balances';
 import { resolveMembers } from '@/lib/league/members';
-import { safeGetPaid, safeGetResults } from '@/lib/ledger/safe';
-import { setPaid } from '@/lib/ledger/store';
-import { extractEligibleCredit, matchSender, planApplication } from '@/lib/monzo/matcher';
+import { applyIfOwed } from '@/lib/monzo/apply';
+import { extractEligibleCredit, matchSender, normalizeName } from '@/lib/monzo/matcher';
 import { monzoWebhookEnvelopeSchema } from '@/lib/monzo/schemas';
 import {
   appendCapturedPayload,
   appendPending,
+  getAliases,
   markTransactionSeen,
   type PendingMatch,
 } from '@/lib/monzo/store';
@@ -73,7 +72,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  const match = matchSender(credit.counterpartyName, members);
+  let aliasedEntryId: number | undefined;
+  try {
+    const aliases = await getAliases();
+    aliasedEntryId = aliases[normalizeName(credit.counterpartyName)];
+  } catch (error) {
+    console.error('getAliases failed', error);
+  }
+
+  const match = matchSender(credit.counterpartyName, members, aliasedEntryId);
 
   if (match.outcome === 'no-match') {
     // Not applied *or* dropped: a bank account's legal name and someone's FPL
@@ -99,37 +106,35 @@ export async function POST(request: Request) {
       amountPence: credit.amountPence,
       counterpartyName: credit.counterpartyName,
       reason: 'ambiguous',
-      candidates: match.members.map((member) => member.teamName),
+      candidates: match.members.map((member) => ({
+        entryId: member.entryId,
+        teamName: member.teamName,
+      })),
     });
     return NextResponse.json({ ok: true });
   }
 
-  const [{ paid }, { results }] = await Promise.all([safeGetPaid(), safeGetResults()]);
-  const balances = buildBalances({ members, results, paid });
-  const unpaid = balances.find((b) => b.member.entryId === match.member.entryId)?.unpaid ?? [];
+  let result;
+  try {
+    result = await applyIfOwed({
+      entryId: match.member.entryId,
+      amountPence: credit.amountPence,
+      members,
+    });
+  } catch (error) {
+    console.error('applyIfOwed failed during Monzo matching', error);
+    return NextResponse.json({ ok: true });
+  }
 
-  const plan = planApplication({
-    entryId: match.member.entryId,
-    amountPence: credit.amountPence,
-    unpaid,
-  });
-
-  if (!plan) {
+  if (!result.applied) {
     await queuePending({
       id: credit.txId,
       receivedAt: new Date().toISOString(),
       amountPence: credit.amountPence,
       counterpartyName: credit.counterpartyName,
       reason: 'no-debt',
-      candidates: [match.member.teamName],
+      candidates: [{ entryId: match.member.entryId, teamName: match.member.teamName }],
     });
-    return NextResponse.json({ ok: true });
-  }
-
-  try {
-    await Promise.all(plan.gameweeks.map((gameweek) => setPaid(gameweek, plan.entryId, true)));
-  } catch (error) {
-    console.error('setPaid failed during Monzo matching', error);
   }
 
   return NextResponse.json({ ok: true });

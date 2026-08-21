@@ -4,6 +4,7 @@ const TOKEN_KEY = 'evicted:monzo';
 const CAPTURE_KEY = 'evicted:monzo:capture';
 const SEEN_TX_KEY = 'evicted:monzo:seen';
 const PENDING_KEY = 'evicted:monzo:pending';
+const ALIAS_KEY = 'evicted:monzo:aliases';
 
 /** Kept under 100 so the capture phase can't grow the key without bound. */
 const MAX_CAPTURED_PAYLOADS = 100;
@@ -91,6 +92,11 @@ export async function markTransactionSeen(txId: string): Promise<boolean> {
   return added === 1;
 }
 
+export interface PendingCandidate {
+  entryId: number;
+  teamName: string;
+}
+
 export interface PendingMatch {
   /** The Monzo transaction id — already unique, so it doubles as this entry's id. */
   id: string;
@@ -98,8 +104,8 @@ export interface PendingMatch {
   amountPence: number;
   counterpartyName: string;
   reason: 'ambiguous' | 'no-debt' | 'no-match';
-  /** Team name(s) of the member(s) this could be, for a human to read. Empty for 'no-match'. */
-  candidates: string[];
+  /** Who this could be, for a human to read and pick from. Empty for 'no-match'. */
+  candidates: PendingCandidate[];
 }
 
 export async function appendPending(entry: PendingMatch): Promise<void> {
@@ -126,4 +132,21 @@ export async function dismissPending(id: string): Promise<void> {
   if (remaining.length > 0) {
     await r.rpush(PENDING_KEY, ...remaining);
   }
+}
+
+/**
+ * Sender names an admin has explicitly attributed via "Approve" in the
+ * pending queue — normalised counterparty name → entry id. Checked before
+ * ordinary name matching, so once a sender is approved once, every future
+ * credit from that same name auto-applies without landing in the queue
+ * again. Separate from `dismissPending`, which is explicitly one-off: a
+ * dismissed credit is never remembered.
+ */
+export async function getAliases(): Promise<Record<string, number>> {
+  const raw = await redisClient().hgetall<Record<string, number>>(ALIAS_KEY);
+  return raw ?? {};
+}
+
+export async function saveAlias(normalizedName: string, entryId: number): Promise<void> {
+  await redisClient().hset(ALIAS_KEY, { [normalizedName]: entryId });
 }
