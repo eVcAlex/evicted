@@ -1,0 +1,157 @@
+@use '../styles/card';
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: mantine.rem(16);
+}
+
+.section {
+  @include card.surface;
+  padding: mantine.rem(18) mantine.rem(18) mantine.rem(20);
+}
+
+.sectionKicker {
+  @include card.kicker;
+  color: var(--mantine-color-violet-4);
+}
+
+.statusLine {
+  display: flex;
+  align-items: center;
+  gap: mantine.rem(8);
+  margin-top: mantine.rem(10);
+  font-size: mantine.rem(13);
+  color: var(--text-dim);
+}
+
+.dot {
+  width: mantine.rem(7);
+  height: mantine.rem(7);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dotOn {
+  background-color: var(--mantine-color-green-4);
+}
+
+.dotOff {
+  background-color: var(--text-dim);
+}
+
+.actionRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: mantine.rem(8);
+  margin-top: mantine.rem(14);
+}
+
+.queueHeading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: mantine.rem(4) 0 mantine.rem(10);
+}
+
+.queueLabel {
+  @include card.kicker;
+}
+
+.queueCount {
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
+  color: var(--mantine-color-yellow-4);
+}
+
+.queue {
+  display: flex;
+  flex-direction: column;
+  gap: mantine.rem(8);
+}
+
+.pendingCard {
+  background-color: var(--surface);
+  border: mantine.rem(1) solid var(--border);
+  border-left-width: mantine.rem(3);
+  border-radius: mantine.rem(6);
+  padding: mantine.rem(12) mantine.rem(14);
+}
+
+.pendingCard.ambiguous {
+  border-left-color: var(--mantine-color-yellow-7);
+}
+
+.pendingCard.noMatch {
+  border-left-color: var(--mantine-color-violet-7);
+}
+
+.pendingCard.noDebt {
+  border-left-color: var(--border);
+}
+
+.pendingTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: mantine.rem(10);
+}
+
+.pendingAmount {
+  font-family: var(--font-mono);
+  font-size: mantine.rem(15);
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.pendingFrom {
+  font-size: mantine.rem(12);
+  color: var(--text-dim);
+  margin-top: mantine.rem(1);
+}
+
+.pendingDetail {
+  font-size: mantine.rem(12);
+  color: var(--text-dim);
+  margin-top: mantine.rem(8);
+}
+
+.reasonTag {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: mantine.rem(9);
+  font-weight: 700;
+  letter-spacing: mantine.rem(0.4);
+  text-transform: uppercase;
+  padding: mantine.rem(3) mantine.rem(7);
+  border-radius: mantine.rem(4);
+}
+
+.reasonTag.ambiguous {
+  color: var(--mantine-color-yellow-4);
+  border: mantine.rem(1) solid var(--mantine-color-yellow-7);
+}
+
+.reasonTag.noMatch {
+  color: var(--mantine-color-violet-4);
+  border: mantine.rem(1) solid var(--mantine-color-violet-7);
+}
+
+.reasonTag.noDebt {
+  color: var(--text-dim);
+  border: mantine.rem(1) dashed var(--border);
+}
+
+.pendingRow {
+  display: flex;
+  align-items: center;
+  gap: mantine.rem(8);
+  margin-top: mantine.rem(10);
+  flex-wrap: wrap;
+}
+
+.select {
+  flex: 1;
+  min-width: mantine.rem(160);
+}

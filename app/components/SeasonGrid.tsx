@@ -1,4 +1,3 @@
-import { Alert } from '@mantine/core';
 import type { GameweekResult } from '@/lib/ledger/store';
 import { lossesByEntry } from '@/lib/league/history';
 import type { Member } from '@/lib/league/members';
@@ -22,10 +21,22 @@ export function SeasonGrid({
 
   if (gameweeks.length === 0) {
     return (
-      <Alert color="gray" variant="light" title="No gameweeks settled yet">
-        The season grid fills in as each gameweek's bonus points and
-        auto-substitutions are confirmed.
-      </Alert>
+      <div className={classes.empty}>
+        <span className={classes.emptyKicker}>Season</span>
+        <p className={classes.emptyHeading}>Nothing settled yet</p>
+        <p className={classes.emptyBody}>
+          The grid fills in as each gameweek&rsquo;s bonus points and
+          auto-substitutions are confirmed.
+        </p>
+        <div className={classes.emptyPreview}>
+          <div className={classes.emptyPreviewCells}>
+            {Array.from({ length: 5 }, (_, i) => (
+              <span key={i} className={classes.emptyPreviewCell} />
+            ))}
+          </div>
+          <span className={classes.emptyPreviewLabel}>GW1&ndash;5 waiting</span>
+        </div>
+      </div>
     );
   }
 

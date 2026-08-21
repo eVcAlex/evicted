@@ -5,8 +5,36 @@
   letter-spacing: mantine.rem(1);
 }
 
-.heading {
-  @include card.page-title;
+/* Neutral, not violet — that fill is reserved for an actual eviction. */
+.undecidedHero {
+  @include card.surface;
+  background-color: var(--mantine-color-dark-6);
+  padding: mantine.rem(22) mantine.rem(20) mantine.rem(24);
+}
+
+.undecidedKicker {
+  @include card.kicker;
+  color: var(--mantine-color-violet-4);
+}
+
+.undecidedTitle {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(40);
+  line-height: 0.9;
+  text-transform: uppercase;
+  margin-top: mantine.rem(6);
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    font-size: mantine.rem(32);
+  }
+}
+
+.undecidedSub {
+  font-size: mantine.rem(13);
+  color: var(--text-dim);
+  margin-top: mantine.rem(10);
+  max-width: 40ch;
 }
 
 /* The signature moment: a solid filled card, lifted with one neutral

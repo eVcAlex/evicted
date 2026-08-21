@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Alert, Button, Code, Group, Select, Stack, Text } from '@mantine/core';
+import { Alert, Button, Code, Select, Text } from '@mantine/core';
 import { PIN_STORAGE_KEY } from '@/lib/adminPinStorage';
+import classes from './AdminPanel.module.scss';
 
 interface MonzoStatus {
   connected: boolean;
@@ -33,6 +34,30 @@ function pendingReasonLabel(reason: PendingMatch['reason']): string {
       return 'No matching debt owed';
     case 'no-match':
       return "Sender name didn't match any member";
+  }
+}
+
+function reasonTagLabel(reason: PendingMatch['reason']): string {
+  switch (reason) {
+    case 'ambiguous':
+      return 'Ambiguous';
+    case 'no-debt':
+      return 'No debt';
+    case 'no-match':
+      return 'No match';
+  }
+}
+
+/** The reason encoded as a colour: yellow for a caution worth a careful pick,
+ * violet for a decision that needs the admin's judgement, neutral otherwise. */
+function reasonToneClass(reason: PendingMatch['reason']): string {
+  switch (reason) {
+    case 'ambiguous':
+      return classes.ambiguous;
+    case 'no-debt':
+      return classes.noDebt;
+    case 'no-match':
+      return classes.noMatch;
   }
 }
 
@@ -152,7 +177,7 @@ export function AdminPanel() {
   }
 
   return (
-    <Stack gap="lg">
+    <div className={classes.stack}>
       {justConnected && (
         <Alert color="green" variant="light" title="Monzo account authorised">
           Now confirm access in your Monzo app if it hasn't prompted already, then
@@ -162,54 +187,73 @@ export function AdminPanel() {
         </Alert>
       )}
 
-      <div>
-        <Text fw={500} mb="xs">
-          Monzo
-        </Text>
-        {status === 'loading' && <Text size="sm" c="dimmed">Loading…</Text>}
-        {status === 'error' && <Text size="sm" c="red">Could not reach the store.</Text>}
-        {status && typeof status === 'object' && (
-          <Text size="sm" c="dimmed" mb="sm">
-            {status.connected
-              ? `Connected. Token expires ${new Date(status.expiresAt!).toLocaleString()}.`
-              : 'Not connected.'}{' '}
-            {status.capturedCount} payload{status.capturedCount === 1 ? '' : 's'} captured,{' '}
-            {status.pendingCount} pending review.
+      <div className={classes.section}>
+        <span className={classes.sectionKicker}>Monzo</span>
+
+        {status === 'loading' && (
+          <Text size="sm" c="dimmed" mt="sm">
+            Loading…
           </Text>
         )}
+        {status === 'error' && (
+          <Text size="sm" c="red" mt="sm">
+            Could not reach the store.
+          </Text>
+        )}
+        {status && typeof status === 'object' && (
+          <div className={classes.statusLine}>
+            <span className={`${classes.dot} ${status.connected ? classes.dotOn : classes.dotOff}`} />
+            {status.connected
+              ? `Connected · token expires ${new Date(status.expiresAt!).toLocaleString()}`
+              : 'Not connected'}
+            {' · '}
+            {status.capturedCount} captured, {status.pendingCount} pending
+          </div>
+        )}
 
-        <Group>
+        <div className={classes.actionRow}>
           <Button
             component="a"
             href={`/api/monzo/auth?pin=${encodeURIComponent(pin)}`}
-            variant={typeof status === 'object' && status?.connected ? 'subtle' : 'filled'}
+            variant={typeof status === 'object' && status?.connected ? 'default' : 'filled'}
+            size="xs"
           >
             {typeof status === 'object' && status?.connected ? 'Reconnect Monzo' : 'Connect Monzo'}
           </Button>
-          <Button onClick={register} loading={registering} variant="outline">
+          <Button onClick={register} loading={registering} variant="default" size="xs">
             Register webhook
           </Button>
-          <Button onClick={viewPending} variant="outline">
+          <Button onClick={viewPending} variant="default" size="xs">
             View pending matches
           </Button>
-          <Button onClick={viewCaptured} variant="subtle">
+          <Button onClick={viewCaptured} variant="subtle" size="xs">
             View captured payloads
           </Button>
-        </Group>
+        </div>
 
         {registerResult && (
           <Text size="sm" mt="xs" c={registerResult.startsWith('Registered') ? 'green' : 'red'}>
             {registerResult}
           </Text>
         )}
+      </div>
 
-        {pending && (
-          <Stack gap="sm" mt="md">
-            {pending.length === 0 && (
-              <Text size="sm" c="dimmed">
-                Nothing pending.
-              </Text>
+      {pending && (
+        <div>
+          <div className={classes.queueHeading}>
+            <span className={classes.queueLabel}>Pending matches</span>
+            {pending.length > 0 && (
+              <span className={classes.queueCount}>{pending.length} waiting</span>
             )}
+          </div>
+
+          {pending.length === 0 && (
+            <Text size="sm" c="dimmed">
+              Nothing pending.
+            </Text>
+          )}
+
+          <div className={classes.queue}>
             {pending.map((entry) => {
               // 'no-match' has no candidates of its own — the admin picks from
               // the full roster instead. 'ambiguous' and 'no-debt' already
@@ -218,17 +262,30 @@ export function AdminPanel() {
                 (candidate) => ({ value: String(candidate.entryId), label: candidate.teamName }),
               );
               const canApprove = entry.reason !== 'no-debt';
+              const tone = reasonToneClass(entry.reason);
 
               return (
-                <Stack key={entry.id} gap={6}>
-                  <Text size="sm">
-                    £{(entry.amountPence / 100).toFixed(2)} from {entry.counterpartyName} —{' '}
+                <div key={entry.id} className={`${classes.pendingCard} ${tone}`}>
+                  <div className={classes.pendingTop}>
+                    <div>
+                      <div className={classes.pendingAmount}>
+                        £{(entry.amountPence / 100).toFixed(2)}
+                      </div>
+                      <div className={classes.pendingFrom}>from {entry.counterpartyName}</div>
+                    </div>
+                    <span className={`${classes.reasonTag} ${tone}`}>
+                      {reasonTagLabel(entry.reason)}
+                    </span>
+                  </div>
+
+                  <div className={classes.pendingDetail}>
                     {pendingReasonLabel(entry.reason)}
                     {entry.candidates.length > 0
-                      ? ` (${entry.candidates.map((c) => c.teamName).join(', ')})`
+                      ? ` — ${entry.candidates.map((c) => c.teamName).join(', ')}`
                       : ''}
-                  </Text>
-                  <Group gap="xs" wrap="nowrap">
+                  </div>
+
+                  <div className={classes.pendingRow}>
                     {canApprove && (
                       <>
                         <Select
@@ -242,7 +299,7 @@ export function AdminPanel() {
                             }))
                           }
                           size="xs"
-                          w={220}
+                          className={classes.select}
                         />
                         <Button
                           size="xs"
@@ -263,19 +320,19 @@ export function AdminPanel() {
                     >
                       Remove
                     </Button>
-                  </Group>
-                </Stack>
+                  </div>
+                </div>
               );
             })}
-          </Stack>
-        )}
+          </div>
+        </div>
+      )}
 
-        {captured && (
-          <Code block mt="md" style={{ maxHeight: 400, overflow: 'auto' }}>
-            {JSON.stringify(captured, null, 2)}
-          </Code>
-        )}
-      </div>
-    </Stack>
+      {captured && (
+        <Code block style={{ maxHeight: 400, overflow: 'auto' }}>
+          {JSON.stringify(captured, null, 2)}
+        </Code>
+      )}
+    </div>
   );
 }

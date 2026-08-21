@@ -17,9 +17,16 @@
   gap: mantine.rem(12);
 }
 
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: mantine.rem(2);
+  min-width: 0;
+  flex: 1;
+}
+
 .name {
   @include card.truncate;
-  flex-shrink: 1;
   font-weight: 700;
   font-size: mantine.rem(14);
   color: var(--text);
@@ -27,37 +34,55 @@
 
 .manager {
   @include card.truncate;
-  flex: 1;
   font-family: var(--font-mono);
   font-size: mantine.rem(12);
   color: var(--text-dim);
 }
 
-.amount {
+.figChip {
   flex-shrink: 0;
   display: flex;
-  align-items: center;
-  gap: mantine.rem(8);
-}
-
-.owed {
+  align-items: baseline;
+  gap: mantine.rem(6);
   font-family: var(--font-mono);
-  font-size: mantine.rem(16);
-  font-weight: 600;
+  font-size: mantine.rem(15);
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
-  color: var(--text);
+  padding: mantine.rem(5) mantine.rem(10);
+  border-radius: mantine.rem(6);
+  text-decoration: none;
 }
 
-.tagClear {
-  @include card.tag($tone: green);
+.figValue {
+  font-size: mantine.rem(15);
 }
 
-.tagUnknown {
-  @include card.tag;
+.figUnit {
+  font-size: mantine.rem(10);
+  font-weight: 600;
+  letter-spacing: mantine.rem(0.3);
+  text-transform: uppercase;
+  opacity: 0.75;
 }
 
-.tagOwes {
-  @include card.tag($tone: yellow);
+.figClear {
+  color: var(--mantine-color-green-4);
+  background-color: color-mix(in srgb, var(--mantine-color-green-4) 12%, transparent);
+}
+
+.figOwes {
+  color: var(--mantine-color-yellow-4);
+  background-color: color-mix(in srgb, var(--mantine-color-yellow-4) 14%, transparent);
+  transition: background-color 150ms ease;
+
+  @include mantine.hover {
+    background-color: color-mix(in srgb, var(--mantine-color-yellow-4) 22%, transparent);
+  }
+}
+
+.figUnknown {
+  color: var(--text-dim);
+  background-color: color-mix(in srgb, var(--text-dim) 10%, transparent);
 }
 
 .meta {
@@ -65,29 +90,11 @@
   font-size: mantine.rem(11);
   color: var(--text-dim);
   font-variant-numeric: tabular-nums;
-  padding-left: mantine.rem(56);
+  padding-left: mantine.rem(52);
 }
 
 /* A season's worth of unpaid gameweeks has to wrap on a phone, not scroll. */
 .toggles {
   flex-wrap: wrap;
-  padding-left: mantine.rem(56);
-}
-
-.pay {
-  font-family: var(--font-mono);
-  font-size: mantine.rem(11);
-  font-weight: 700;
-  letter-spacing: mantine.rem(0.5);
-  text-transform: uppercase;
-  color: var(--mantine-color-violet-1);
-  background-color: var(--mantine-color-violet-8);
-  border-radius: mantine.rem(4);
-  padding: mantine.rem(3) mantine.rem(10);
-  text-decoration: none;
-  transition: background-color 150ms ease;
-
-  @include mantine.hover {
-    background-color: var(--mantine-color-violet-7);
-  }
+  padding-left: mantine.rem(52);
 }

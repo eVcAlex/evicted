@@ -26,39 +26,45 @@ export function BalancesTable({
             ? 'owes'
             : 'clear';
 
+        const toneClass =
+          state === 'clear' ? classes.figClear : state === 'owes' ? classes.figOwes : classes.figUnknown;
+        const figure = state === 'unknown' ? '—' : pounds(balance.owedPence);
+        const canPay = state === 'owes' && Boolean(monzoUrl);
+        const unit = canPay ? 'Pay' : state;
+
+        const figChip = canPay ? (
+          <a
+            className={`${classes.figChip} ${toneClass}`}
+            href={monzoUrl!}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span className={classes.figValue}>{figure}</span>
+            <span className={classes.figUnit}>{unit}</span>
+          </a>
+        ) : (
+          <span className={`${classes.figChip} ${toneClass}`}>
+            <span className={classes.figValue}>{figure}</span>
+            <span className={classes.figUnit}>{unit}</span>
+          </span>
+        );
+
         return (
           <div key={balance.member.entryId} className={`${classes.row} ${classes[state]}`}>
             <div className={classes.rowMain}>
               <Avatar
                 teamName={balance.member.teamName}
                 managerName={balance.member.managerName}
-                size={44}
+                size={40}
               />
-              <span className={classes.name}>{balance.member.teamName}</span>
-              <span className={classes.manager}>
-                {balance.departed ? 'Left the league' : balance.member.managerName}
-              </span>
-
-              <div className={classes.amount}>
-                {state === 'unknown' && <span className={classes.tagUnknown}>Unknown</span>}
-                {state === 'clear' && <span className={classes.tagClear}>Clear</span>}
-                {state === 'owes' && (
-                  <>
-                    <span className={classes.tagOwes}>Owes</span>
-                    <span className={classes.owed}>{pounds(balance.owedPence)}</span>
-                    {monzoUrl && (
-                      <a
-                        className={classes.pay}
-                        href={monzoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Pay
-                      </a>
-                    )}
-                  </>
-                )}
+              <div className={classes.identity}>
+                <span className={classes.name}>{balance.member.teamName}</span>
+                <span className={classes.manager}>
+                  {balance.departed ? 'Left the league' : balance.member.managerName}
+                </span>
               </div>
+
+              {figChip}
             </div>
 
             {!resultsDegraded && (

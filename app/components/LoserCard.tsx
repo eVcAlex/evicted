@@ -7,8 +7,16 @@ import { AdminToggle } from './AdminToggle';
 import { Avatar } from './Avatar';
 import classes from './LoserCard.module.scss';
 
-function heading(undecided: boolean): string {
-  return undecided ? 'Nobody yet' : 'Evicted';
+function undecidedCopy(noScores: boolean): { kicker: string; sub: string } {
+  return noScores
+    ? {
+        kicker: 'No scores yet',
+        sub: 'The gameweek has started but nobody has scored a point yet. Come back once the first match has kicked off.',
+      }
+    : {
+        kicker: 'Everyone level',
+        sub: 'Every manager is on the same net score so far, so nobody is bottom yet.',
+      };
 }
 
 export function LoserCard({
@@ -30,6 +38,7 @@ export function LoserCard({
   // a genuine settled tie really does fine everyone.
   const levelSoFar = summary.provisional && summary.allTied;
   const undecided = noScores || levelSoFar;
+  const undecidedText = undecided ? undecidedCopy(noScores) : null;
 
   return (
     <Stack gap="lg">
@@ -44,23 +53,14 @@ export function LoserCard({
         </Alert>
       )}
 
-      {noScores && (
-        <Alert color="gray" variant="light" title="No scores yet">
-          The gameweek has started but nobody has scored a point yet. Come back
-          once the first match has kicked off.
-        </Alert>
-      )}
-
-      {levelSoFar && !noScores && (
-        <Alert color="gray" variant="light" title="Everyone is level">
-          Every manager is on the same net score so far, so nobody is bottom yet.
-        </Alert>
-      )}
-
-      {undecided && (
-        <Title order={1} className={classes.heading}>
-          {heading(undecided)}
-        </Title>
+      {undecidedText && (
+        <div className={classes.undecidedHero}>
+          <span className={classes.undecidedKicker}>{undecidedText.kicker}</span>
+          <Title order={1} className={classes.undecidedTitle}>
+            Nobody yet
+          </Title>
+          <Text className={classes.undecidedSub}>{undecidedText.sub}</Text>
+        </div>
       )}
 
       {!undecided &&

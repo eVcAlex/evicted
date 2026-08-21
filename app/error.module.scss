@@ -1,0 +1,50 @@
+@use './styles/card';
+
+.card {
+  @include card.surface;
+  background-color: var(--mantine-color-dark-6);
+  border-color: var(--mantine-color-red-7);
+  padding: mantine.rem(22) mantine.rem(20) mantine.rem(24);
+}
+
+.kicker {
+  @include card.kicker;
+  color: var(--mantine-color-red-4);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(26);
+  line-height: 1;
+  text-transform: uppercase;
+  margin: mantine.rem(8) 0 0;
+}
+
+.sub {
+  font-size: mantine.rem(13);
+  line-height: 1.55;
+  color: var(--text-dim);
+  margin-top: mantine.rem(10);
+  max-width: 40ch;
+}
+
+.retry {
+  margin-top: mantine.rem(20);
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
+  font-weight: 700;
+  letter-spacing: mantine.rem(0.5);
+  text-transform: uppercase;
+  color: var(--mantine-color-violet-1);
+  background-color: var(--mantine-color-violet-8);
+  border: none;
+  border-radius: mantine.rem(5);
+  padding: mantine.rem(9) mantine.rem(16);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+
+  @include mantine.hover {
+    background-color: var(--mantine-color-violet-7);
+  }
+}

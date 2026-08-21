@@ -1,19 +1,22 @@
 'use client';
 
-import { Alert, Button, Container, Stack } from '@mantine/core';
+import { Container } from '@mantine/core';
+import classes from './error.module.scss';
 
 export default function Error({ reset }: { error: Error; reset: () => void }) {
   return (
     <Container size="sm" py="xl">
-      <Stack>
-        <Alert color="red" title="Could not load the league">
-          The Fantasy Premier League API did not respond as expected. This usually
-          clears on its own during a busy gameweek.
-        </Alert>
-        <Button onClick={reset} variant="light">
+      <div className={classes.card}>
+        <span className={classes.kicker}>Could not load</span>
+        <p className={classes.title}>The league didn&rsquo;t respond</p>
+        <p className={classes.sub}>
+          The Fantasy Premier League API didn&rsquo;t respond as expected. This
+          usually clears on its own during a busy gameweek.
+        </p>
+        <button className={classes.retry} onClick={reset}>
           Try again
-        </Button>
-      </Stack>
+        </button>
+      </div>
     </Container>
   );
 }
