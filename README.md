@@ -99,13 +99,15 @@ payload (admin-only audit log, `evicted:monzo:capture`) and runs the matcher
 - **Auto-apply vs. queue**: a match only auto-applies (marks gameweeks paid)
   when the sender matches exactly one member *and* the credit exactly covers
   whole gameweeks they actually have unpaid — applied oldest-first. Anything
-  that doesn't clear that bar (ambiguous name match, or a matched member who
-  owes less than they paid) lands in a pending queue
+  that doesn't clear that bar (ambiguous name match, a matched member who
+  owes less than they paid, or no name match at all) lands in a pending queue
   (`evicted:monzo:pending`, admin-viewable in `/admin` with a dismiss
-  action) instead of being guessed at or silently dropped. An unrecognised
-  sender name is neither applied nor queued — most credits into a personal
-  account are unrelated to the league, and queuing every one would bury the
-  genuine cases.
+  action) instead of being guessed at or silently dropped. A sender name not
+  matching any member is *not* the same as "unrelated to the league" — a
+  bank account's legal name and someone's FPL manager name can genuinely
+  differ (confirmed live: "ALEXANDER MCGUINESS" vs the registered "Alex
+  McGuiness" didn't match), so those get surfaced for a human to attribute
+  rather than dropped on the assumption they're noise.
 - Access tokens expire after 6h; refresh tokens are single-use and rotate, so the
   new one must be persisted on every refresh or auth dies until reauthorised.
 - `counterparty` is undocumented in Monzo's API reference — the shape above

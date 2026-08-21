@@ -97,8 +97,8 @@ export interface PendingMatch {
   receivedAt: string;
   amountPence: number;
   counterpartyName: string;
-  reason: 'ambiguous' | 'no-debt';
-  /** Team name(s) of the member(s) this could be, for a human to read. */
+  reason: 'ambiguous' | 'no-debt' | 'no-match';
+  /** Team name(s) of the member(s) this could be, for a human to read. Empty for 'no-match'. */
   candidates: string[];
 }
 

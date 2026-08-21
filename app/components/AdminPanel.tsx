@@ -16,12 +16,19 @@ interface PendingMatch {
   receivedAt: string;
   amountPence: number;
   counterpartyName: string;
-  reason: 'ambiguous' | 'no-debt';
+  reason: 'ambiguous' | 'no-debt' | 'no-match';
   candidates: string[];
 }
 
 function pendingReasonLabel(reason: PendingMatch['reason']): string {
-  return reason === 'ambiguous' ? 'Name matched more than one member' : 'No matching debt owed';
+  switch (reason) {
+    case 'ambiguous':
+      return 'Name matched more than one member';
+    case 'no-debt':
+      return 'No matching debt owed';
+    case 'no-match':
+      return "Sender name didn't match any member";
+  }
 }
 
 /**
@@ -173,7 +180,8 @@ export function AdminPanel() {
               <Group key={entry.id} justify="space-between" wrap="nowrap">
                 <Text size="sm">
                   £{(entry.amountPence / 100).toFixed(2)} from {entry.counterpartyName} —{' '}
-                  {pendingReasonLabel(entry.reason)} ({entry.candidates.join(', ')})
+                  {pendingReasonLabel(entry.reason)}
+                  {entry.candidates.length > 0 ? ` (${entry.candidates.join(', ')})` : ''}
                 </Text>
                 <Button
                   size="xs"

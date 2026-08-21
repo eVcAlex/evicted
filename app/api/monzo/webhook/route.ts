@@ -74,7 +74,23 @@ export async function POST(request: Request) {
   }
 
   const match = matchSender(credit.counterpartyName, members);
-  if (match.outcome === 'no-match') return NextResponse.json({ ok: true });
+
+  if (match.outcome === 'no-match') {
+    // Not applied *or* dropped: a bank account's legal name and someone's FPL
+    // manager name can genuinely differ (e.g. "ALEXANDER MCGUINESS" vs "Alex
+    // McGuiness") — that's still a real payment from a real member, just one
+    // full-name matching can't attribute on its own. A human glancing at the
+    // queue can, which is the whole reason it exists.
+    await queuePending({
+      id: credit.txId,
+      receivedAt: new Date().toISOString(),
+      amountPence: credit.amountPence,
+      counterpartyName: credit.counterpartyName,
+      reason: 'no-match',
+      candidates: [],
+    });
+    return NextResponse.json({ ok: true });
+  }
 
   if (match.outcome === 'ambiguous') {
     await queuePending({
