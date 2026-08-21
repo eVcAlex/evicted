@@ -24,3 +24,18 @@ export const monzoAccountsResponseSchema = z.object({
   accounts: z.array(z.object({ id: z.string() })),
 });
 
+/**
+ * The fields the matcher needs from a transaction webhook's `data`, observed
+ * from a real captured payload rather than Monzo's (incomplete) docs.
+ * `counterparty` is absent on some transaction types (e.g. card purchases),
+ * hence optional/nullable rather than required.
+ */
+export const monzoTransactionDataSchema = z.object({
+  id: z.string(),
+  amount: z.number(),
+  is_load: z.boolean(),
+  decline_reason: z.string().optional(),
+  counterparty: z.object({ name: z.string() }).nullable().optional(),
+});
+export type MonzoTransactionData = z.infer<typeof monzoTransactionDataSchema>;
+

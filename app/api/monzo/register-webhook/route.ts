@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { checkPin } from '@/lib/admin';
-import { monzoRedirectUri } from '@/lib/monzo/config';
 import { getTokens } from '@/lib/monzo/store';
 import { registerWebhook } from '@/lib/monzo/webhook';
 
@@ -15,7 +14,11 @@ export async function POST(request: Request) {
   }
 
   try {
-    const webhookUrl = `${monzoRedirectUri().replace('/api/monzo/callback', '')}/api/monzo/webhook`;
+    // Derived from the request's own origin, not MONZO_REDIRECT_BASE_URL
+    // (which is only the OAuth callback's base) — so this always registers
+    // against whichever host you're actually on, production or a preview,
+    // with no extra per-environment config.
+    const webhookUrl = `${new URL(request.url).origin}/api/monzo/webhook`;
     await registerWebhook(tokens.access_token, webhookUrl);
   } catch (error) {
     console.error('registerWebhook failed', error);
