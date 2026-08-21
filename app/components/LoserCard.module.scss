@@ -1,37 +1,172 @@
+@use '../styles/card';
+
 .gameweek {
+  font-family: var(--font-mono);
   letter-spacing: mantine.rem(1);
 }
 
 .heading {
-  font-size: mantine.rem(48);
-  font-weight: 900;
-  line-height: 1;
-  letter-spacing: mantine.rem(-2);
+  @include card.page-title;
+}
+
+/* The signature moment: a solid filled card, lifted with one neutral
+ * shadow — no gradient, no glow, no rotation. */
+.hero {
+  @include card.hero($accent: red);
+  padding: mantine.rem(24) mantine.rem(24) mantine.rem(22);
+}
+
+.heroTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: mantine.rem(14);
+}
+
+.kicker {
+  @include card.kicker($onDark: true);
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(30);
+  line-height: 0.95;
   text-transform: uppercase;
+  margin-top: mantine.rem(4);
+}
+
+/* Pops above the card's own top edge, like a mugshot dropped onto a
+ * charge sheet — the transparent floating-head cutouts are made for this,
+ * and it holds up for the initials tile too. Sized up now that most of the
+ * league has a real photo: this is the one moment worth spending it on. */
+.badge {
+  margin-top: mantine.rem(-40);
 
   @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
-    font-size: mantine.rem(36);
+    width: mantine.rem(84) !important;
+    height: mantine.rem(84) !important;
+    font-size: mantine.rem(30) !important;
+    margin-top: mantine.rem(-40);
   }
 }
 
-.card {
-  border-width: mantine.rem(2);
-  border-color: var(--mantine-color-red-8);
-
-  @include mantine.dark {
-    background-color: var(--mantine-color-dark-8);
-  }
+.teamRow {
+  margin-top: mantine.rem(20);
 }
 
 .teamName {
-  font-size: mantine.rem(28);
-  line-height: 1.1;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(30);
+  line-height: 1;
+  text-transform: uppercase;
 
   @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
-    font-size: mantine.rem(22);
+    font-size: mantine.rem(24);
   }
 }
 
-.score {
+.managerName {
+  font-size: mantine.rem(13);
+  color: rgba(255, 255, 255, 0.65);
+  margin-top: mantine.rem(3);
+}
+
+.scoreRow {
+  display: flex;
+  align-items: baseline;
+  gap: mantine.rem(10);
+  margin-top: mantine.rem(20);
+}
+
+.scoreValue {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(88);
+  line-height: 0.8;
   font-variant-numeric: tabular-nums;
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    font-size: mantine.rem(64);
+  }
+}
+
+.scoreLabel {
+  font-family: var(--font-mono);
+  font-size: mantine.rem(12);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: mantine.rem(0.5);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.statsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: mantine.rem(4) mantine.rem(16);
+  margin-top: mantine.rem(14);
+  font-family: var(--font-mono);
+  font-size: mantine.rem(13);
+  color: rgba(255, 255, 255, 0.72);
+  font-variant-numeric: tabular-nums;
+}
+
+.quip {
+  margin-top: mantine.rem(18);
+  padding-left: mantine.rem(14);
+  border-left: mantine.rem(3) solid rgba(255, 255, 255, 0.35);
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: mantine.rem(15);
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.heroFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: mantine.rem(12);
+  margin-top: mantine.rem(20);
+  padding-top: mantine.rem(16);
+  border-top: mantine.rem(1) solid rgba(255, 255, 255, 0.2);
+}
+
+.status,
+.statusPaid,
+.statusDue {
+  font-family: var(--font-mono);
+  font-size: mantine.rem(12);
+  font-weight: 700;
+  letter-spacing: mantine.rem(0.5);
+  text-transform: uppercase;
+}
+
+.status {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.statusPaid {
+  color: #fff;
+}
+
+.statusDue {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.pay {
+  font-family: var(--font-body);
+  font-size: mantine.rem(13);
+  font-weight: 700;
+  color: var(--mantine-color-red-8);
+  background-color: #fff;
+  border-radius: mantine.rem(6);
+  padding: mantine.rem(8) mantine.rem(16);
+  text-decoration: none;
+  transition: opacity 150ms ease;
+
+  @include mantine.hover {
+    opacity: 0.85;
+  }
 }

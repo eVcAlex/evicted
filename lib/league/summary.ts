@@ -15,6 +15,12 @@ export interface LoserSummary {
    * zero" state, which is not a nine-way eviction.
    */
   allTied: boolean;
+  /**
+   * The lowest net score *not* held by a loser — how far clear of the bottom
+   * the next-worst manager finished. `null` when there is no such manager
+   * (nobody scored, or everyone is tied at the bottom).
+   */
+  runnerUpNet: number | null;
 }
 
 export function buildSummary(params: {
@@ -37,5 +43,11 @@ export function buildSummary(params: {
   const allTied =
     scores.length > 1 && scores.every((score) => score.net === scores[0].net);
 
-  return { gameweek, provisional, losers, allTied };
+  const loserIds = new Set(losers.map(({ member }) => member.entryId));
+  const runnerUpNets = scores
+    .filter((score) => !loserIds.has(score.entryId))
+    .map((score) => score.net);
+  const runnerUpNet = runnerUpNets.length > 0 ? Math.min(...runnerUpNets) : null;
+
+  return { gameweek, provisional, losers, allTied, runnerUpNet };
 }

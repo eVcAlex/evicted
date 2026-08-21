@@ -1,21 +1,93 @@
-.row {
-  transition: border-color 150ms ease;
+@use '../styles/card';
 
-  @include mantine.hover {
-    border-color: var(--mantine-color-dark-3);
-  }
+.sheet {
+  @include card.surface;
+}
+
+.row {
+  @include card.listing-row(mantine.rem(12) mantine.rem(16));
+  flex-direction: column;
+  align-items: stretch;
+  gap: mantine.rem(4);
+}
+
+.rowMain {
+  display: flex;
+  align-items: center;
+  gap: mantine.rem(12);
+}
+
+.name {
+  @include card.truncate;
+  flex-shrink: 1;
+  font-weight: 700;
+  font-size: mantine.rem(14);
+  color: var(--text);
+}
+
+.manager {
+  @include card.truncate;
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: mantine.rem(12);
+  color: var(--text-dim);
+}
+
+.amount {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: mantine.rem(8);
 }
 
 .owed {
-  font-size: mantine.rem(18);
+  font-family: var(--font-mono);
+  font-size: mantine.rem(16);
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.tagClear {
+  @include card.tag($tone: green);
+}
+
+.tagUnknown {
+  @include card.tag;
+}
+
+.tagOwes {
+  @include card.tag($tone: yellow);
 }
 
 .meta {
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
+  color: var(--text-dim);
   font-variant-numeric: tabular-nums;
+  padding-left: mantine.rem(56);
 }
 
 /* A season's worth of unpaid gameweeks has to wrap on a phone, not scroll. */
 .toggles {
   flex-wrap: wrap;
+  padding-left: mantine.rem(56);
+}
+
+.pay {
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
+  font-weight: 700;
+  letter-spacing: mantine.rem(0.5);
+  text-transform: uppercase;
+  color: var(--mantine-color-red-1);
+  background-color: var(--mantine-color-red-8);
+  border-radius: mantine.rem(4);
+  padding: mantine.rem(3) mantine.rem(10);
+  text-decoration: none;
+  transition: background-color 150ms ease;
+
+  @include mantine.hover {
+    background-color: var(--mantine-color-red-7);
+  }
 }

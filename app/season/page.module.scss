@@ -1,0 +1,37 @@
+@use '../styles/card';
+
+.title {
+  @include card.page-title;
+}
+
+.shame {
+  margin-top: mantine.rem(28);
+}
+
+.shameTitle {
+  font-family: var(--font-mono);
+  letter-spacing: mantine.rem(1);
+  margin-bottom: mantine.rem(10);
+  color: var(--text-dim);
+}
+
+.sheet {
+  @include card.surface;
+}
+
+.row {
+  @include card.listing-row;
+  flex-wrap: wrap;
+}
+
+.name {
+  font-weight: 700;
+  font-size: mantine.rem(14);
+  color: var(--text);
+}
+
+.manager {
+  font-family: var(--font-mono);
+  font-size: mantine.rem(12);
+  color: var(--text-dim);
+}

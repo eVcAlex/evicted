@@ -1,26 +1,90 @@
+@use '../styles/card';
+
+.hero {
+  @include card.hero($accent: red);
+  padding: mantine.rem(28) mantine.rem(24) mantine.rem(30);
+}
+
+.kicker {
+  @include card.kicker($onDark: true);
+}
+
 .title {
-  font-size: mantine.rem(40);
-  font-weight: 900;
-  letter-spacing: mantine.rem(-1);
+  margin: mantine.rem(6) 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(52);
+  line-height: 0.9;
   text-transform: uppercase;
 
   @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
-    font-size: mantine.rem(32);
+    font-size: mantine.rem(38);
   }
 }
 
-.deadlineCard {
-  border-color: var(--mantine-color-red-8);
+.heroSub {
+  font-size: mantine.rem(14);
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: mantine.rem(8);
+}
+
+/* Lighter weight than the hero — informational, not the day's headline. */
+.deadline {
+  @include card.surface;
+  padding: mantine.rem(16) mantine.rem(20);
+}
+
+.deadlineCaption {
+  @include card.kicker;
+  color: var(--mantine-color-yellow-4);
 }
 
 .deadlineValue {
-  font-variant-numeric: tabular-nums;
+  display: block;
+  margin-top: mantine.rem(6);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(24);
+  line-height: 1.1;
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    font-size: mantine.rem(19);
+  }
 }
 
-.memberCard {
-  transition: border-color 150ms ease;
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
+  font-weight: 700;
+  letter-spacing: mantine.rem(1);
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: mantine.rem(10);
+}
 
-  @include mantine.hover {
-    border-color: var(--mantine-color-red-6);
-  }
+.roster {
+  @include card.surface;
+}
+
+.row {
+  @include card.listing-row;
+}
+
+.name {
+  @include card.truncate;
+  flex: 1;
+  font-weight: 700;
+  font-size: mantine.rem(14);
+  color: var(--text);
+}
+
+.manager {
+  @include card.truncate;
+  flex-shrink: 0;
+  max-width: 42%;
+  font-family: var(--font-mono);
+  font-size: mantine.rem(12);
+  color: var(--text-dim);
+  text-align: right;
 }

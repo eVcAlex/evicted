@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { Button } from '@mantine/core';
+import { useState, type FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button, Group, Modal, PasswordInput } from '@mantine/core';
 import { PIN_STORAGE_KEY } from '@/lib/adminPinStorage';
 
 export function AdminToggle({
@@ -9,33 +10,37 @@ export function AdminToggle({
   entryId,
   paid,
   label,
+  variant = 'subtle',
 }: {
   gameweek: number;
   entryId: number;
   paid: boolean;
   /** Overrides the default "Mark paid" wording — used per gameweek on balances. */
   label?: string;
+  /** "white" reads on the red evictee card; default "subtle" suits a neutral background. */
+  variant?: 'subtle' | 'white';
 }) {
+  const router = useRouter();
   const [busy, setBusy] = useState(false);
+  const [opened, setOpened] = useState(false);
+  const [pin, setPin] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
-  async function toggle() {
-    let pin = window.localStorage.getItem(PIN_STORAGE_KEY);
-    if (!pin) {
-      pin = window.prompt('Admin PIN');
-      if (!pin) return;
-    }
-
+  async function submit(candidatePin: string) {
     setBusy(true);
+    setError(null);
     try {
       const response = await fetch('/api/admin/toggle', {
         method: 'POST',
-        headers: { 'content-type': 'application/json', 'x-admin-pin': pin },
+        headers: { 'content-type': 'application/json', 'x-admin-pin': candidatePin },
         body: JSON.stringify({ gameweek, entryId, paid: !paid }),
       });
 
       if (response.ok) {
-        window.localStorage.setItem(PIN_STORAGE_KEY, pin);
-        window.location.reload();
+        window.localStorage.setItem(PIN_STORAGE_KEY, candidatePin);
+        setOpened(false);
+        setPin('');
+        router.refresh();
         return;
       }
 
@@ -44,23 +49,71 @@ export function AdminToggle({
       // told the admin the opposite of what had actually happened.
       if (response.status === 401) {
         window.localStorage.removeItem(PIN_STORAGE_KEY);
-        window.alert('Rejected. Wrong PIN?');
+        setPin('');
+        setError('Rejected. Wrong PIN?');
+        setOpened(true);
         return;
       }
 
-      window.alert(
-        `Could not save that (error ${response.status}). Your PIN is fine — try again shortly.`,
-      );
+      setError(`Could not save that (error ${response.status}). Try again shortly.`);
+      setOpened(true);
     } catch {
-      window.alert('Network error. Please try again.');
+      setError('Network error. Please try again.');
+      setOpened(true);
     } finally {
       setBusy(false);
     }
   }
 
+  function handleClick() {
+    const saved = window.localStorage.getItem(PIN_STORAGE_KEY);
+    if (saved) {
+      submit(saved);
+      return;
+    }
+    setError(null);
+    setPin('');
+    setOpened(true);
+  }
+
+  function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    if (!pin) return;
+    submit(pin);
+  }
+
   return (
-    <Button size="xs" variant="subtle" loading={busy} onClick={toggle}>
-      {label ?? `Mark ${paid ? 'unpaid' : 'paid'}`}
-    </Button>
+    <>
+      <Button size="xs" variant={variant} loading={busy && !opened} onClick={handleClick}>
+        {label ?? `Mark ${paid ? 'unpaid' : 'paid'}`}
+      </Button>
+
+      <Modal
+        opened={opened}
+        onClose={() => !busy && setOpened(false)}
+        title="Admin PIN"
+        centered
+        size="xs"
+      >
+        <form onSubmit={handleSubmit}>
+          <PasswordInput
+            label="PIN"
+            value={pin}
+            onChange={(event) => setPin(event.currentTarget.value)}
+            error={error}
+            data-autofocus
+            autoComplete="off"
+          />
+          <Group justify="flex-end" mt="md">
+            <Button variant="subtle" onClick={() => setOpened(false)} disabled={busy}>
+              Cancel
+            </Button>
+            <Button type="submit" loading={busy} disabled={!pin}>
+              Confirm
+            </Button>
+          </Group>
+        </form>
+      </Modal>
+    </>
   );
 }

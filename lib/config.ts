@@ -7,6 +7,13 @@ export const ADMIN_ENTRY = 394534;
 /** The fine for finishing bottom of a gameweek, in pence. */
 export const FINE_PENCE = 200;
 
+/**
+ * A monzo.me link that pre-fills the £2 fine, e.g.
+ * `https://monzo.me/alexmcguiness/2`. Unset until configured — every "Pay £2"
+ * surface checks this and renders nothing rather than a broken link.
+ */
+export const MONZO_ME_URL = process.env.MONZO_ME_URL ?? null;
+
 /** Base URL for the official FPL API. */
 export const FPL_BASE = 'https://fantasy.premierleague.com/api';
 

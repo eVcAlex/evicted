@@ -6,6 +6,8 @@ export interface GameweekScore {
   gross: number;
   hits: number;
   net: number;
+  /** Points left unused on the bench — not part of `net`, only ever quip fodder. */
+  bench: number;
 }
 
 /**
@@ -38,6 +40,7 @@ export function scoresForGameweek(
       gross: entry.points,
       hits: entry.event_transfers_cost,
       net: entry.points - entry.event_transfers_cost,
+      bench: entry.points_on_bench,
     });
   }
 

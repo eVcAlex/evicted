@@ -1,5 +1,6 @@
-import { Avatar, Badge, Card, Group, Stack, Text, Title } from '@mantine/core';
+import { Stack, Text } from '@mantine/core';
 import type { Member } from '@/lib/league/members';
+import { Avatar } from './Avatar';
 import classes from './PreSeason.module.scss';
 
 export function PreSeason({
@@ -13,21 +14,20 @@ export function PreSeason({
 }) {
   return (
     <Stack gap="lg">
-      <div>
-        <Title order={1} className={classes.title}>
-          Nobody yet
-        </Title>
-        <Text c="dimmed" size="sm">
+      <div className={classes.hero}>
+        <span className={classes.kicker}>Season not started</span>
+        <h1 className={classes.title}>Nobody yet</h1>
+        <Text className={classes.heroSub}>
           {gameweekName ?? 'The season'} has not been played.
         </Text>
       </div>
 
       {deadline && (
-        <Card withBorder padding="md" className={classes.deadlineCard}>
-          <Text size="sm" c="dimmed">
-            {gameweekName} deadline
-          </Text>
-          <Text size="xl" fw={700} className={classes.deadlineValue}>
+        <div className={classes.deadline}>
+          <span className={classes.deadlineCaption}>
+            {gameweekName ?? 'Kickoff'} deadline
+          </span>
+          <span className={classes.deadlineValue}>
             {new Date(deadline).toLocaleString('en-GB', {
               weekday: 'long',
               day: 'numeric',
@@ -35,33 +35,22 @@ export function PreSeason({
               hour: '2-digit',
               minute: '2-digit',
             })}
-          </Text>
-        </Card>
+          </span>
+        </div>
       )}
 
-      <Stack gap="xs">
-        <Text fw={600} size="sm" tt="uppercase" c="dimmed">
-          {members.length} in the league
-        </Text>
-        {members.map((member) => (
-          <Card key={member.entryId} withBorder padding="sm" className={classes.memberCard}>
-            <Group justify="space-between" wrap="nowrap">
-              <Group gap="sm" wrap="nowrap">
-                <Avatar name={member.teamName} color="initials" radius="xl" />
-                <div>
-                  <Text fw={600}>{member.teamName}</Text>
-                  <Text size="sm" c="dimmed">
-                    {member.managerName}
-                  </Text>
-                </div>
-              </Group>
-              <Badge variant="light" color="gray">
-                &mdash;
-              </Badge>
-            </Group>
-          </Card>
-        ))}
-      </Stack>
+      <div>
+        <div className={classes.eyebrow}>{members.length} in the league</div>
+        <div className={classes.roster}>
+          {members.map((member) => (
+            <div key={member.entryId} className={classes.row}>
+              <Avatar teamName={member.teamName} managerName={member.managerName} size={44} />
+              <span className={classes.name}>{member.teamName}</span>
+              <span className={classes.manager}>{member.managerName}</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </Stack>
   );
 }

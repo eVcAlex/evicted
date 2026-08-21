@@ -1,9 +1,10 @@
+/* Solid ground, one red rule beneath — no blur, no floating pill. */
 .header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: var(--mantine-color-dark-6);
-  border-bottom: mantine.rem(1) solid var(--mantine-color-dark-4);
+  background-color: var(--bg);
+  border-bottom: mantine.rem(2) solid var(--mantine-color-red-6);
 }
 
 .inner {
@@ -11,55 +12,64 @@
   align-items: center;
   justify-content: space-between;
   gap: mantine.rem(12);
-  padding-top: mantine.rem(14);
-  padding-bottom: mantine.rem(14);
+  padding-top: mantine.rem(16);
+  padding-bottom: mantine.rem(16);
 }
 
-.dot {
-  width: mantine.rem(9);
-  height: mantine.rem(9);
-  border-radius: 50%;
-  background-color: var(--mantine-color-red-6);
+.brand {
+  display: flex;
+  align-items: center;
+  gap: mantine.rem(9);
   flex-shrink: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.mark {
+  width: mantine.rem(14);
+  height: mantine.rem(14);
+  flex-shrink: 0;
+  border-radius: mantine.rem(3);
+  background-color: var(--mantine-color-red-6);
 }
 
 .wordmark {
-  font-weight: 900;
-  font-size: mantine.rem(15);
-  letter-spacing: mantine.rem(2.5);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(22);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  line-height: 1;
 }
 
 .tabs {
-  background-color: var(--mantine-color-dark-8);
-  border-radius: var(--mantine-radius-md);
-  padding: mantine.rem(3);
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .tab {
-  padding: mantine.rem(6) mantine.rem(13);
-  border-radius: calc(var(--mantine-radius-md) - mantine.rem(2));
-  font-size: mantine.rem(13);
-  font-weight: 600;
-  color: var(--mantine-color-dimmed);
+  padding-bottom: mantine.rem(3);
+  border-bottom: mantine.rem(2) solid transparent;
+  font-size: mantine.rem(12);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: mantine.rem(0.5);
+  color: var(--text-dim);
+  white-space: nowrap;
   transition:
-    background-color 150ms ease,
-    color 150ms ease;
+    color 150ms ease,
+    border-color 150ms ease;
 
   @include mantine.hover {
-    color: var(--mantine-color-text);
-  }
-
-  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
-    padding-left: mantine.rem(10);
-    padding-right: mantine.rem(10);
+    color: var(--text);
   }
 }
 
 .tabActive {
-  background-color: var(--mantine-color-red-8);
-  color: white;
-
-  @include mantine.hover {
-    color: white;
-  }
+  color: var(--text);
+  border-color: var(--mantine-color-red-6);
 }

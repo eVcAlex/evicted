@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import type { EntryHistory } from '@/lib/fpl/schemas';
-import { findLosers, scoresForGameweek } from './scoring';
+import { findLosers, scoresForGameweek, type GameweekScore } from './scoring';
+
+/** `findLosers` only reads `net`; the rest is filler to satisfy the type. */
+function score(entryId: number, gross: number, hits: number, net: number): GameweekScore {
+  return { entryId, gross, hits, net, bench: 0 };
+}
 
 function history(
-  entries: Array<{ event: number; points: number; hits?: number }>,
+  entries: Array<{ event: number; points: number; hits?: number; bench?: number }>,
 ): EntryHistory {
   return {
     current: entries.map((e) => ({
@@ -11,7 +16,7 @@ function history(
       points: e.points,
       event_transfers_cost: e.hits ?? 0,
       total_points: e.points,
-      points_on_bench: 0,
+      points_on_bench: e.bench ?? 0,
     })),
   };
 }
@@ -20,8 +25,13 @@ describe('scoresForGameweek', () => {
   it('subtracts transfer hits from gross points', () => {
     const histories = new Map([[1, history([{ event: 5, points: 34, hits: 4 }])]]);
     expect(scoresForGameweek(histories, 5)).toEqual([
-      { entryId: 1, gross: 34, hits: 4, net: 30 },
+      { entryId: 1, gross: 34, hits: 4, net: 30, bench: 0 },
     ]);
+  });
+
+  it('carries bench points through untouched', () => {
+    const histories = new Map([[1, history([{ event: 5, points: 34, bench: 11 }])]]);
+    expect(scoresForGameweek(histories, 5)[0].bench).toBe(11);
   });
 
   it('leaves a score untouched when no hits were taken', () => {
@@ -46,35 +56,29 @@ describe('scoresForGameweek', () => {
 describe('findLosers', () => {
   it('returns the single lowest net scorer', () => {
     const losers = findLosers([
-      { entryId: 1, gross: 50, hits: 0, net: 50 },
-      { entryId: 2, gross: 34, hits: 4, net: 30 },
-      { entryId: 3, gross: 45, hits: 0, net: 45 },
+      score(1, 50, 0, 50),
+      score(2, 34, 4, 30),
+      score(3, 45, 0, 45),
     ]);
     expect(losers).toEqual([2]);
   });
 
   it('returns every manager tied at the bottom', () => {
     const losers = findLosers([
-      { entryId: 1, gross: 30, hits: 0, net: 30 },
-      { entryId: 2, gross: 34, hits: 4, net: 30 },
-      { entryId: 3, gross: 45, hits: 0, net: 45 },
+      score(1, 30, 0, 30),
+      score(2, 34, 4, 30),
+      score(3, 45, 0, 45),
     ]);
     expect(losers.sort((a, b) => a - b)).toEqual([1, 2]);
   });
 
   it('picks the manager whose hits dragged them below a lower gross scorer', () => {
-    const losers = findLosers([
-      { entryId: 1, gross: 40, hits: 12, net: 28 },
-      { entryId: 2, gross: 32, hits: 0, net: 32 },
-    ]);
+    const losers = findLosers([score(1, 40, 12, 28), score(2, 32, 0, 32)]);
     expect(losers).toEqual([1]);
   });
 
   it('handles negative net scores', () => {
-    const losers = findLosers([
-      { entryId: 1, gross: 2, hits: 8, net: -6 },
-      { entryId: 2, gross: 10, hits: 0, net: 10 },
-    ]);
+    const losers = findLosers([score(1, 2, 8, -6), score(2, 10, 0, 10)]);
     expect(losers).toEqual([1]);
   });
 

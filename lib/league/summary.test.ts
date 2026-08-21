@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { GameweekScore } from './scoring';
 import { buildSummary } from './summary';
 
 const members = [
@@ -6,16 +7,18 @@ const members = [
   { entryId: 2, managerName: 'Joe Taylor', teamName: 'JT', joinedTime: null },
 ];
 
+/** `buildSummary` reads `entryId` and `net`; the rest is filler for the type. */
+function score(entryId: number, net: number, extra: Partial<GameweekScore> = {}): GameweekScore {
+  return { entryId, gross: net, hits: 0, net, bench: 0, ...extra };
+}
+
 describe('buildSummary', () => {
   it('pairs each loser with their member record', () => {
     const summary = buildSummary({
       gameweek: 5,
       provisional: false,
       members,
-      scores: [
-        { entryId: 1, gross: 34, hits: 4, net: 30 },
-        { entryId: 2, gross: 55, hits: 0, net: 55 },
-      ],
+      scores: [score(1, 30), score(2, 55)],
     });
 
     expect(summary.losers).toHaveLength(1);
@@ -28,10 +31,7 @@ describe('buildSummary', () => {
       gameweek: 5,
       provisional: false,
       members,
-      scores: [
-        { entryId: 1, gross: 30, hits: 0, net: 30 },
-        { entryId: 2, gross: 34, hits: 4, net: 30 },
-      ],
+      scores: [score(1, 30), score(2, 30)],
     });
 
     expect(summary.losers).toHaveLength(2);
@@ -42,7 +42,7 @@ describe('buildSummary', () => {
       gameweek: 5,
       provisional: false,
       members,
-      scores: [{ entryId: 99, gross: 10, hits: 0, net: 10 }],
+      scores: [score(99, 10)],
     });
 
     expect(summary.losers).toEqual([]);
@@ -53,11 +53,12 @@ describe('buildSummary', () => {
       gameweek: 5,
       provisional: true,
       members,
-      scores: [{ entryId: 1, gross: 30, hits: 0, net: 30 }],
+      scores: [score(1, 30)],
     });
 
     expect(summary.provisional).toBe(true);
-  })
+  });
+
   // The deadline passes hours before the first match, so `is_current` flips
   // while every history is still empty. The card must have something to render
   // other than a heading with nothing under it.
@@ -78,10 +79,7 @@ describe('buildSummary', () => {
       gameweek: 1,
       provisional: true,
       members,
-      scores: [
-        { entryId: 1, gross: 0, hits: 0, net: 0 },
-        { entryId: 2, gross: 0, hits: 0, net: 0 },
-      ],
+      scores: [score(1, 0), score(2, 0)],
     });
 
     expect(summary.allTied).toBe(true);
@@ -93,7 +91,7 @@ describe('buildSummary', () => {
       gameweek: 1,
       provisional: true,
       members,
-      scores: [{ entryId: 1, gross: 0, hits: 0, net: 0 }],
+      scores: [score(1, 0)],
     });
 
     expect(summary.allTied).toBe(false);
@@ -104,12 +102,44 @@ describe('buildSummary', () => {
       gameweek: 1,
       provisional: false,
       members,
-      scores: [
-        { entryId: 1, gross: 30, hits: 0, net: 30 },
-        { entryId: 2, gross: 55, hits: 0, net: 55 },
-      ],
+      scores: [score(1, 30), score(2, 55)],
     });
 
     expect(summary.allTied).toBe(false);
+  });
+
+  describe('runnerUpNet', () => {
+    it('is the lowest score not held by a loser', () => {
+      const summary = buildSummary({
+        gameweek: 5,
+        provisional: false,
+        members: [...members, { entryId: 3, managerName: 'X', teamName: 'X', joinedTime: null }],
+        scores: [score(1, 20), score(2, 55), score(3, 40)],
+      });
+
+      expect(summary.runnerUpNet).toBe(40);
+    });
+
+    it('is null when nobody has a score', () => {
+      const summary = buildSummary({
+        gameweek: 1,
+        provisional: true,
+        members,
+        scores: [],
+      });
+
+      expect(summary.runnerUpNet).toBeNull();
+    });
+
+    it('is null when every scorer is tied at the bottom', () => {
+      const summary = buildSummary({
+        gameweek: 1,
+        provisional: false,
+        members,
+        scores: [score(1, 30), score(2, 30)],
+      });
+
+      expect(summary.runnerUpNet).toBeNull();
+    });
   });
 });

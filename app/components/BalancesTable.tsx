@@ -1,80 +1,88 @@
 'use client';
 
-import { Avatar, Badge, Card, Group, Stack, Text } from '@mantine/core';
+import { Group } from '@mantine/core';
+import { pounds } from '@/lib/format';
 import type { Balance } from '@/lib/league/balances';
 import { AdminToggle } from './AdminToggle';
+import { Avatar } from './Avatar';
 import classes from './BalancesTable.module.scss';
-
-function pounds(pence: number): string {
-  return `£${(pence / 100).toFixed(2)}`;
-}
 
 export function BalancesTable({
   balances,
   resultsDegraded,
+  monzoUrl,
 }: {
   balances: Balance[];
   resultsDegraded: boolean;
+  /** A monzo.me link for the outstanding amount; `null` when unconfigured. */
+  monzoUrl: string | null;
 }) {
   return (
-    <Stack gap="sm" className={classes.list}>
-      {balances.map((balance) => (
-        <Card key={balance.member.entryId} withBorder padding="md" className={classes.row}>
-          <Group justify="space-between" align="flex-start" wrap="nowrap">
-            <Group gap="sm" wrap="nowrap" align="flex-start">
-              <Avatar name={balance.member.teamName} color="initials" radius="xl" />
-              <div>
-                <Text fw={600} size="sm">
-                  {balance.member.teamName}
-                </Text>
-                {balance.departed ? (
-                  <Badge color="gray" variant="light" size="xs" mt={2}>
-                    No longer in the league
-                  </Badge>
-                ) : (
-                  <Text size="xs" c="dimmed">
-                    {balance.member.managerName}
-                  </Text>
+    <div className={classes.sheet}>
+      {balances.map((balance) => {
+        const state = resultsDegraded
+          ? 'unknown'
+          : balance.owedPence > 0
+            ? 'owes'
+            : 'clear';
+
+        return (
+          <div key={balance.member.entryId} className={`${classes.row} ${classes[state]}`}>
+            <div className={classes.rowMain}>
+              <Avatar
+                teamName={balance.member.teamName}
+                managerName={balance.member.managerName}
+                size={44}
+              />
+              <span className={classes.name}>{balance.member.teamName}</span>
+              <span className={classes.manager}>
+                {balance.departed ? 'Left the league' : balance.member.managerName}
+              </span>
+
+              <div className={classes.amount}>
+                {state === 'unknown' && <span className={classes.tagUnknown}>Unknown</span>}
+                {state === 'clear' && <span className={classes.tagClear}>Clear</span>}
+                {state === 'owes' && (
+                  <>
+                    <span className={classes.tagOwes}>Owes</span>
+                    <span className={classes.owed}>{pounds(balance.owedPence)}</span>
+                    {monzoUrl && (
+                      <a
+                        className={classes.pay}
+                        href={monzoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Pay
+                      </a>
+                    )}
+                  </>
                 )}
               </div>
-            </Group>
+            </div>
 
-            {resultsDegraded ? (
-              <Badge color="gray" variant="light">
-                Unknown
-              </Badge>
-            ) : balance.owedPence === 0 ? (
-              <Badge color="green" variant="light">
-                Clear
-              </Badge>
-            ) : (
-              <Text fw={700} c="red" className={classes.owed}>
-                {pounds(balance.owedPence)}
-              </Text>
+            {!resultsDegraded && (
+              <div className={classes.meta}>
+                {balance.lost.length} lost &middot; {pounds(balance.paidPence)} paid
+              </div>
             )}
-          </Group>
 
-          {!resultsDegraded && (
-            <Text size="xs" c="dimmed" mt="xs" className={classes.meta}>
-              {balance.lost.length} lost &middot; {pounds(balance.paidPence)} paid
-            </Text>
-          )}
-
-          {!resultsDegraded && balance.unpaid.length > 0 && (
-            <Group gap={6} mt="sm" className={classes.toggles}>
-              {balance.unpaid.map((gameweek) => (
-                <AdminToggle
-                  key={gameweek}
-                  gameweek={gameweek}
-                  entryId={balance.member.entryId}
-                  paid={false}
-                  label={`GW${gameweek}`}
-                />
-              ))}
-            </Group>
-          )}
-        </Card>
-      ))}
-    </Stack>
+            {!resultsDegraded && balance.unpaid.length > 0 && (
+              <Group gap={6} mt="xs" className={classes.toggles}>
+                {balance.unpaid.map((gameweek) => (
+                  <AdminToggle
+                    key={gameweek}
+                    gameweek={gameweek}
+                    entryId={balance.member.entryId}
+                    paid={false}
+                    label={`GW${gameweek}`}
+                  />
+                ))}
+              </Group>
+            )}
+          </div>
+        );
+      })}
+    </div>
   );
 }

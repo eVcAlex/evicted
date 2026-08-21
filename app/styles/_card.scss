@@ -1,0 +1,120 @@
+// Shared pieces of the card/dark motif: a filled hero for the one thing that
+// matters most on a page, plain bordered surfaces for everything else, and a
+// consistent listing row — the vocabulary Header, PreSeason, LoserCard,
+// SeasonGrid and BalancesTable all pull from instead of each inventing their
+// own panel.
+//
+// A consuming module's own `@use` of this partial does not inherit the
+// `mantine` namespace next.config.ts injects via `additionalData` — each
+// module boundary needs its own `@use`, resolved via the `loadPaths` root the
+// same way that injected line is.
+@use '_mantine' as mantine;
+
+/// A plain bordered panel on the app's surface tone — the listing/table
+/// container every page reaches for by default.
+@mixin surface {
+  background-color: var(--surface);
+  border: mantine.rem(1) solid var(--border);
+  border-radius: mantine.rem(6);
+}
+
+/// The one filled, elevated block per page — the evicted card, the
+/// pre-season splash, the deadline notice. Solid fill, one neutral shadow
+/// for lift, no gradient.
+@mixin hero($accent: red) {
+  background-color: var(--mantine-color-#{$accent}-8);
+  border-radius: mantine.rem(6);
+  color: #fff;
+  box-shadow: 0 mantine.rem(14) mantine.rem(30) mantine.rem(-12) rgba(0, 0, 0, 0.55);
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: rise 380ms ease-out;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(mantine.rem(8));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/// The small bold-mono eyebrow label. On a filled `hero`, pass `$onDark:
+/// true` for the dimmed-white tone; on the plain page ground it defaults to
+/// the app's `--text-dim`.
+@mixin kicker($onDark: false) {
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
+  font-weight: 600;
+  letter-spacing: mantine.rem(1);
+  text-transform: uppercase;
+
+  @if $onDark {
+    color: rgba(255, 255, 255, 0.65);
+  } @else {
+    color: var(--text-dim);
+  }
+}
+
+/// A single dense line in a listing — the member roster, the balances list.
+@mixin listing-row($padding: mantine.rem(12) mantine.rem(16)) {
+  display: flex;
+  align-items: center;
+  gap: mantine.rem(12);
+  padding: $padding;
+  border-bottom: mantine.rem(1) solid var(--border);
+  font-family: var(--font-body);
+  font-size: mantine.rem(14);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+/// A small state label — clear / provisional / owed. `$tone` is a Mantine
+/// color name; omit for the neutral "unknown" reading.
+@mixin tag($tone: null) {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
+  font-weight: 700;
+  letter-spacing: mantine.rem(0.5);
+  text-transform: uppercase;
+  padding: mantine.rem(3) mantine.rem(8);
+  border-radius: mantine.rem(4);
+
+  @if $tone {
+    color: var(--mantine-color-#{$tone}-4);
+    border: mantine.rem(1) solid var(--mantine-color-#{$tone}-7);
+  } @else {
+    color: var(--text-dim);
+    border: mantine.rem(1) dashed var(--border);
+  }
+}
+
+/// Truncates to one line rather than wrapping — required once a row is a
+/// single dense line instead of a stacked card.
+@mixin truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/// The page headline repeated at the top of every page.
+@mixin page-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(34);
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: var(--text);
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    font-size: mantine.rem(28);
+  }
+}

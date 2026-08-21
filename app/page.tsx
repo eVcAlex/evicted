@@ -3,6 +3,7 @@ import { fetchBootstrap, fetchHistory, fetchStandings } from '@/lib/fpl/client';
 import type { EntryHistory } from '@/lib/fpl/schemas';
 import { eligibleFromByEntry } from '@/lib/league/eligibility';
 import { currentGameweek, nextGameweek, revalidateFor } from '@/lib/league/gameweeks';
+import { lossesByEntry } from '@/lib/league/history';
 import { resolveMembers, type Member } from '@/lib/league/members';
 import { scoresForGameweek } from '@/lib/league/scoring';
 import { buildSummary } from '@/lib/league/summary';
@@ -17,7 +18,7 @@ const REVALIDATE_FOR_RECORDING = 0;
 
 function PaymentStoreNotice() {
   return (
-    <Alert color="orange" variant="light" title="Payment status unavailable" mb="lg">
+    <Alert color="red" variant="outline" title="Payment status unavailable" mb="lg">
       Could not reach the payment store. Payment state below is unknown, not
       settled, and recently finished gameweeks may not have been recorded yet.
     </Alert>
@@ -68,12 +69,17 @@ export default async function HomePage() {
 
   const histories = await loadHistories(members, revalidate);
 
-  const { degraded: recordDegraded } = await safeRecordSettledGameweeks({
+  // Reused, not refetched: `safeRecordSettledGameweeks` already reads the full
+  // ledger to decide what's pending, so the same map that came back covers
+  // every gameweek recorded before this one — exactly the history a quip
+  // needs to notice a streak.
+  const { results: recordedResults, degraded: recordDegraded } = await safeRecordSettledGameweeks({
     bootstrap,
     members,
     eligibleFrom,
     fetchHistories: () => loadHistories(members, REVALIDATE_FOR_RECORDING),
   });
+  const previousLosses = lossesByEntry(recordedResults);
 
   const summary = buildSummary({
     gameweek: current.id,
@@ -87,7 +93,12 @@ export default async function HomePage() {
   return (
     <>
       {(paidDegraded || recordDegraded) && <PaymentStoreNotice />}
-      <LoserCard summary={summary} paid={paid} degraded={paidDegraded} />
+      <LoserCard
+        summary={summary}
+        paid={paid}
+        degraded={paidDegraded}
+        previousLosses={previousLosses}
+      />
     </>
   );
 }

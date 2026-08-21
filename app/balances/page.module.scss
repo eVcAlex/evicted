@@ -1,10 +1,29 @@
-.title {
-  font-size: mantine.rem(36);
-  font-weight: 900;
-  letter-spacing: mantine.rem(-1);
-  text-transform: uppercase;
+@use '../styles/card';
 
-  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
-    font-size: mantine.rem(28);
-  }
+.title {
+  @include card.page-title;
+}
+
+.summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: mantine.rem(12);
+  @include card.surface;
+  padding: mantine.rem(14) mantine.rem(18);
+  margin-bottom: mantine.rem(20);
+}
+
+.summaryLabel {
+  font-family: var(--font-mono);
+  font-size: mantine.rem(13);
+  color: var(--text-dim);
+}
+
+.summaryValue {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(30);
+  font-variant-numeric: tabular-nums;
+  color: var(--mantine-color-red-4);
 }

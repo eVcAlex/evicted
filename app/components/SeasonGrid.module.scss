@@ -1,0 +1,122 @@
+.scroll {
+  overflow-x: auto;
+  background-color: var(--surface);
+  border: mantine.rem(1) solid var(--border);
+  border-radius: mantine.rem(6);
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.corner,
+.rowHeader {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: var(--surface);
+}
+
+.gwHeader {
+  padding: mantine.rem(10) mantine.rem(10);
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
+  font-weight: 600;
+  letter-spacing: mantine.rem(0.5);
+  color: var(--mantine-color-red-4);
+  text-align: center;
+  white-space: nowrap;
+  border-bottom: mantine.rem(1) solid var(--border);
+}
+
+.corner {
+  border-bottom: mantine.rem(1) solid var(--border);
+}
+
+.rowHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: mantine.rem(10);
+  padding: mantine.rem(10) mantine.rem(14);
+  border-bottom: mantine.rem(1) solid var(--border);
+  border-right: mantine.rem(1) solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+  font-family: var(--font-body);
+
+  tr:last-child & {
+    border-bottom: none;
+  }
+}
+
+.rowIdentity {
+  display: flex;
+  align-items: center;
+  gap: mantine.rem(8);
+  min-width: 0;
+}
+
+.teamName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 700;
+  font-size: mantine.rem(13);
+  color: var(--text);
+}
+
+.evictionCount {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
+  font-weight: 600;
+  color: var(--mantine-color-red-4);
+  font-variant-numeric: tabular-nums;
+}
+
+.cell {
+  padding: mantine.rem(10);
+  border-bottom: mantine.rem(1) solid var(--border);
+  text-align: center;
+
+  tr:last-child & {
+    border-bottom: none;
+  }
+}
+
+.evicted,
+.played,
+.absent {
+  display: inline-block;
+  width: mantine.rem(14);
+  height: mantine.rem(14);
+  border-radius: mantine.rem(3);
+}
+
+.evicted {
+  background-color: var(--mantine-color-red-6);
+}
+
+.played {
+  border: mantine.rem(1.5) solid var(--text-dim);
+}
+
+.absent {
+  border: mantine.rem(1) dashed var(--border);
+  opacity: 0.6;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

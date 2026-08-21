@@ -1,0 +1,15 @@
+// Structural tokens for the card/dark direction. Mirrors the `dark` scale in
+// `layout.tsx` (dark-9/dark-7/dark-4) so hand-styled components and Mantine's
+// own internals land on the same three surfaces without fighting each other.
+:root {
+  --bg: #101215;
+  --surface: #17191d;
+  --border: #2b2e34;
+  --text: #eeece6;
+  --text-dim: #8d9096;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
