@@ -30,3 +30,12 @@ export const FPL_BASE = 'https://fantasy.premierleague.com/api';
  */
 export const FPL_USER_AGENT =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36';
+
+/**
+ * FPL Draft league "Evicted" — the same friend group's separate, no-money,
+ * 5-person competition.
+ */
+export const DRAFT_LEAGUE_ID = 77196;
+
+/** Base URL for the FPL Draft API — a different host and payload shape from classic. */
+export const DRAFT_BASE = 'https://draft.premierleague.com/api';

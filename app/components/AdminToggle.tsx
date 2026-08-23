@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Group, Modal, PasswordInput } from '@mantine/core';
 import { PIN_STORAGE_KEY } from '@/lib/adminPinStorage';
@@ -25,6 +25,15 @@ export function AdminToggle({
   const [opened, setOpened] = useState(false);
   const [pin, setPin] = useState('');
   const [error, setError] = useState<string | null>(null);
+  // Visible only once this browser already holds an admin PIN (set via
+  // /admin, which is deliberately unlinked from the public nav) — the
+  // public site shouldn't surface an admin action to every visitor just
+  // because the PIN prompt would reject them.
+  const [knownAdmin, setKnownAdmin] = useState(false);
+
+  useEffect(() => {
+    setKnownAdmin(!!window.localStorage.getItem(PIN_STORAGE_KEY));
+  }, []);
 
   async function submit(candidatePin: string) {
     setBusy(true);
@@ -81,6 +90,8 @@ export function AdminToggle({
     if (!pin) return;
     submit(pin);
   }
+
+  if (!knownAdmin) return null;
 
   return (
     <>

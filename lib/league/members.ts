@@ -1,9 +1,7 @@
 import type { LeagueStandings } from '@/lib/fpl/schemas';
+import type { Identity } from '@/lib/identity';
 
-export interface Member {
-  entryId: number;
-  managerName: string;
-  teamName: string;
+export interface Member extends Identity {
   /**
    * When this manager joined *this league*, ISO 8601, or null when FPL does not
    * tell us. Only `new_entries.results` rows carry it; a member who has already

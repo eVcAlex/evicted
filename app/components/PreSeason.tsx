@@ -1,5 +1,5 @@
 import { Stack, Text } from '@mantine/core';
-import type { Member } from '@/lib/league/members';
+import type { Identity } from '@/lib/identity';
 import { Avatar } from './Avatar';
 import classes from './PreSeason.module.scss';
 
@@ -8,7 +8,7 @@ export function PreSeason({
   deadline,
   gameweekName,
 }: {
-  members: Member[];
+  members: Identity[];
   deadline: string | null;
   gameweekName: string | null;
 }) {

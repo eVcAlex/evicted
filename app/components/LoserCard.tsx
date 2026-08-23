@@ -78,59 +78,72 @@ export function LoserCard({
           });
 
           return (
-            <div key={member.entryId} className={classes.hero}>
-              <div className={classes.heroTop}>
-                <div>
-                  <span className={classes.kicker}>Sent off</span>
-                  <Title order={1} className={classes.heroTitle}>
-                    Evicted
-                  </Title>
+            <div key={member.entryId}>
+              <div className={classes.receipt}>
+                <div className={classes.receiptHead}>
+                  <div className={classes.receiptAvatar}>
+                    <Avatar teamName={member.teamName} managerName={member.managerName} size={54} />
+                  </div>
+                  <div className={classes.receiptTitle}>Evicted</div>
+                  <div className={classes.receiptSub}>#EvictionNotice</div>
                 </div>
-                <Avatar
-                  teamName={member.teamName}
-                  managerName={member.managerName}
-                  size={112}
-                  className={classes.badge}
-                />
-              </div>
 
-              <div className={classes.teamRow}>
-                <Text className={classes.teamName}>{member.teamName}</Text>
-                <Text className={classes.managerName}>{member.managerName}</Text>
-              </div>
+                <div className={classes.dash} />
 
-              <div className={classes.scoreRow}>
-                <span className={classes.scoreValue}>{score.net}</span>
-                <span className={classes.scoreLabel}>net pts</span>
-              </div>
+                <div className={classes.line}>
+                  <span>
+                    {member.managerName} ({member.teamName})
+                  </span>
+                  <span />
+                </div>
+                <div className={classes.line}>
+                  <span>Team score</span>
+                  <span>{score.gross}</span>
+                </div>
+                <div className={classes.line}>
+                  <span>Hits</span>
+                  <span>&minus;{score.hits}</span>
+                </div>
+                <div className={classes.line}>
+                  <span>Bench (unused)</span>
+                  <span>{score.bench}</span>
+                </div>
 
-              <div className={classes.statsRow}>
-                <span>Gross {score.gross}</span>
-                <span>Hits &minus;{score.hits}</span>
-                <span>Bench {score.bench}</span>
-              </div>
+                <div className={classes.dash} />
 
-              <Text className={classes.quip}>&ldquo;{quip}&rdquo;</Text>
+                <div className={classes.lineTotal}>
+                  <span>Net pts</span>
+                  <span>{score.net}</span>
+                </div>
+                <div className={classes.lineTotal}>
+                  <span>Amount due</span>
+                  <span>£2.00</span>
+                </div>
 
-              <div className={classes.heroFooter}>
+                <Text className={classes.quip}>&ldquo;{quip}&rdquo;</Text>
+
                 {degraded ? (
-                  <span className={classes.status}>Unknown</span>
+                  <span className={classes.stamp}>Status unknown</span>
                 ) : settled ? (
-                  <span className={classes.statusPaid}>Paid</span>
+                  <span className={classes.stampPaid}>Paid</span>
                 ) : MONZO_ME_URL ? (
-                  <a className={classes.pay} href={MONZO_ME_URL} target="_blank" rel="noopener noreferrer">
+                  <a className={classes.stamp} href={MONZO_ME_URL} target="_blank" rel="noopener noreferrer">
                     Pay £2
                   </a>
                 ) : (
-                  <span className={classes.statusDue}>Owes £2</span>
+                  <span className={classes.stamp}>Owes £2</span>
                 )}
-                <AdminToggle
-                  gameweek={summary.gameweek}
-                  entryId={member.entryId}
-                  paid={settled}
-                  variant="white"
-                />
+
+                <div className={classes.adminRow}>
+                  <AdminToggle
+                    gameweek={summary.gameweek}
+                    entryId={member.entryId}
+                    paid={settled}
+                    variant="subtle"
+                  />
+                </div>
               </div>
+              <div className={classes.zigzagBottom} />
             </div>
           );
         })}

@@ -1,6 +1,6 @@
-import type { GameweekResult } from '@/lib/ledger/store';
+import type { GridResult } from '@/lib/gameweekResult';
+import type { Identity } from '@/lib/identity';
 import { lossesByEntry } from '@/lib/league/history';
-import type { Member } from '@/lib/league/members';
 import { Avatar } from './Avatar';
 import classes from './SeasonGrid.module.scss';
 
@@ -13,9 +13,12 @@ import classes from './SeasonGrid.module.scss';
 export function SeasonGrid({
   members,
   results,
+  verb = 'evicted',
 }: {
-  members: Member[];
-  results: Map<number, GameweekResult>;
+  members: Identity[];
+  results: Map<number, GridResult>;
+  /** The word describing a filled cell, e.g. "bottom" for a no-money league. */
+  verb?: string;
 }) {
   const gameweeks = [...results.keys()].sort((a, b) => a - b);
 
@@ -79,7 +82,7 @@ export function SeasonGrid({
                   const played = member.entryId in result.scores;
                   const evicted = result.losers.includes(member.entryId);
                   const label = played
-                    ? `GW${gw} — ${member.teamName}, ${net} pts${evicted ? ', evicted' : ''}`
+                    ? `GW${gw} — ${member.teamName}, ${net} pts${evicted ? `, ${verb}` : ''}`
                     : `GW${gw} — not yet a member`;
 
                   return (

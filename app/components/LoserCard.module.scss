@@ -37,164 +37,126 @@
   max-width: 40ch;
 }
 
-/* The signature moment: a solid filled card, lifted with one neutral
- * shadow — no gradient, no glow, no rotation. */
-.hero {
-  @include card.hero($accent: violet);
-  padding: mantine.rem(24) mantine.rem(24) mantine.rem(22);
+/* The signature moment: a torn-paper receipt — light stock on the dark
+ * page, itemised like an actual till slip. Deliberately not violet: the
+ * one moment on the site that reads as a physical object landing on the
+ * page rather than another dark card. */
+$paper: #f4f1ea;
+$ink: #26241c;
+$ink-dim: #6b6858;
+$rule: #b7b2a0;
+
+/* Torn only at the bottom, like an actual receipt — the top is where the
+ * roll starts (a clean cut), the bottom is where it's torn off. */
+.zigzagBottom {
+  height: mantine.rem(9);
+  background:
+    linear-gradient(135deg, $paper 50%, transparent 50%) 0 0 / mantine.rem(9) mantine.rem(9),
+    linear-gradient(-135deg, $paper 50%, transparent 50%) 0 0 / mantine.rem(9) mantine.rem(9);
+  background-color: var(--bg);
+  background-repeat: repeat-x;
 }
 
-.heroTop {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: mantine.rem(14);
+.receipt {
+  background-color: $paper;
+  color: $ink;
+  border-radius: mantine.rem(6) mantine.rem(6) 0 0;
+  box-shadow: 0 mantine.rem(14) mantine.rem(30) mantine.rem(-12) rgba(0, 0, 0, 0.6);
+  padding: mantine.rem(18) mantine.rem(20) mantine.rem(20);
 }
 
-.kicker {
-  @include card.kicker($onDark: true);
+.receiptHead {
+  text-align: center;
 }
 
-.heroTitle {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: mantine.rem(30);
-  line-height: 0.95;
-  text-transform: uppercase;
-  margin-top: mantine.rem(4);
-}
+.receiptAvatar {
+  display: inline-block;
+  margin-bottom: mantine.rem(10);
 
-/* Pops above the card's own top edge, like a mugshot dropped onto a
- * charge sheet — the transparent floating-head cutouts are made for this,
- * and it holds up for the initials tile too. Sized up now that most of the
- * league has a real photo: this is the one moment worth spending it on. */
-.badge {
-  margin-top: mantine.rem(-40);
-
-  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
-    width: mantine.rem(84) !important;
-    height: mantine.rem(84) !important;
-    font-size: mantine.rem(30) !important;
-    margin-top: mantine.rem(-40);
+  img {
+    filter: grayscale(1) contrast(1.15);
   }
 }
 
-.teamRow {
-  margin-top: mantine.rem(20);
-}
-
-.teamName {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: mantine.rem(30);
-  line-height: 1;
-  text-transform: uppercase;
-
-  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
-    font-size: mantine.rem(24);
-  }
-}
-
-.managerName {
+.receiptTitle {
+  font-family: var(--font-mono);
+  font-weight: 700;
   font-size: mantine.rem(13);
-  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: mantine.rem(1.5);
+  text-transform: uppercase;
+}
+
+.receiptSub {
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
+  color: $ink-dim;
   margin-top: mantine.rem(3);
 }
 
-.scoreRow {
+.dash {
+  border-top: mantine.rem(1) dashed $rule;
+  margin: mantine.rem(12) 0;
+}
+
+.line {
   display: flex;
-  align-items: baseline;
-  gap: mantine.rem(10);
-  margin-top: mantine.rem(20);
-}
-
-.scoreValue {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: mantine.rem(88);
-  line-height: 0.8;
-  font-variant-numeric: tabular-nums;
-
-  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
-    font-size: mantine.rem(64);
-  }
-}
-
-.scoreLabel {
+  justify-content: space-between;
   font-family: var(--font-mono);
   font-size: mantine.rem(12);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: mantine.rem(0.5);
-  color: rgba(255, 255, 255, 0.6);
+  padding: mantine.rem(3) 0;
 }
 
-.statsRow {
+.lineTotal {
   display: flex;
-  flex-wrap: wrap;
-  gap: mantine.rem(4) mantine.rem(16);
-  margin-top: mantine.rem(14);
+  justify-content: space-between;
   font-family: var(--font-mono);
-  font-size: mantine.rem(13);
-  color: rgba(255, 255, 255, 0.72);
-  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: mantine.rem(14);
+  margin-top: mantine.rem(6);
 }
 
 .quip {
-  margin-top: mantine.rem(18);
-  padding-left: mantine.rem(14);
-  border-left: mantine.rem(3) solid rgba(255, 255, 255, 0.35);
   font-family: var(--font-body);
+  font-size: mantine.rem(11);
   font-style: italic;
-  font-size: mantine.rem(15);
-  line-height: 1.4;
-  color: rgba(255, 255, 255, 0.92);
+  color: $ink-dim;
+  margin-top: mantine.rem(12);
+  text-align: center;
 }
 
-.heroFooter {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: mantine.rem(12);
-  margin-top: mantine.rem(20);
-  padding-top: mantine.rem(16);
-  border-top: mantine.rem(1) solid rgba(255, 255, 255, 0.2);
-}
-
-.status,
-.statusPaid,
-.statusDue {
+.stamp,
+.stampPaid {
+  display: block;
+  margin-top: mantine.rem(16);
   font-family: var(--font-mono);
   font-size: mantine.rem(12);
   font-weight: 700;
-  letter-spacing: mantine.rem(0.5);
+  letter-spacing: mantine.rem(1);
   text-transform: uppercase;
-}
-
-.status {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.statusPaid {
-  color: #fff;
-}
-
-.statusDue {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.pay {
-  font-family: var(--font-body);
-  font-size: mantine.rem(13);
-  font-weight: 700;
-  color: var(--mantine-color-violet-8);
-  background-color: #fff;
-  border-radius: mantine.rem(6);
-  padding: mantine.rem(8) mantine.rem(16);
+  text-align: center;
+  border: mantine.rem(1) dashed $ink;
+  border-radius: mantine.rem(2);
+  padding: mantine.rem(9);
+  color: $ink;
   text-decoration: none;
-  transition: opacity 150ms ease;
 
   @include mantine.hover {
-    opacity: 0.85;
+    opacity: 0.75;
+  }
+}
+
+.stampPaid {
+  border-style: solid;
+  color: $paper;
+  background-color: $ink;
+}
+
+.adminRow {
+  display: flex;
+  justify-content: center;
+  margin-top: mantine.rem(8);
+
+  &:empty {
+    display: none;
   }
 }

@@ -10,7 +10,19 @@ const LINKS = [
   { href: '/', label: 'This week' },
   { href: '/season', label: 'Season' },
   { href: '/balances', label: 'Balances' },
+  // The no-money side attraction — kept after the money tabs on purpose.
+  { href: '/draft', label: 'Draft' },
 ];
+
+/**
+ * Exact match for home (otherwise every route would light it up); prefix
+ * match everywhere else, since /draft now has a sub-route (/draft/season)
+ * that should still highlight the "Draft" tab.
+ */
+function isActive(pathname: string, href: string): boolean {
+  if (href === '/') return pathname === '/';
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function Header() {
   const pathname = usePathname();
@@ -30,7 +42,7 @@ export function Header() {
                 component={Link}
                 href={href}
                 underline="never"
-                className={`${classes.tab} ${pathname === href ? classes.tabActive : ''}`.trim()}
+                className={`${classes.tab} ${isActive(pathname, href) ? classes.tabActive : ''}`.trim()}
               >
                 {label}
               </Anchor>

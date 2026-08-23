@@ -1,14 +1,14 @@
-import type { GameweekResult } from '@/lib/ledger/store';
-import type { Member } from './members';
+import type { GridResult } from '@/lib/gameweekResult';
+import type { Identity } from '@/lib/identity';
 import { lossesByEntry } from './history';
 
 export interface HallOfShame {
   /** Everyone tied on the highest eviction count, and what that count is. */
-  mostEvictions: { members: Member[]; count: number } | null;
+  mostEvictions: { members: Identity[]; count: number } | null;
   /** The single lowest net score ever recorded, and who posted it. */
-  worst: { member: Member; gameweek: number; net: number } | null;
+  worst: { member: Identity; gameweek: number; net: number } | null;
   /** Most consecutive *recorded* gameweeks a manager has avoided the bottom. */
-  longestCleanRun: { member: Member; weeks: number } | null;
+  longestCleanRun: { member: Identity; weeks: number } | null;
 }
 
 /**
@@ -20,8 +20,8 @@ export interface HallOfShame {
  * can identify any more is just noise.
  */
 export function buildHallOfShame(params: {
-  members: Member[];
-  results: Map<number, GameweekResult>;
+  members: Identity[];
+  results: Map<number, GridResult>;
 }): HallOfShame {
   const { members, results } = params;
   const byEntryId = new Map(members.map((m) => [m.entryId, m]));
@@ -34,8 +34,8 @@ export function buildHallOfShame(params: {
 }
 
 function mostEvictions(
-  byEntryId: Map<number, Member>,
-  results: Map<number, GameweekResult>,
+  byEntryId: Map<number, Identity>,
+  results: Map<number, GridResult>,
 ): HallOfShame['mostEvictions'] {
   const losses = lossesByEntry(results);
   let count = 0;
@@ -52,8 +52,8 @@ function mostEvictions(
 }
 
 function worstSingleScore(
-  byEntryId: Map<number, Member>,
-  results: Map<number, GameweekResult>,
+  byEntryId: Map<number, Identity>,
+  results: Map<number, GridResult>,
 ): HallOfShame['worst'] {
   let worst: HallOfShame['worst'] = null;
 
@@ -72,8 +72,8 @@ function worstSingleScore(
 }
 
 function longestCleanRun(
-  members: Member[],
-  results: Map<number, GameweekResult>,
+  members: Identity[],
+  results: Map<number, GridResult>,
 ): HallOfShame['longestCleanRun'] {
   const gameweeksDesc = [...results.keys()].sort((a, b) => b - a);
   if (gameweeksDesc.length === 0) return null;

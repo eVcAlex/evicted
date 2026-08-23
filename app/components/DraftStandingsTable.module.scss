@@ -1,0 +1,102 @@
+@use '../styles/card';
+
+.scroll {
+  @include card.surface;
+  overflow-x: auto;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+thead {
+  .rank,
+  .team,
+  .stat {
+    padding: mantine.rem(10);
+    font-family: var(--font-mono);
+    font-size: mantine.rem(11);
+    font-weight: 600;
+    letter-spacing: mantine.rem(0.5);
+    text-transform: uppercase;
+    color: var(--mantine-color-violet-4);
+    border-bottom: mantine.rem(1) solid var(--border);
+    white-space: nowrap;
+  }
+
+  .team {
+    text-align: left;
+  }
+}
+
+.row {
+  border-bottom: mantine.rem(1) solid var(--border);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.rank {
+  width: mantine.rem(48);
+  padding: mantine.rem(10);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: mantine.rem(12);
+  font-weight: 600;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.team {
+  padding: mantine.rem(10) mantine.rem(14);
+  text-align: left;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: mantine.rem(10);
+  min-width: 0;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.teamName {
+  @include card.truncate;
+  font-weight: 700;
+  font-size: mantine.rem(13);
+  color: var(--text);
+}
+
+.managerName {
+  @include card.truncate;
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
+  color: var(--text-dim);
+}
+
+.stat {
+  padding: mantine.rem(10);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: mantine.rem(13);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+}
+
+.statTotal {
+  @extend .stat;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.average {
+  opacity: 0.6;
+  font-style: italic;
+}
