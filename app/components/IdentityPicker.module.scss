@@ -1,0 +1,57 @@
+@use '../styles/card';
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  @include card.listing-row;
+  width: 100%;
+  background: none;
+  border: none;
+  border-radius: mantine.rem(6);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 150ms ease;
+
+  @include mantine.hover {
+    background-color: color-mix(in srgb, var(--mantine-color-violet-6) 8%, transparent);
+  }
+}
+
+.rowActive {
+  background-color: var(--mantine-color-violet-9);
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: mantine.rem(2);
+  min-width: 0;
+  flex: 1;
+}
+
+.name {
+  @include card.truncate;
+  font-weight: 700;
+  font-size: mantine.rem(14);
+  color: var(--text);
+}
+
+.manager {
+  @include card.truncate;
+  font-family: var(--font-mono);
+  font-size: mantine.rem(12);
+  color: var(--text-dim);
+}
+
+.badge {
+  @include card.tag(violet);
+  flex-shrink: 0;
+}
+
+.empty {
+  font-size: mantine.rem(13);
+  color: var(--text-dim);
+}

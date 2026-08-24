@@ -38,7 +38,7 @@ export default async function SeasonPage() {
         </Alert>
       )}
 
-      <SeasonGrid members={members} results={results} />
+      <SeasonGrid members={members} results={results} league="classic" />
 
       {shame && (
         <div className={classes.shame}>

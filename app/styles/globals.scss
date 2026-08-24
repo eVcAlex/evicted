@@ -12,4 +12,8 @@
 body {
   background-color: var(--bg);
   color: var(--text);
+  // Safety net against sideways pan on narrow screens — `clip` rather than
+  // `hidden` so it doesn't turn the body into a scroll container, which
+  // would break the sticky header in `Header.module.scss`.
+  overflow-x: clip;
 }

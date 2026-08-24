@@ -17,7 +17,14 @@ export default async function DraftPage() {
   const members = resolveDraftMembers(details);
 
   if (details.league.draft_status === 'pre') {
-    return <PreSeason members={members} deadline={details.league.draft_dt} gameweekName="Draft" />;
+    return (
+      <PreSeason
+        members={members}
+        deadline={details.league.draft_dt}
+        gameweekName="Draft"
+        league="draft"
+      />
+    );
   }
 
   // No money on the line here, so unlike the classic league's "who's

@@ -162,6 +162,13 @@
   opacity: 0.6;
 }
 
+.you {
+  .rowHeader {
+    border-left: mantine.rem(2) solid var(--mantine-color-violet-6);
+    background-color: var(--mantine-color-violet-9);
+  }
+}
+
 .srOnly {
   position: absolute;
   width: 1px;

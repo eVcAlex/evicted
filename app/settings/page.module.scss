@@ -1,0 +1,25 @@
+@use '../styles/card';
+
+.title {
+  @include card.page-title;
+}
+
+.section {
+  @include card.surface;
+  padding: mantine.rem(18) mantine.rem(18) mantine.rem(20);
+  margin-bottom: mantine.rem(16);
+}
+
+.sectionKicker {
+  @include card.kicker;
+  color: var(--mantine-color-violet-4);
+  display: block;
+  margin-bottom: mantine.rem(12);
+}
+
+.notificationRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: mantine.rem(12);
+}

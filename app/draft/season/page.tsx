@@ -42,7 +42,7 @@ export default async function DraftSeasonPage() {
         Every gameweek, every manager, one glance.
       </Text>
 
-      <SeasonGrid members={members} results={results} verb="bottom" />
+      <SeasonGrid members={members} results={results} verb="bottom" league="draft" />
 
       {shame && awards && <DraftAwards shame={shame} awards={awards} />}
     </>

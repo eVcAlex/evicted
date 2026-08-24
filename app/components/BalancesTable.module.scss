@@ -11,6 +11,11 @@
   gap: mantine.rem(4);
 }
 
+.you {
+  border-left: mantine.rem(2) solid var(--mantine-color-violet-6);
+  background-color: var(--mantine-color-violet-9);
+}
+
 .rowMain {
   display: flex;
   align-items: center;

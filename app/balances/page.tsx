@@ -6,6 +6,7 @@ import { resolveMembers } from '@/lib/league/members';
 import { buildBalances } from '@/lib/league/balances';
 import { safeGetPaid, safeGetResults } from '@/lib/ledger/safe';
 import { BalancesTable } from '../components/BalancesTable';
+import { YourBalance } from '../components/YourBalance';
 import classes from './page.module.scss';
 
 export const dynamic = 'force-dynamic';
@@ -58,6 +59,7 @@ export default async function BalancesPage() {
           </Alert>
         )
       )}
+      {!resultsDegraded && <YourBalance balances={balances} monzoUrl={MONZO_ME_URL} />}
       <BalancesTable
         balances={balances}
         resultsDegraded={resultsDegraded}

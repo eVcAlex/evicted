@@ -1,5 +1,7 @@
 import type { StandingsRow } from '@/lib/draft/standings';
 import { Avatar } from './Avatar';
+import { MeRow } from './MeRow';
+import { YouTag } from './YouTag';
 import classes from './DraftStandingsTable.module.scss';
 
 /**
@@ -40,11 +42,8 @@ export function DraftStandingsTable({ rows }: { rows: StandingsRow[] }) {
         <tbody>
           {rows.map((row) => {
             const isAverage = row.member.teamId === null;
-            return (
-              <tr
-                key={row.member.entryId}
-                className={isAverage ? `${classes.row} ${classes.average}` : classes.row}
-              >
+            const rowContent = (
+              <>
                 <td className={classes.rank}>{row.rank ?? '–'}</td>
                 <td className={classes.team}>
                   {isAverage ? (
@@ -57,7 +56,10 @@ export function DraftStandingsTable({ rows }: { rows: StandingsRow[] }) {
                         size={28}
                       />
                       <div className={classes.names}>
-                        <span className={classes.teamName}>{row.member.teamName}</span>
+                        <span className={classes.teamName}>
+                          {row.member.teamName}
+                          <YouTag entryId={row.member.entryId} league="draft" />
+                        </span>
                         <span className={classes.managerName}>{row.member.managerName}</span>
                       </div>
                     </div>
@@ -68,7 +70,28 @@ export function DraftStandingsTable({ rows }: { rows: StandingsRow[] }) {
                 <td className={classes.stat}>{row.lost}</td>
                 <td className={classes.stat}>{row.pointsFor - row.pointsAgainst}</td>
                 <td className={classes.statTotal}>{row.total}</td>
-              </tr>
+              </>
+            );
+
+            if (isAverage) {
+              return (
+                <tr key={row.member.entryId} className={`${classes.row} ${classes.average}`}>
+                  {rowContent}
+                </tr>
+              );
+            }
+
+            return (
+              <MeRow
+                key={row.member.entryId}
+                component="tr"
+                league="draft"
+                entryId={row.member.entryId}
+                className={classes.row}
+                meClassName={classes.you}
+              >
+                {rowContent}
+              </MeRow>
             );
           })}
         </tbody>

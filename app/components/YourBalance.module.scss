@@ -1,0 +1,37 @@
+@use '../styles/card';
+
+.line {
+  @include card.surface;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: mantine.rem(12);
+  padding: mantine.rem(12) mantine.rem(16);
+  margin-bottom: mantine.rem(16);
+  border-color: var(--mantine-color-violet-7);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: mantine.rem(13);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.owes .label {
+  color: var(--mantine-color-yellow-4);
+}
+
+.pay {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
+  font-weight: 700;
+  letter-spacing: mantine.rem(0.5);
+  text-transform: uppercase;
+  padding: mantine.rem(5) mantine.rem(10);
+  border-radius: mantine.rem(6);
+  color: var(--mantine-color-yellow-4);
+  background-color: color-mix(in srgb, var(--mantine-color-yellow-4) 14%, transparent);
+  text-decoration: none;
+}

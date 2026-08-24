@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Anchor, Box, Container, Group } from '@mantine/core';
-import { PushToggle } from './PushToggle';
+import { Anchor, Box, Container } from '@mantine/core';
+import { SettingsLink } from './SettingsLink';
 import classes from './Header.module.scss';
 
 const LINKS = [
@@ -31,25 +31,24 @@ export function Header() {
     <Box component="header" className={classes.header}>
       <Container size="sm" className={classes.inner}>
         <Link href="/" className={classes.brand}>
-          <span className={classes.mark} aria-hidden="true" />
           <span className={classes.wordmark}>Evicted</span>
         </Link>
-        <Group gap="md" wrap="nowrap">
-          <Group gap="lg" className={classes.tabs} wrap="nowrap">
-            {LINKS.map(({ href, label }) => (
-              <Anchor
-                key={href}
-                component={Link}
-                href={href}
-                underline="never"
-                className={`${classes.tab} ${isActive(pathname, href) ? classes.tabActive : ''}`.trim()}
-              >
-                {label}
-              </Anchor>
-            ))}
-          </Group>
-          <PushToggle />
-        </Group>
+        <nav className={classes.tabs} aria-label="Primary">
+          {LINKS.map(({ href, label }) => (
+            <Anchor
+              key={href}
+              component={Link}
+              href={href}
+              underline="never"
+              className={`${classes.tab} ${isActive(pathname, href) ? classes.tabActive : ''}`.trim()}
+            >
+              {label}
+            </Anchor>
+          ))}
+        </nav>
+        <div className={classes.actions}>
+          <SettingsLink />
+        </div>
       </Container>
     </Box>
   );

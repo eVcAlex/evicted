@@ -5,6 +5,14 @@ const PUSH_KEY = 'evicted:push';
 export interface PushSubscriptionRecord {
   endpoint: string;
   keys: { p256dh: string; auth: string };
+  /**
+   * The classic league entry id of whoever owns this device, so `send.ts`
+   * can personalise the title when the eviction is theirs. `undefined` on
+   * every subscription saved before this field existed, and `null` when the
+   * device holder has explicitly not picked who they are — both read as
+   * "no personalisation" the same way.
+   */
+  entryId?: number | null;
 }
 
 let client: Redis | null = null;

@@ -1,0 +1,15 @@
+.link {
+  color: var(--text-dim);
+
+  @include mantine.hover {
+    color: var(--text);
+  }
+}
+
+.active {
+  color: var(--mantine-color-violet-4);
+}
+
+.avatar {
+  border-radius: 50%;
+}

@@ -145,14 +145,14 @@ export default function PreviewPage() {
         <Title order={2} mb="md">
           Season grid
         </Title>
-        <SeasonGrid members={SEASON_MEMBERS} results={SEASON_RESULTS} />
+        <SeasonGrid members={SEASON_MEMBERS} results={SEASON_RESULTS} league="classic" />
       </div>
 
       <div>
         <Title order={2} mb="md">
           Season grid — empty state
         </Title>
-        <SeasonGrid members={SEASON_MEMBERS} results={new Map()} />
+        <SeasonGrid members={SEASON_MEMBERS} results={new Map()} league="classic" />
       </div>
     </Stack>
   );

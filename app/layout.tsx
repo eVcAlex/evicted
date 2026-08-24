@@ -10,6 +10,7 @@ import {
   mantineHtmlProps,
 } from '@mantine/core';
 import { Header } from './components/Header';
+import { MeProvider } from './components/MeProvider';
 
 export const metadata = {
   title: 'Evicted',
@@ -173,10 +174,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <MantineProvider theme={theme} defaultColorScheme="dark">
-          <Header />
-          <Container size="sm" py="xl">
-            {children}
-          </Container>
+          <MeProvider>
+            <Header />
+            <Container size="sm" py="xl">
+              {children}
+            </Container>
+          </MeProvider>
         </MantineProvider>
       </body>
     </html>

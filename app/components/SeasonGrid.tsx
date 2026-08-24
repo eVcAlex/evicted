@@ -2,6 +2,8 @@ import type { GridResult } from '@/lib/gameweekResult';
 import type { Identity } from '@/lib/identity';
 import { lossesByEntry } from '@/lib/league/history';
 import { Avatar } from './Avatar';
+import { MeRow } from './MeRow';
+import { YouTag } from './YouTag';
 import classes from './SeasonGrid.module.scss';
 
 /**
@@ -14,11 +16,15 @@ export function SeasonGrid({
   members,
   results,
   verb = 'evicted',
+  league,
 }: {
   members: Identity[];
   results: Map<number, GridResult>;
   /** The word describing a filled cell, e.g. "bottom" for a no-money league. */
   verb?: string;
+  /** Classic and draft use different id spaces for the same human — see
+   * `lib/draft/members.ts` — so "is this row me?" needs to know which. */
+  league: 'classic' | 'draft';
 }) {
   const gameweeks = [...results.keys()].sort((a, b) => a - b);
 
@@ -68,11 +74,20 @@ export function SeasonGrid({
           {rows.map((member) => {
             const evictions = losses.get(member.entryId)?.length ?? 0;
             return (
-              <tr key={member.entryId}>
+              <MeRow
+                key={member.entryId}
+                component="tr"
+                league={league}
+                entryId={member.entryId}
+                meClassName={classes.you}
+              >
                 <th className={classes.rowHeader} scope="row">
                   <div className={classes.rowIdentity}>
                     <Avatar teamName={member.teamName} managerName={member.managerName} size={28} />
-                    <span className={classes.teamName}>{member.teamName}</span>
+                    <span className={classes.teamName}>
+                      {member.teamName}
+                      <YouTag entryId={member.entryId} league={league} />
+                    </span>
                   </div>
                   <span className={classes.evictionCount}>{evictions}</span>
                 </th>
@@ -97,7 +112,7 @@ export function SeasonGrid({
                     </td>
                   );
                 })}
-              </tr>
+              </MeRow>
             );
           })}
         </tbody>

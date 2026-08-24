@@ -5,6 +5,8 @@ import { pounds } from '@/lib/format';
 import type { Balance } from '@/lib/league/balances';
 import { AdminToggle } from './AdminToggle';
 import { Avatar } from './Avatar';
+import { useMe } from './MeProvider';
+import { YouTag } from './YouTag';
 import classes from './BalancesTable.module.scss';
 
 export function BalancesTable({
@@ -17,9 +19,12 @@ export function BalancesTable({
   /** A monzo.me link for the outstanding amount; `null` when unconfigured. */
   monzoUrl: string | null;
 }) {
+  const { me } = useMe();
+
   return (
     <div className={classes.sheet}>
       {balances.map((balance) => {
+        const isYou = me?.entryId === balance.member.entryId;
         const state = resultsDegraded
           ? 'unknown'
           : balance.owedPence > 0
@@ -50,7 +55,10 @@ export function BalancesTable({
         );
 
         return (
-          <div key={balance.member.entryId} className={`${classes.row} ${classes[state]}`}>
+          <div
+            key={balance.member.entryId}
+            className={`${classes.row} ${classes[state]}${isYou ? ` ${classes.you}` : ''}`}
+          >
             <div className={classes.rowMain}>
               <Avatar
                 teamName={balance.member.teamName}
@@ -58,7 +66,10 @@ export function BalancesTable({
                 size={40}
               />
               <div className={classes.identity}>
-                <span className={classes.name}>{balance.member.teamName}</span>
+                <span className={classes.name}>
+                  {balance.member.teamName}
+                  <YouTag entryId={balance.member.entryId} league="classic" />
+                </span>
                 <span className={classes.manager}>
                   {balance.departed ? 'Left the league' : balance.member.managerName}
                 </span>

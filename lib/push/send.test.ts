@@ -27,6 +27,7 @@ vi.mock('@/lib/config', () => ({
   VAPID_PUBLIC_KEY: 'public-key',
   VAPID_PRIVATE_KEY: 'private-key',
   VAPID_SUBJECT: 'mailto:test@example.com',
+  FINE_PENCE: 200,
 }));
 
 const { buildNotifications, notifyLosers } = await import('./send');
@@ -70,6 +71,7 @@ describe('buildNotifications', () => {
     const notifications = buildNotifications([newlyRecorded()]);
 
     expect(notifications).toHaveLength(1);
+    expect(notifications[0].entryId).toBe(1);
     expect(notifications[0].title).toBe('Evicted: Borussia Teeth');
     expect(notifications[0].body.length).toBeGreaterThan(0);
   });
@@ -130,5 +132,22 @@ describe('notifyLosers', () => {
   it('does nothing when nothing was newly recorded', async () => {
     await notifyLosers([]);
     expect(getSubscriptions).not.toHaveBeenCalled();
+  });
+
+  it('personalises the title for the subscription belonging to the loser, and leaves others generic', async () => {
+    const mine = { ...subscription, entryId: 1 };
+    const someoneElses = { ...subscription, endpoint: 'https://push.example.com/other', entryId: 2 };
+    getSubscriptions.mockResolvedValue([mine, someoneElses]);
+    sendNotification.mockResolvedValue(undefined);
+
+    await notifyLosers([newlyRecorded()]);
+
+    expect(sendNotification).toHaveBeenCalledTimes(2);
+    const payloads = sendNotification.mock.calls.map(([, body]) => JSON.parse(body as string));
+    const minePayload = payloads.find((_, i) => sendNotification.mock.calls[i][0] === mine);
+    const theirsPayload = payloads.find((_, i) => sendNotification.mock.calls[i][0] === someoneElses);
+
+    expect(minePayload.title).toBe("You're evicted — £2.00");
+    expect(theirsPayload.title).toBe('Evicted: Borussia Teeth');
   });
 });

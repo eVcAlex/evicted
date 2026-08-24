@@ -100,3 +100,8 @@ thead {
   opacity: 0.6;
   font-style: italic;
 }
+
+.you {
+  border-left: mantine.rem(2) solid var(--mantine-color-violet-6);
+  background-color: var(--mantine-color-violet-9);
+}

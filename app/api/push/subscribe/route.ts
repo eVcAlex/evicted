@@ -8,6 +8,7 @@ const subscriptionSchema = z.object({
     p256dh: z.string().min(1),
     auth: z.string().min(1),
   }),
+  entryId: z.number().int().positive().nullable().optional(),
 });
 
 const deleteSchema = z.object({ endpoint: z.string().url() });
