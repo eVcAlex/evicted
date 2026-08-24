@@ -52,7 +52,6 @@ export function IdentityPicker({ roster }: { roster: RosterEntry[] }) {
               <span className={classes.name}>{entry.teamName}</span>
               <span className={classes.manager}>{entry.managerName}</span>
             </div>
-            {isYou && <span className={classes.badge}>You</span>}
           </button>
         );
       })}

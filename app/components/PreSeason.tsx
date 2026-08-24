@@ -1,21 +1,16 @@
 import { Stack, Text } from '@mantine/core';
 import type { Identity } from '@/lib/identity';
 import { Avatar } from './Avatar';
-import { YouTag } from './YouTag';
 import classes from './PreSeason.module.scss';
 
 export function PreSeason({
   members,
   deadline,
   gameweekName,
-  league,
 }: {
   members: Identity[];
   deadline: string | null;
   gameweekName: string | null;
-  /** Classic and draft use different id spaces for the same human — see
-   * `lib/draft/members.ts` — so "is this row me?" needs to know which. */
-  league: 'classic' | 'draft';
 }) {
   return (
     <Stack gap="lg">
@@ -50,10 +45,7 @@ export function PreSeason({
           {members.map((member) => (
             <div key={member.entryId} className={classes.row}>
               <Avatar teamName={member.teamName} managerName={member.managerName} size={44} />
-              <span className={classes.name}>
-                {member.teamName}
-                <YouTag entryId={member.entryId} league={league} />
-              </span>
+              <span className={classes.name}>{member.teamName}</span>
               <span className={classes.manager}>{member.managerName}</span>
             </div>
           ))}

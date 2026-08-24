@@ -39,7 +39,6 @@ export default async function HomePage() {
           members={members}
           deadline={next?.deadline_time ?? null}
           gameweekName={next?.name ?? null}
-          league="classic"
         />
       </>
     );

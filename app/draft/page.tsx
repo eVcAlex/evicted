@@ -18,12 +18,7 @@ export default async function DraftPage() {
 
   if (details.league.draft_status === 'pre') {
     return (
-      <PreSeason
-        members={members}
-        deadline={details.league.draft_dt}
-        gameweekName="Draft"
-        league="draft"
-      />
+      <PreSeason members={members} deadline={details.league.draft_dt} gameweekName="Draft" />
     );
   }
 

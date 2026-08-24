@@ -46,11 +46,6 @@
   color: var(--text-dim);
 }
 
-.badge {
-  @include card.tag(violet);
-  flex-shrink: 0;
-}
-
 .empty {
   font-size: mantine.rem(13);
   color: var(--text-dim);

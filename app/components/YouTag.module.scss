@@ -1,6 +1,0 @@
-@use '../styles/card';
-
-.tag {
-  @include card.tag(violet);
-  margin-left: 8px;
-}

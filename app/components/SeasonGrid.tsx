@@ -3,7 +3,6 @@ import type { Identity } from '@/lib/identity';
 import { lossesByEntry } from '@/lib/league/history';
 import { Avatar } from './Avatar';
 import { MeRow } from './MeRow';
-import { YouTag } from './YouTag';
 import classes from './SeasonGrid.module.scss';
 
 /**
@@ -84,10 +83,7 @@ export function SeasonGrid({
                 <th className={classes.rowHeader} scope="row">
                   <div className={classes.rowIdentity}>
                     <Avatar teamName={member.teamName} managerName={member.managerName} size={28} />
-                    <span className={classes.teamName}>
-                      {member.teamName}
-                      <YouTag entryId={member.entryId} league={league} />
-                    </span>
+                    <span className={classes.teamName}>{member.teamName}</span>
                   </div>
                   <span className={classes.evictionCount}>{evictions}</span>
                 </th>

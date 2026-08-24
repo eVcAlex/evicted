@@ -6,7 +6,6 @@ import type { Balance } from '@/lib/league/balances';
 import { AdminToggle } from './AdminToggle';
 import { Avatar } from './Avatar';
 import { useMe } from './MeProvider';
-import { YouTag } from './YouTag';
 import classes from './BalancesTable.module.scss';
 
 export function BalancesTable({
@@ -66,10 +65,7 @@ export function BalancesTable({
                 size={40}
               />
               <div className={classes.identity}>
-                <span className={classes.name}>
-                  {balance.member.teamName}
-                  <YouTag entryId={balance.member.entryId} league="classic" />
-                </span>
+                <span className={classes.name}>{balance.member.teamName}</span>
                 <span className={classes.manager}>
                   {balance.departed ? 'Left the league' : balance.member.managerName}
                 </span>

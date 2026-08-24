@@ -92,8 +92,7 @@ export default async function SettingsPage() {
               Eviction alerts
             </Text>
             <Text size="xs" c="dimmed">
-              Get a push notification when someone's evicted — worded for you
-              when it's your team.
+              Get a push notification when someone's evicted.
             </Text>
           </div>
           <PushToggle />

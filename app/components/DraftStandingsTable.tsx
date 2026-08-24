@@ -1,7 +1,6 @@
 import type { StandingsRow } from '@/lib/draft/standings';
 import { Avatar } from './Avatar';
 import { MeRow } from './MeRow';
-import { YouTag } from './YouTag';
 import classes from './DraftStandingsTable.module.scss';
 
 /**
@@ -56,10 +55,7 @@ export function DraftStandingsTable({ rows }: { rows: StandingsRow[] }) {
                         size={28}
                       />
                       <div className={classes.names}>
-                        <span className={classes.teamName}>
-                          {row.member.teamName}
-                          <YouTag entryId={row.member.entryId} league="draft" />
-                        </span>
+                        <span className={classes.teamName}>{row.member.teamName}</span>
                         <span className={classes.managerName}>{row.member.managerName}</span>
                       </div>
                     </div>
