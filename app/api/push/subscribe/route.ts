@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { parseJsonBody } from '@/lib/api/guards';
 import { removeSubscription, saveSubscription } from '@/lib/push/store';
 
 const subscriptionSchema = z.object({
@@ -19,17 +20,8 @@ const deleteSchema = z.object({ endpoint: z.string().url() });
  * already draws for `AdminToggle` vs the paid-status endpoint.
  */
 export async function POST(request: Request) {
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: 'bad request' }, { status: 400 });
-  }
-
-  const parsed = subscriptionSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: 'bad request' }, { status: 400 });
-  }
+  const parsed = await parseJsonBody(request, subscriptionSchema);
+  if (!parsed.ok) return parsed.response;
 
   try {
     await saveSubscription(parsed.data);
@@ -42,17 +34,8 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: 'bad request' }, { status: 400 });
-  }
-
-  const parsed = deleteSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: 'bad request' }, { status: 400 });
-  }
+  const parsed = await parseJsonBody(request, deleteSchema);
+  if (!parsed.ok) return parsed.response;
 
   try {
     await removeSubscription(parsed.data.endpoint);

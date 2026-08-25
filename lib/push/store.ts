@@ -1,4 +1,4 @@
-import { Redis } from '@upstash/redis';
+import { redisClient } from '@/lib/redis';
 
 const PUSH_KEY = 'evicted:push';
 
@@ -13,29 +13,6 @@ export interface PushSubscriptionRecord {
    * "no personalisation" the same way.
    */
   entryId?: number | null;
-}
-
-let client: Redis | null = null;
-
-/**
- * Same reasoning as `lib/ledger/store.ts` and `lib/monzo/store.ts`: check
- * credentials before constructing the client, so an unconfigured deployment
- * throws immediately instead of retrying an unparseable request.
- */
-function redisClient(): Redis {
-  if (client) return client;
-
-  const url = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
-
-  if (!url || !token) {
-    throw new Error(
-      'Upstash Redis is not configured: set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.',
-    );
-  }
-
-  client = new Redis({ url, token, retry: { retries: 1, backoff: () => 200 } });
-  return client;
 }
 
 export async function getSubscriptions(): Promise<PushSubscriptionRecord[]> {

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { checkPin } from '@/lib/admin';
+import { withAdminAuth } from '@/lib/api/guards';
 import { fetchStandings } from '@/lib/fpl/client';
 import { resolveMembers } from '@/lib/league/members';
 
@@ -8,11 +8,7 @@ import { resolveMembers } from '@/lib/league/members';
  * a 'no-match' credit — there's no candidate list to offer there, so the
  * admin needs the full roster to attribute one manually.
  */
-export async function GET(request: Request) {
-  if (!checkPin(request.headers.get('x-admin-pin'))) {
-    return NextResponse.json({ error: 'unauthorised' }, { status: 401 });
-  }
-
+export const GET = withAdminAuth(async () => {
   try {
     const standings = await fetchStandings(60);
     const members = resolveMembers(standings).map((member) => ({
@@ -24,4 +20,4 @@ export async function GET(request: Request) {
     console.error('fetchStandings failed for members list', error);
     return NextResponse.json({ error: 'FPL unavailable' }, { status: 502 });
   }
-}
+});

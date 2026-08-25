@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { checkPin } from '@/lib/admin';
+import { parseJsonBody, withAdminAuth } from '@/lib/api/guards';
 import { fetchStandings } from '@/lib/fpl/client';
 import { resolveMembers } from '@/lib/league/members';
 import { applyIfOwed } from '@/lib/monzo/apply';
@@ -8,18 +8,14 @@ import { normalizeName } from '@/lib/monzo/matcher';
 import { dismissPending, getPending, saveAlias } from '@/lib/monzo/store';
 
 /** Admin-only readback of credits the matcher couldn't auto-apply confidently. */
-export async function GET(request: Request) {
-  if (!checkPin(request.headers.get('x-admin-pin'))) {
-    return NextResponse.json({ error: 'unauthorised' }, { status: 401 });
-  }
-
+export const GET = withAdminAuth(async () => {
   try {
     return NextResponse.json({ pending: await getPending() });
   } catch (error) {
     console.error('getPending failed', error);
     return NextResponse.json({ error: 'store unavailable' }, { status: 503 });
   }
-}
+});
 
 const approveSchema = z.object({ id: z.string(), entryId: z.number().int().positive() });
 
@@ -29,22 +25,9 @@ const approveSchema = z.object({ id: z.string(), entryId: z.number().int().posit
  * remembers the sender name so future credits from it auto-apply without
  * revisiting the queue.
  */
-export async function POST(request: Request) {
-  if (!checkPin(request.headers.get('x-admin-pin'))) {
-    return NextResponse.json({ error: 'unauthorised' }, { status: 401 });
-  }
-
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: 'bad request' }, { status: 400 });
-  }
-
-  const parsed = approveSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: 'bad request' }, { status: 400 });
-  }
+export const POST = withAdminAuth(async (request) => {
+  const parsed = await parseJsonBody(request, approveSchema);
+  if (!parsed.ok) return parsed.response;
   const { id, entryId } = parsed.data;
 
   try {
@@ -67,27 +50,14 @@ export async function POST(request: Request) {
     console.error('approve pending failed', error);
     return NextResponse.json({ error: 'store unavailable' }, { status: 503 });
   }
-}
+});
 
 const bodySchema = z.object({ id: z.string() });
 
 /** Dismisses one pending entry once an admin has resolved it manually. */
-export async function DELETE(request: Request) {
-  if (!checkPin(request.headers.get('x-admin-pin'))) {
-    return NextResponse.json({ error: 'unauthorised' }, { status: 401 });
-  }
-
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: 'bad request' }, { status: 400 });
-  }
-
-  const parsed = bodySchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: 'bad request' }, { status: 400 });
-  }
+export const DELETE = withAdminAuth(async (request) => {
+  const parsed = await parseJsonBody(request, bodySchema);
+  if (!parsed.ok) return parsed.response;
 
   try {
     await dismissPending(parsed.data.id);
@@ -97,4 +67,4 @@ export async function DELETE(request: Request) {
   }
 
   return NextResponse.json({ ok: true });
-}
+});

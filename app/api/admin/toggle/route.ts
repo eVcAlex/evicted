@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { checkPin } from '@/lib/admin';
+import { parseJsonBody, withAdminAuth } from '@/lib/api/guards';
 import { setPaid } from '@/lib/ledger/store';
 
 const bodySchema = z.object({
@@ -9,26 +9,9 @@ const bodySchema = z.object({
   paid: z.boolean(),
 });
 
-export async function POST(request: Request) {
-  if (!checkPin(request.headers.get('x-admin-pin'))) {
-    return NextResponse.json({ error: 'unauthorised' }, { status: 401 });
-  }
-
-  // An unparseable body is the caller's fault, not a server fault. Left
-  // unguarded it threw, which the client could only read as a 500 — and the
-  // client used to treat any non-200 as a rejected PIN.
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: 'bad request' }, { status: 400 });
-  }
-
-  const parsed = bodySchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: 'bad request' }, { status: 400 });
-  }
-
+export const POST = withAdminAuth(async (request) => {
+  const parsed = await parseJsonBody(request, bodySchema);
+  if (!parsed.ok) return parsed.response;
   const { gameweek, entryId, paid } = parsed.data;
 
   try {
@@ -41,4 +24,4 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ ok: true });
-}
+});

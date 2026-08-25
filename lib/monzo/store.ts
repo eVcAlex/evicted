@@ -1,4 +1,4 @@
-import { Redis } from '@upstash/redis';
+import { redisClient } from '@/lib/redis';
 
 const TOKEN_KEY = 'evicted:monzo';
 const CAPTURE_KEY = 'evicted:monzo:capture';
@@ -19,27 +19,12 @@ export interface MonzoTokens extends Record<string, string> {
   expires_at: string;
 }
 
-let client: Redis | null = null;
-
-/**
- * Same reasoning as `lib/ledger/store.ts`: check credentials before
- * constructing the client, so an unconfigured deployment throws immediately
- * instead of retrying an unparseable request for several seconds.
- */
-function redisClient(): Redis {
-  if (client) return client;
-
-  const url = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
-
-  if (!url || !token) {
-    throw new Error(
-      'Upstash Redis is not configured: set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.',
-    );
-  }
-
-  client = new Redis({ url, token, retry: { retries: 1, backoff: () => 200 } });
-  return client;
+/** The shape `GET /api/monzo/status` responds with — see that route. */
+export interface MonzoStatus {
+  connected: boolean;
+  expiresAt: string | null;
+  capturedCount: number;
+  pendingCount: number;
 }
 
 export async function saveTokens(tokens: MonzoTokens): Promise<void> {
@@ -97,13 +82,15 @@ export interface PendingCandidate {
   teamName: string;
 }
 
+export type PendingReason = 'ambiguous' | 'no-debt' | 'no-match';
+
 export interface PendingMatch {
   /** The Monzo transaction id — already unique, so it doubles as this entry's id. */
   id: string;
   receivedAt: string;
   amountPence: number;
   counterpartyName: string;
-  reason: 'ambiguous' | 'no-debt' | 'no-match';
+  reason: PendingReason;
   /** Who this could be, for a human to read and pick from. Empty for 'no-match'. */
   candidates: PendingCandidate[];
 }

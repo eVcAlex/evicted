@@ -1,5 +1,5 @@
 import { Title } from '@mantine/core';
-import { AdminPanel } from '../components/AdminPanel';
+import { AdminPanel } from '../components/admin/AdminPanel';
 
 export const dynamic = 'force-dynamic';
 

@@ -1,14 +1,17 @@
 import { NextResponse } from 'next/server';
-import { checkPin } from '@/lib/admin';
+import { withAdminAuth } from '@/lib/api/guards';
 import { getTokens } from '@/lib/monzo/store';
 import { registerWebhook } from '@/lib/monzo/webhook';
 
-export async function POST(request: Request) {
-  if (!checkPin(request.headers.get('x-admin-pin'))) {
-    return NextResponse.json({ error: 'unauthorised' }, { status: 401 });
+export const POST = withAdminAuth(async (request) => {
+  let tokens;
+  try {
+    tokens = await getTokens();
+  } catch (error) {
+    console.error('getTokens failed', error);
+    return NextResponse.json({ error: 'store unavailable' }, { status: 503 });
   }
 
-  const tokens = await getTokens();
   if (!tokens) {
     return NextResponse.json({ error: 'not connected — click Connect Monzo first' }, { status: 409 });
   }
@@ -30,4 +33,4 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ ok: true });
-}
+});

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { parseJsonBody } from '@/lib/api/guards';
 import { fetchStandings } from '@/lib/fpl/client';
 import { resolveMembers } from '@/lib/league/members';
 import { applyIfOwed } from '@/lib/monzo/apply';
@@ -30,17 +31,8 @@ const REVALIDATE_FOR_MATCHING = 0;
  * here is ours to fix, not Monzo's problem to retry into.
  */
 export async function POST(request: Request) {
-  let body: unknown;
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: 'bad request' }, { status: 400 });
-  }
-
-  const parsed = monzoWebhookEnvelopeSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ error: 'bad request' }, { status: 400 });
-  }
+  const parsed = await parseJsonBody(request, monzoWebhookEnvelopeSchema);
+  if (!parsed.ok) return parsed.response;
 
   try {
     await appendCapturedPayload(parsed.data);

@@ -11,7 +11,10 @@ import { MONZO_AUTH_URL, monzoClientCredentials, monzoRedirectUri } from '@/lib/
  * must navigate (not fetch) to Monzo's authorise screen. That is the one
  * exception to "PIN never in a URL" in this codebase, and it is short-lived:
  * the link is generated client-side from the PIN already in `localStorage`
- * and used once, immediately, for a same-origin redirect.
+ * and used once, immediately — the request line this PIN rides in is never
+ * itself sent anywhere; only the *destination* of the redirect below
+ * (`auth.monzo.com`, cross-origin) sees a `Referer`, and the app-wide
+ * `Referrer-Policy` in `next.config.ts` strips the query string from that.
  */
 export async function GET(request: Request) {
   const suppliedPin = new URL(request.url).searchParams.get('pin');
