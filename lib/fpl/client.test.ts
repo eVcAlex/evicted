@@ -19,26 +19,30 @@ function stubFetch(body: unknown, ok = true) {
 describe('fetchBootstrap', () => {
   it('sends a browser User-Agent', async () => {
     const spy = stubFetch({ events: [] });
-    await fetchBootstrap(60);
+    await fetchBootstrap();
     const [, init] = spy.mock.calls[0];
     expect(init.headers['User-Agent']).toContain('Mozilla/5.0');
   });
 
-  it('passes the revalidate window to Next', async () => {
+  // The payload is ~2MB, over Next's per-item fetch-cache limit. Asking Next
+  // to cache it anyway doesn't just fail to cache — the failed write left a
+  // stale, pre-`data_checked` snapshot being served on later requests, so
+  // this fetch opts out of the cache entirely rather than risk that again.
+  it('opts out of the Next.js fetch cache', async () => {
     const spy = stubFetch({ events: [] });
-    await fetchBootstrap(3600);
+    await fetchBootstrap();
     const [, init] = spy.mock.calls[0];
-    expect(init.next).toEqual({ revalidate: 3600 });
+    expect(init.cache).toBe('no-store');
   });
 
   it('throws when the response is not ok', async () => {
     stubFetch({}, false);
-    await expect(fetchBootstrap(60)).rejects.toThrow('FPL request failed');
+    await expect(fetchBootstrap()).rejects.toThrow('FPL request failed');
   });
 
   it('throws when the payload does not match the schema', async () => {
     stubFetch({ events: [{ id: 'not-a-number' }] });
-    await expect(fetchBootstrap(60)).rejects.toThrow();
+    await expect(fetchBootstrap()).rejects.toThrow();
   });
 });
 

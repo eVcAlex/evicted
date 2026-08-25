@@ -23,7 +23,7 @@ function PaymentStoreNotice() {
 }
 
 export default async function HomePage() {
-  const bootstrap = await fetchBootstrap(3600);
+  const bootstrap = await fetchBootstrap();
   const revalidate = revalidateFor(bootstrap);
   const standings = await fetchStandings(revalidate);
   const members = resolveMembers(standings);
