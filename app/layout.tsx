@@ -11,6 +11,7 @@ import {
 } from '@mantine/core';
 import { Header } from './components/layout/Header';
 import { MeProvider } from './components/common/MeProvider';
+import { ReloadOnResume } from './components/common/ReloadOnResume';
 
 export const metadata = {
   title: 'Evicted',
@@ -173,6 +174,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ColorSchemeScript defaultColorScheme="dark" />
       </head>
       <body>
+        <ReloadOnResume />
         <MantineProvider theme={theme} defaultColorScheme="dark">
           <MeProvider>
             <Header />
