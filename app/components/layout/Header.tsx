@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Anchor, Box, Container } from '@mantine/core';
@@ -27,21 +26,6 @@ function isActive(pathname: string, href: string): boolean {
 
 export function Header() {
   const pathname = usePathname();
-  const tabsRef = useRef<HTMLElement>(null);
-
-  // The translateZ(0) layer promotion below (Header.module.scss) isn't
-  // always enough on its own — WebKit can still skip repainting the active
-  // tab's border-color change inside that layer. Nudging opacity forces a
-  // fresh paint of the tabs specifically, once per navigation.
-  useEffect(() => {
-    const el = tabsRef.current;
-    if (!el) return;
-    el.style.opacity = '0.999';
-    const id = requestAnimationFrame(() => {
-      el.style.opacity = '';
-    });
-    return () => cancelAnimationFrame(id);
-  }, [pathname]);
 
   return (
     <Box component="header" className={classes.header}>
@@ -49,7 +33,12 @@ export function Header() {
         <Link href="/" className={classes.brand}>
           <span className={classes.wordmark}>Evicted</span>
         </Link>
-        <nav ref={tabsRef} className={classes.tabs} aria-label="Primary">
+        {/* Keyed on pathname: two coercion tricks (compositor-layer promotion,
+            then an opacity nudge) still left a ghosted border-color from the
+            previously active tab on iOS/WebKit. Remounting fresh DOM nodes on
+            every navigation sidesteps that stale-paint-cache bug entirely
+            instead of trying to coax WebKit into repainting the old ones. */}
+        <nav key={pathname} className={classes.tabs} aria-label="Primary">
           {LINKS.map(({ href, label }) => (
             <Anchor
               key={href}
