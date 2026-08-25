@@ -58,13 +58,13 @@ describe('buildStandingsRows', () => {
     expect(rows.map((r) => r.member.teamName)).toEqual(['A', 'B', 'C']);
   });
 
-  it('pins the synthetic AVERAGE entry (null teamId) last, even if it outranks someone', () => {
+  it('sorts the synthetic AVERAGE entry (null teamId) into its rank like anyone else', () => {
     const rows = buildStandingsRows(
-      [member(1, 'A'), member(2, 'Average', null)],
-      [standing(1, { rank: 2 }), standing(2, { rank: 1 })],
+      [member(1, 'A'), member(2, 'Average', null), member(3, 'C')],
+      [standing(1, { rank: 1 }), standing(2, { rank: 2 }), standing(3, { rank: 3 })],
     );
 
-    expect(rows.map((r) => r.member.teamName)).toEqual(['A', 'Average']);
+    expect(rows.map((r) => r.member.teamName)).toEqual(['A', 'Average', 'C']);
   });
 
   it('drops a member with no matching standings row', () => {
