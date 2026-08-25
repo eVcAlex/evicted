@@ -5,8 +5,8 @@ import { resolveDraftMembers } from '@/lib/draft/members';
 import { fetchStandings } from '@/lib/fpl/client';
 import { resolveMembers, type Member } from '@/lib/league/members';
 import { normalizeName } from '@/lib/monzo/matcher';
-import { IdentityPicker, type RosterEntry } from '../components/IdentityPicker';
-import { PushToggle } from '../components/PushToggle';
+import { IdentityPicker, type RosterEntry } from '../components/settings/IdentityPicker';
+import { PushToggle } from '../components/settings/PushToggle';
 import classes from './page.module.scss';
 
 export const dynamic = 'force-dynamic';

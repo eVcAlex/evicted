@@ -1,6 +1,6 @@
 import type { StandingsRow } from '@/lib/draft/standings';
-import { Avatar } from './Avatar';
-import { MeRow } from './MeRow';
+import { Avatar } from '../common/Avatar';
+import { MeRow } from '../common/MeRow';
 import classes from './DraftStandingsTable.module.scss';
 
 /**

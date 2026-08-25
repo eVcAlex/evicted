@@ -5,6 +5,14 @@
   z-index: 100;
   background-color: var(--bg);
   border-bottom: mantine.rem(2) solid var(--mantine-color-violet-6);
+
+  // iOS/WebKit doesn't always repaint a `position: sticky` element when only
+  // its children's styles change (no scroll, no layout shift) — the active
+  // tab's underline from the very first paint can stay ghosted in after a
+  // client-side nav restyles it elsewhere. Forcing this onto its own
+  // compositor layer makes WebKit recomposite the whole thing instead of
+  // relying on that broken partial-repaint path.
+  transform: translateZ(0);
 }
 
 .inner {

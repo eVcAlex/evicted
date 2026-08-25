@@ -8,8 +8,8 @@ import { resolveMembers } from '@/lib/league/members';
 import { scoresForGameweek } from '@/lib/league/scoring';
 import { buildSummary } from '@/lib/league/summary';
 import { safeGetPaid } from '@/lib/ledger/safe';
-import { LoserCard } from './components/LoserCard';
-import { PreSeason } from './components/PreSeason';
+import { LoserCard } from './components/home/LoserCard';
+import { PreSeason } from './components/common/PreSeason';
 
 export const dynamic = 'force-dynamic';
 

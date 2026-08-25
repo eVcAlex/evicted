@@ -9,8 +9,8 @@ import {
   createTheme,
   mantineHtmlProps,
 } from '@mantine/core';
-import { Header } from './components/Header';
-import { MeProvider } from './components/MeProvider';
+import { Header } from './components/layout/Header';
+import { MeProvider } from './components/common/MeProvider';
 
 export const metadata = {
   title: 'Evicted',

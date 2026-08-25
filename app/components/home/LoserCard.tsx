@@ -3,8 +3,8 @@ import { MONZO_ME_URL } from '@/lib/config';
 import { paidKey } from '@/lib/ledger/store';
 import { quipFor } from '@/lib/league/quips';
 import type { LoserSummary } from '@/lib/league/summary';
-import { AdminToggle } from './AdminToggle';
-import { Avatar } from './Avatar';
+import { AdminToggle } from '../common/AdminToggle';
+import { Avatar } from '../common/Avatar';
 import classes from './LoserCard.module.scss';
 
 function undecidedCopy(noScores: boolean): { kicker: string; sub: string } {

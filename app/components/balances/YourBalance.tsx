@@ -2,7 +2,7 @@
 
 import { pounds } from '@/lib/format';
 import type { Balance } from '@/lib/league/balances';
-import { useMe } from './MeProvider';
+import { useMe } from '../common/MeProvider';
 import classes from './YourBalance.module.scss';
 
 /**

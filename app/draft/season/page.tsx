@@ -6,8 +6,8 @@ import { loadDraftHistories } from '@/lib/draft/histories';
 import { resolveDraftMembers } from '@/lib/draft/members';
 import { buildSeasonResults } from '@/lib/draft/season';
 import { buildHallOfShame } from '@/lib/league/stats';
-import { DraftAwards } from '../../components/DraftAwards';
-import { SeasonGrid } from '../../components/SeasonGrid';
+import { DraftAwards } from '../../components/draft/DraftAwards';
+import { SeasonGrid } from '../../components/season/SeasonGrid';
 import classes from './page.module.scss';
 
 export const dynamic = 'force-dynamic';

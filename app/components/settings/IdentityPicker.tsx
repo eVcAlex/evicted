@@ -2,8 +2,8 @@
 
 import { Button } from '@mantine/core';
 import { syncSubscriptionIdentity } from '@/lib/push/client';
-import { Avatar } from './Avatar';
-import { useMe } from './MeProvider';
+import { Avatar } from '../common/Avatar';
+import { useMe } from '../common/MeProvider';
 import classes from './IdentityPicker.module.scss';
 
 export interface RosterEntry {

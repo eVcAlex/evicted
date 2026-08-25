@@ -5,8 +5,8 @@ import { pounds } from '@/lib/format';
 import { resolveMembers } from '@/lib/league/members';
 import { buildBalances } from '@/lib/league/balances';
 import { safeGetPaid, safeGetResults } from '@/lib/ledger/safe';
-import { BalancesTable } from '../components/BalancesTable';
-import { YourBalance } from '../components/YourBalance';
+import { BalancesTable } from '../components/balances/BalancesTable';
+import { YourBalance } from '../components/balances/YourBalance';
 import classes from './page.module.scss';
 
 export const dynamic = 'force-dynamic';

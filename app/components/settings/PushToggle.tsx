@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ActionIcon, Text, Tooltip } from '@mantine/core';
 import { deleteSubscription, postSubscription } from '@/lib/push/client';
-import { useMe } from './MeProvider';
+import { useMe } from '../common/MeProvider';
 import classes from './PushToggle.module.scss';
 
 type Status = 'unsupported' | 'loading' | 'subscribed' | 'unsubscribed';

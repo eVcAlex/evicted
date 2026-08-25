@@ -3,9 +3,9 @@
 import { Group } from '@mantine/core';
 import { pounds } from '@/lib/format';
 import type { Balance } from '@/lib/league/balances';
-import { AdminToggle } from './AdminToggle';
-import { Avatar } from './Avatar';
-import { useMe } from './MeProvider';
+import { AdminToggle } from '../common/AdminToggle';
+import { Avatar } from '../common/Avatar';
+import { useMe } from '../common/MeProvider';
 import classes from './BalancesTable.module.scss';
 
 export function BalancesTable({

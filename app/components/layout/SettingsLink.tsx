@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ActionIcon, Tooltip } from '@mantine/core';
-import { Avatar } from './Avatar';
-import { useMe } from './MeProvider';
+import { Avatar } from '../common/Avatar';
+import { useMe } from '../common/MeProvider';
 import classes from './SettingsLink.module.scss';
 
 /**

@@ -1,4 +1,4 @@
-@use '../styles/card';
+@use '../../styles/card';
 
 .hero {
   @include card.hero($accent: violet);

@@ -2,8 +2,8 @@ import { fetchDraftGame, fetchDraftLeague } from '@/lib/draft/client';
 import { REVALIDATE_LIVE, revalidateForGame } from '@/lib/draft/gameweeks';
 import { resolveDraftMembers } from '@/lib/draft/members';
 import { buildStandingsRows } from '@/lib/draft/standings';
-import { DraftStandingsTable } from '../components/DraftStandingsTable';
-import { PreSeason } from '../components/PreSeason';
+import { DraftStandingsTable } from '../components/draft/DraftStandingsTable';
+import { PreSeason } from '../components/common/PreSeason';
 
 export const dynamic = 'force-dynamic';
 

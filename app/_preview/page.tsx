@@ -1,8 +1,8 @@
 import { Stack, Text, Title } from '@mantine/core';
 import type { GameweekResult } from '@/lib/ledger/store';
 import type { Member } from '@/lib/league/members';
-import { LoserCard } from '../components/LoserCard';
-import { SeasonGrid } from '../components/SeasonGrid';
+import { LoserCard } from '../components/home/LoserCard';
+import { SeasonGrid } from '../components/season/SeasonGrid';
 
 /**
  * A visual harness for states that only occur naturally once real gameweeks

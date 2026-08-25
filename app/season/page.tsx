@@ -3,7 +3,7 @@ import { fetchStandings } from '@/lib/fpl/client';
 import { resolveMembers } from '@/lib/league/members';
 import { buildHallOfShame } from '@/lib/league/stats';
 import { safeGetResults } from '@/lib/ledger/safe';
-import { SeasonGrid } from '../components/SeasonGrid';
+import { SeasonGrid } from '../components/season/SeasonGrid';
 import classes from './page.module.scss';
 
 export const dynamic = 'force-dynamic';
