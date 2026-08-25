@@ -25,7 +25,8 @@ vi.mock('@upstash/redis', () => ({
 vi.stubEnv('UPSTASH_REDIS_REST_URL', 'https://mock.upstash.invalid');
 vi.stubEnv('UPSTASH_REDIS_REST_TOKEN', 'mock-token');
 
-const { getPaid, getResults, paidKey, saveResult, setPaid } = await import('./store');
+const { getBuyins, getPaid, getResults, paidKey, saveResult, setBuyin, setPaid } =
+  await import('./store');
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -90,5 +91,31 @@ describe('setPaid', () => {
   it('removes the key when marking unpaid', async () => {
     await setPaid(5, 394534, false);
     expect(srem).toHaveBeenCalledWith('evicted:paid', '5:394534');
+  });
+});
+
+describe('getBuyins', () => {
+  it('returns a set of entry ids', async () => {
+    smembers.mockResolvedValue(['394534', '567357']);
+    const buyins = await getBuyins();
+    expect(buyins.has(394534)).toBe(true);
+    expect(buyins.has(1)).toBe(false);
+  });
+
+  it('returns an empty set when nobody has paid', async () => {
+    smembers.mockResolvedValue([]);
+    expect(await getBuyins()).toEqual(new Set());
+  });
+});
+
+describe('setBuyin', () => {
+  it('adds the entry id when marking paid', async () => {
+    await setBuyin(394534, true);
+    expect(sadd).toHaveBeenCalledWith('evicted:buyin', '394534');
+  });
+
+  it('removes the entry id when marking unpaid', async () => {
+    await setBuyin(394534, false);
+    expect(srem).toHaveBeenCalledWith('evicted:buyin', '394534');
   });
 });

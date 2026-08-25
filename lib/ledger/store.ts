@@ -2,6 +2,7 @@ import { redisClient } from '@/lib/redis';
 
 const RESULTS_KEY = 'evicted:results';
 const PAID_KEY = 'evicted:paid';
+const BUYIN_KEY = 'evicted:buyin';
 
 export interface GameweekResult {
   /** Entry ids of everyone tied at the bottom. */
@@ -53,5 +54,18 @@ export async function setPaid(
     await redisClient().sadd(PAID_KEY, key);
   } else {
     await redisClient().srem(PAID_KEY, key);
+  }
+}
+
+export async function getBuyins(): Promise<Set<number>> {
+  const members = await redisClient().smembers(BUYIN_KEY);
+  return new Set(members.map(Number));
+}
+
+export async function setBuyin(entryId: number, paid: boolean): Promise<void> {
+  if (paid) {
+    await redisClient().sadd(BUYIN_KEY, String(entryId));
+  } else {
+    await redisClient().srem(BUYIN_KEY, String(entryId));
   }
 }

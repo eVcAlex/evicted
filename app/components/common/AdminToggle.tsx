@@ -6,14 +6,16 @@ import { Button, Group, Modal, PasswordInput } from '@mantine/core';
 import { PIN_STORAGE_KEY } from '@/lib/adminPinStorage';
 
 export function AdminToggle({
-  gameweek,
-  entryId,
+  endpoint,
+  requestBody,
   paid,
   label,
   variant = 'subtle',
 }: {
-  gameweek: number;
-  entryId: number;
+  /** The admin route to POST the toggle to, e.g. `/api/admin/toggle`. */
+  endpoint: string;
+  /** Everything the route needs beyond the toggled `paid` value. */
+  requestBody: Record<string, unknown>;
   paid: boolean;
   /** Overrides the default "Mark paid" wording — used per gameweek on balances. */
   label?: string;
@@ -39,10 +41,10 @@ export function AdminToggle({
     setBusy(true);
     setError(null);
     try {
-      const response = await fetch('/api/admin/toggle', {
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'x-admin-pin': candidatePin },
-        body: JSON.stringify({ gameweek, entryId, paid: !paid }),
+        body: JSON.stringify({ ...requestBody, paid: !paid }),
       });
 
       if (response.ok) {

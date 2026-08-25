@@ -1,11 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Member } from '@/lib/league/members';
 
+const safeGetBuyins = vi.fn();
 const safeGetPaid = vi.fn();
 const safeGetResults = vi.fn();
 const setPaid = vi.fn();
 
-vi.mock('@/lib/ledger/safe', () => ({ safeGetPaid, safeGetResults }));
+vi.mock('@/lib/ledger/safe', () => ({ safeGetBuyins, safeGetPaid, safeGetResults }));
 vi.mock('@/lib/ledger/store', () => ({
   setPaid,
   paidKey: (gameweek: number, entryId: number) => `${gameweek}:${entryId}`,
@@ -22,6 +23,7 @@ const members: Member[] = [member(1, 'Team A')];
 beforeEach(() => {
   vi.clearAllMocks();
   safeGetPaid.mockResolvedValue({ paid: new Set(), degraded: false });
+  safeGetBuyins.mockResolvedValue({ buyins: new Set(), degraded: false });
 });
 
 describe('applyIfOwed', () => {

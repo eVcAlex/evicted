@@ -7,6 +7,9 @@ export const ADMIN_ENTRY = 394534;
 /** The fine for finishing bottom of a gameweek, in pence. */
 export const FINE_PENCE = 200;
 
+/** The one-off season buy-in, in pence. */
+export const BUYIN_PENCE = 2000;
+
 /**
  * A monzo.me link that pre-fills the £2 fine, e.g.
  * `https://monzo.me/alexmcguiness/2`. Unset until configured — every "Pay £2"

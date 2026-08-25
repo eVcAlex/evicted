@@ -136,8 +136,8 @@ export function LoserCard({
 
                 <div className={classes.adminRow}>
                   <AdminToggle
-                    gameweek={summary.gameweek}
-                    entryId={member.entryId}
+                    endpoint="/api/admin/toggle"
+                    requestBody={{ gameweek: summary.gameweek, entryId: member.entryId }}
                     paid={settled}
                     variant="subtle"
                   />

@@ -1,6 +1,6 @@
 import { buildBalances } from '@/lib/league/balances';
 import type { Member } from '@/lib/league/members';
-import { safeGetPaid, safeGetResults } from '@/lib/ledger/safe';
+import { safeGetBuyins, safeGetPaid, safeGetResults } from '@/lib/ledger/safe';
 import { setPaid } from '@/lib/ledger/store';
 import { planApplication } from './matcher';
 
@@ -23,8 +23,12 @@ export async function applyIfOwed(params: {
   members: Member[];
 }): Promise<ApplyResult> {
   const { members } = params;
-  const [{ paid }, { results }] = await Promise.all([safeGetPaid(), safeGetResults()]);
-  const balances = buildBalances({ members, results, paid });
+  const [{ paid }, { results }, { buyins }] = await Promise.all([
+    safeGetPaid(),
+    safeGetResults(),
+    safeGetBuyins(),
+  ]);
+  const balances = buildBalances({ members, results, paid, buyins });
   const unpaid = balances.find((b) => b.member.entryId === params.entryId)?.unpaid ?? [];
 
   const plan = planApplication({ entryId: params.entryId, amountPence: params.amountPence, unpaid });

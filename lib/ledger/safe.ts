@@ -3,7 +3,7 @@ import {
   type NewlyRecordedGameweek,
   type RecordParams,
 } from '@/lib/league/record';
-import { getPaid, getResults, type GameweekResult } from './store';
+import { getBuyins, getPaid, getResults, type GameweekResult } from './store';
 
 /**
  * An unreachable store degrades to "we don't know", never to "settled".
@@ -20,6 +20,15 @@ export async function safeGetPaid(): Promise<{ paid: Set<string>; degraded: bool
   } catch (error) {
     console.error('safeGetPaid failed', error);
     return { paid: new Set(), degraded: true };
+  }
+}
+
+export async function safeGetBuyins(): Promise<{ buyins: Set<number>; degraded: boolean }> {
+  try {
+    return { buyins: await getBuyins(), degraded: false };
+  } catch (error) {
+    console.error('safeGetBuyins failed', error);
+    return { buyins: new Set(), degraded: true };
   }
 }
 

@@ -1,4 +1,4 @@
-import { FINE_PENCE } from '@/lib/config';
+import { BUYIN_PENCE, FINE_PENCE } from '@/lib/config';
 import { paidKey, type GameweekResult } from '@/lib/ledger/store';
 import type { Member } from './members';
 
@@ -12,6 +12,12 @@ export interface Balance {
   paidPence: number;
   /** They owe money but are no longer in the league standings. */
   departed: boolean;
+  /**
+   * Still owes the season's one-off buy-in — folded into `owedPence`/
+   * `paidPence` alongside fine debt. Always `false` for a departed member:
+   * their debt is only ever fine debt, never a retroactive buy-in.
+   */
+  buyinOwed: boolean;
 }
 
 /**
@@ -32,8 +38,9 @@ export function buildBalances(params: {
   members: Member[];
   results: Map<number, GameweekResult>;
   paid: Set<string>;
+  buyins: Set<number>;
 }): Balance[] {
-  const { members, results, paid } = params;
+  const { members, results, paid, buyins } = params;
 
   const byEntryId = new Map(members.map((member) => [member.entryId, member]));
 
@@ -58,14 +65,18 @@ export function buildBalances(params: {
         .sort((a, b) => a - b);
 
       const unpaid = lost.filter((gw) => !paid.has(paidKey(gw, member.entryId)));
+      const isDeparted = departed.has(member.entryId);
+      const buyinOwed = !isDeparted && !buyins.has(member.entryId);
 
       return {
         member,
         lost,
         unpaid,
-        owedPence: unpaid.length * FINE_PENCE,
-        paidPence: (lost.length - unpaid.length) * FINE_PENCE,
-        departed: departed.has(member.entryId),
+        buyinOwed,
+        owedPence: unpaid.length * FINE_PENCE + (buyinOwed ? BUYIN_PENCE : 0),
+        paidPence:
+          (lost.length - unpaid.length) * FINE_PENCE + (!isDeparted && !buyinOwed ? BUYIN_PENCE : 0),
+        departed: isDeparted,
       };
     })
     .sort((a, b) => b.owedPence - a.owedPence);

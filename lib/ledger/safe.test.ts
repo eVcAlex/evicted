@@ -1,13 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+const getBuyins = vi.fn();
 const getPaid = vi.fn();
 const getResults = vi.fn();
 const recordSettledGameweeks = vi.fn();
 
-vi.mock('./store', () => ({ getPaid, getResults }));
+vi.mock('./store', () => ({ getBuyins, getPaid, getResults }));
 vi.mock('@/lib/league/record', () => ({ recordSettledGameweeks }));
 
-const { safeGetPaid, safeGetResults, safeRecordSettledGameweeks } = await import('./safe');
+const { safeGetBuyins, safeGetPaid, safeGetResults, safeRecordSettledGameweeks } =
+  await import('./safe');
 
 const recordParams = {
   bootstrap: { events: [] },
@@ -32,6 +34,22 @@ describe('safeGetPaid', () => {
     getPaid.mockRejectedValue(new Error('connection refused'));
     const { paid, degraded } = await safeGetPaid();
     expect(paid.size).toBe(0);
+    expect(degraded).toBe(true);
+  });
+});
+
+describe('safeGetBuyins', () => {
+  it('passes the set through when Redis answers', async () => {
+    getBuyins.mockResolvedValue(new Set([394534]));
+    const { buyins, degraded } = await safeGetBuyins();
+    expect(buyins.has(394534)).toBe(true);
+    expect(degraded).toBe(false);
+  });
+
+  it('returns an empty set and flags degradation when Redis throws', async () => {
+    getBuyins.mockRejectedValue(new Error('connection refused'));
+    const { buyins, degraded } = await safeGetBuyins();
+    expect(buyins.size).toBe(0);
     expect(degraded).toBe(true);
   });
 });
