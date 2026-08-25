@@ -172,6 +172,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <head>
         <ColorSchemeScript defaultColorScheme="dark" />
+        <meta name="build-sha" content={process.env.VERCEL_GIT_COMMIT_SHA ?? ''} />
       </head>
       <body>
         <ReloadOnResume />
