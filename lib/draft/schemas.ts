@@ -59,6 +59,19 @@ export const draftLeagueMetaSchema = z.object({
   scoring: z.enum(['h', 'c']),
   start_event: z.number(),
   stop_event: z.number(),
+  /**
+   * One entry per draft the league has run (a renewed league keeps prior
+   * seasons' here). `draft_completed` is null until that draft finishes.
+   *
+   * This is the reliable "has the draft happened" signal: `draft_status`
+   * stays `'pre'` on the live API even after the draft completes (confirmed
+   * against league 77196 on 2026-08-30 — `draft_status: 'pre'` with
+   * `drafts[0].draft_completed` set). Absent on leagues that have never
+   * scheduled a draft, hence the default.
+   */
+  drafts: z
+    .array(z.object({ draft_completed: z.string().nullable() }))
+    .default([]),
 });
 
 /**

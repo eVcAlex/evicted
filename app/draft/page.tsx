@@ -2,6 +2,7 @@ import { fetchDraftGame, fetchDraftLeague } from '@/lib/draft/client';
 import { REVALIDATE_LIVE, revalidateForGame } from '@/lib/draft/gameweeks';
 import { resolveDraftMembers } from '@/lib/draft/members';
 import { buildStandingsRows } from '@/lib/draft/standings';
+import { isDraftLive } from '@/lib/draft/status';
 import { DraftStandingsTable } from '../components/draft/DraftStandingsTable';
 import { PreSeason } from '../components/common/PreSeason';
 
@@ -16,7 +17,7 @@ export default async function DraftPage() {
   const details = await fetchDraftLeague(revalidate);
   const members = resolveDraftMembers(details);
 
-  if (details.league.draft_status === 'pre') {
+  if (!isDraftLive(details.league)) {
     return (
       <PreSeason members={members} deadline={details.league.draft_dt} gameweekName="Draft" />
     );

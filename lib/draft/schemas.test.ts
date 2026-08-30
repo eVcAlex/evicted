@@ -100,6 +100,47 @@ describe('draftLeagueDetailsSchema', () => {
     expect(parsed.league_entries[1]?.entry_id).toBeNull();
     expect(parsed.standings[0]?.rank).toBeNull();
   });
+
+  it('parses the league.drafts array, keeping draft_completed', () => {
+    const parsed = draftLeagueDetailsSchema.parse({
+      league: {
+        id: 77196,
+        name: 'Evicted',
+        draft_status: 'pre',
+        draft_dt: '2026-08-21T11:00:00Z',
+        closed: true,
+        scoring: 'h',
+        start_event: 1,
+        stop_event: 38,
+        drafts: [
+          { draft_started: true, draft_completed: '2026-08-21T11:23:22.672585Z', event: 1 },
+        ],
+      },
+      league_entries: [],
+      standings: [],
+    });
+
+    expect(parsed.league.drafts[0]?.draft_completed).toBe('2026-08-21T11:23:22.672585Z');
+  });
+
+  it('defaults league.drafts to [] when the API omits it', () => {
+    const parsed = draftLeagueDetailsSchema.parse({
+      league: {
+        id: 4321,
+        name: 'Test Draft League',
+        draft_status: 'pre',
+        draft_dt: null,
+        closed: false,
+        scoring: 'h',
+        start_event: 1,
+        stop_event: 38,
+      },
+      league_entries: [],
+      standings: [],
+    });
+
+    expect(parsed.league.drafts).toEqual([]);
+  });
 });
 
 describe('draftEntryHistorySchema', () => {

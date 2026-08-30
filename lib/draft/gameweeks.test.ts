@@ -28,6 +28,7 @@ function league(overrides: Partial<DraftLeagueMeta> = {}): DraftLeagueMeta {
     scoring: 'h',
     start_event: 1,
     stop_event: 38,
+    drafts: [],
     ...overrides,
   };
 }
