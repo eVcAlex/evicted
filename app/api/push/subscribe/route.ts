@@ -16,8 +16,8 @@ const deleteSchema = z.object({ endpoint: z.string().url() });
 
 /**
  * No admin PIN: opting a device in or out of notifications is a personal
- * preference, not a money-affecting write — the same distinction the app
- * already draws for `AdminToggle` vs the paid-status endpoint.
+ * preference, not a money-affecting write, so it needs no admin auth the way
+ * the paid-status endpoints do.
  */
 export async function POST(request: Request) {
   const parsed = await parseJsonBody(request, subscriptionSchema);

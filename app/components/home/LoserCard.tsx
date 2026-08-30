@@ -3,7 +3,6 @@ import { MONZO_ME_URL } from '@/lib/config';
 import { paidKey } from '@/lib/ledger/store';
 import { quipFor } from '@/lib/league/quips';
 import type { LoserSummary } from '@/lib/league/summary';
-import { AdminToggle } from '../common/AdminToggle';
 import { Avatar } from '../common/Avatar';
 import classes from './LoserCard.module.scss';
 
@@ -133,15 +132,6 @@ export function LoserCard({
                 ) : (
                   <span className={classes.stamp}>Owes £2</span>
                 )}
-
-                <div className={classes.adminRow}>
-                  <AdminToggle
-                    endpoint="/api/admin/toggle"
-                    requestBody={{ gameweek: summary.gameweek, entryId: member.entryId }}
-                    paid={settled}
-                    variant="subtle"
-                  />
-                </div>
               </div>
               <div className={classes.zigzagBottom} />
             </div>

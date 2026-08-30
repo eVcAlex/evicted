@@ -15,10 +15,10 @@ interface MeContextValue {
 const MeContext = createContext<MeContextValue | null>(null);
 
 /**
- * Reads localStorage in an effect rather than in `useState`'s initializer —
- * the same "unknown until mounted" pattern `AdminToggle` uses for the admin
- * PIN — so server and first-client-render markup match and highlighting
- * simply flashes in a beat later instead of causing a hydration mismatch.
+ * Reads localStorage in an effect rather than in `useState`'s initializer, an
+ * "unknown until mounted" pattern, so server and first-client-render markup
+ * match and highlighting simply flashes in a beat later instead of causing a
+ * hydration mismatch.
  */
 export function MeProvider({ children }: { children: React.ReactNode }) {
   const [me, setMeState] = useState<StoredIdentity | null>(null);

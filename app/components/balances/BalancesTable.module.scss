@@ -108,9 +108,3 @@
   font-variant-numeric: tabular-nums;
   padding-left: mantine.rem(52);
 }
-
-/* A season's worth of unpaid gameweeks has to wrap on a phone, not scroll. */
-.toggles {
-  flex-wrap: wrap;
-  padding-left: mantine.rem(52);
-}

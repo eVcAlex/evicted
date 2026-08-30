@@ -150,13 +150,3 @@ $rule: #b7b2a0;
   color: $paper;
   background-color: $ink;
 }
-
-.adminRow {
-  display: flex;
-  justify-content: center;
-  margin-top: mantine.rem(8);
-
-  &:empty {
-    display: none;
-  }
-}
