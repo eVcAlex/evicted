@@ -1,6 +1,7 @@
 import { after } from 'next/server';
 import { fetchHistory } from '@/lib/fpl/client';
 import type { Bootstrap, EntryHistory } from '@/lib/fpl/schemas';
+import { reconcileCredit } from '@/lib/ledger/credit';
 import { safeRecordSettledGameweeks } from '@/lib/ledger/safe';
 import type { GameweekResult } from '@/lib/ledger/store';
 import { notifyLosers } from '@/lib/push/send';
@@ -47,6 +48,10 @@ export async function checkAndNotifySettled(params: {
     eligibleFrom,
     fetchHistories: () => loadHistories(members, REVALIDATE_FOR_RECORDING),
   });
+
+  if (newlyRecorded.length > 0) {
+    await reconcileCredit(members).catch((error) => console.error('reconcileCredit failed', error));
+  }
 
   after(() =>
     notifyLosers(newlyRecorded).catch((error) => console.error('notifyLosers failed', error)),
