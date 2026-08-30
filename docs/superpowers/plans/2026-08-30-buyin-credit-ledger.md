@@ -145,8 +145,8 @@ export async function setCredit(entryId: number, pence: number): Promise<void> {
 }
 
 export interface PaymentLogEntry {
-  /** Monzo txId for webhook payments; `chase:<uuid>`, `reversal:<uuid>` or
-   *  `reversed:<originalId>` for entries the app creates itself. */
+  /** Monzo txId for webhook payments; `chase:<uuid>`, `reversal:<originalId>`
+   *  or `reversed:<originalId>` for entries the app creates itself. */
   id: string;
   entryId: number;
   amountPence: number;
@@ -1127,8 +1127,10 @@ export async function reversePayment(
       ...(buyin ? [setBuyin(entry.entryId, false)] : []),
       ...(creditDeltaPence !== 0 ? [setCredit(entry.entryId, current - creditDeltaPence)] : []),
     ]);
+    // NOTE (as-built): the audit id is deterministic — `reversal:${entry.id}` —
+    // so a second reverse of the same payment is detectable and refused.
     await appendPayment({
-      id: `reversal:${randomUUID()}`,
+      id: `reversal:${entry.id}`,
       entryId: entry.entryId,
       amountPence: entry.amountPence,
       source: 'reversal',

@@ -14,7 +14,12 @@ export const POST = withAdminAuth(async (request) => {
   try {
     const members = resolveMembers(await fetchStandings(0));
     const result = await reversePayment(parsed.data.paymentId, members);
-    if (!result.ok) return NextResponse.json({ error: result.reason }, { status: 400 });
+    if (!result.ok) {
+      // 'store error' is a transient Redis failure the caller should retry;
+      // the rest ('not found', 'already reversed', …) are the request's fault.
+      const status = result.reason === 'store error' ? 503 : 400;
+      return NextResponse.json({ error: result.reason }, { status });
+    }
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error('reverse-payment failed', error);
