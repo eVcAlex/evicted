@@ -37,6 +37,9 @@ export default async function AdminPage() {
       <MarkPayments
         balances={balances}
         resultsDegraded={resultsState.degraded || !standings}
+        paymentStateDegraded={
+          paidState.degraded || buyinsState.degraded || creditState.degraded
+        }
       />
       <AdminPanel />
     </>

@@ -6,16 +6,20 @@ import classes from './MarkPayments.module.scss';
 
 /**
  * The one place fines and buy-ins get marked, now that the public pages are
- * read-only. One row per member who currently owes something; each row shows
- * the buy-in (if owed) plus a toggle for every gameweek they finished bottom -
- * already-paid ones included, so a mistaken mark can be reversed from here.
+ * read-only. One row per member who has ever finished bottom or still owes the
+ * buy-in. Each row shows a toggle for every gameweek they finished bottom
+ * (already-paid ones included) and, for a current member, the buy-in toggle in
+ * whichever state it is in - so a mark made by mistake can be undone from here.
+ * A member who never finished bottom and does not owe the buy-in has no row.
  */
 export function MarkPayments({
   balances,
   resultsDegraded,
+  paymentStateDegraded = false,
 }: {
   balances: Balance[];
   resultsDegraded: boolean;
+  paymentStateDegraded?: boolean;
 }) {
   if (resultsDegraded) {
     return (
@@ -29,19 +33,31 @@ export function MarkPayments({
     );
   }
 
-  const owing = balances.filter((b) => b.buyinOwed || b.unpaid.length > 0);
+  const rows = balances.filter((b) => b.lost.length > 0 || b.buyinOwed);
 
   return (
     <div className={classes.section}>
       <span className={classes.kicker}>Mark payments</span>
 
-      {owing.length === 0 && (
+      {paymentStateDegraded && (
+        <Alert
+          color="red"
+          variant="outline"
+          title="Payment status unavailable"
+          mt="sm"
+        >
+          Could not reach the payment store. Amounts and paid state below may be
+          wrong.
+        </Alert>
+      )}
+
+      {rows.length === 0 && (
         <Text size="sm" c="dimmed" mt="sm">
           Everyone is paid up.
         </Text>
       )}
 
-      {owing.map((balance) => {
+      {rows.map((balance) => {
         const unpaid = new Set(balance.unpaid);
         return (
           <div key={balance.member.entryId} className={classes.row}>
@@ -52,11 +68,11 @@ export function MarkPayments({
             />
             <span className={classes.name}>{balance.member.teamName}</span>
             <span className={classes.chips}>
-              {balance.buyinOwed && (
+              {!balance.departed && (
                 <PaymentToggle
                   endpoint="/api/admin/toggle-buyin"
                   requestBody={{ entryId: balance.member.entryId }}
-                  paid={false}
+                  paid={!balance.buyinOwed}
                   label="Buy-in"
                 />
               )}
