@@ -18,7 +18,7 @@ export const POST = withAdminAuth(async (request) => {
     await setPaid(gameweek, entryId, paid);
   } catch (error) {
     // The store is unreachable. Say so with a status the client will not
-    // mistake for a wrong PIN.
+    // mistake for a 401 (a session that is not a valid admin session).
     console.error('setPaid failed', error);
     return NextResponse.json({ error: 'store unavailable' }, { status: 503 });
   }

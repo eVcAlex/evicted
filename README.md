@@ -34,8 +34,8 @@ Separate from `fpl-tracker`, which is a personal team viewer.
 - Mantine for components
 - Public URL. Hobby cannot password-protect a production domain, and the data is
   already visible to all seven in the FPL app. `/admin` is gated by Clerk
-  (allowlisted to one address); every admin write also rechecks the session
-  server-side.
+  sign-in and restricted to the addresses in `ADMIN_ALLOWLIST` (one,
+  currently); every admin write rechecks the session server-side.
 
 ## Data
 

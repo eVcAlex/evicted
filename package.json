@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "oxlint lib app",
+    "lint": "oxlint lib app middleware.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },

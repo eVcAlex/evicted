@@ -8,7 +8,17 @@
  */
 export function isAdmin(claims: { email?: unknown } | null | undefined): boolean {
   const email = typeof claims?.email === 'string' ? claims.email.toLowerCase().trim() : '';
-  if (!email) return false;
+  if (!email) {
+    // A null/undefined claims object is the ordinary signed-out path. A real
+    // object with no string `email` means a signed-in caller is being locked
+    // out silently - almost always a missing Clerk session-token claim.
+    if (claims != null) {
+      console.warn(
+        'isAdmin: session claims have no string "email"; check the Clerk "Customize session token" claim',
+      );
+    }
+    return false;
+  }
 
   const allowed = (process.env.ADMIN_ALLOWLIST ?? '')
     .split(',')

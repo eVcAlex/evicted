@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { isAdmin } from './admin';
 
 describe('isAdmin', () => {
@@ -39,6 +39,20 @@ describe('isAdmin', () => {
     process.env.ADMIN_ALLOWLIST = 'admin@example.com';
     expect(isAdmin({})).toBe(false);
     expect(isAdmin({ email: 123 })).toBe(false);
+  });
+
+  it('warns when claims are a non-null object with no usable email, not for null', () => {
+    process.env.ADMIN_ALLOWLIST = 'admin@example.com';
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+      isAdmin({});
+      expect(warn).toHaveBeenCalledTimes(1);
+      warn.mockClear();
+      isAdmin(null);
+      expect(warn).not.toHaveBeenCalled();
+    } finally {
+      warn.mockRestore();
+    }
   });
 
   it('fails closed when ADMIN_ALLOWLIST is unset', () => {
