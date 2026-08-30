@@ -6,6 +6,7 @@ import { PIN_STORAGE_KEY } from '@/lib/adminPinStorage';
 import { CapturedPayloads } from './CapturedPayloads';
 import { MonzoConnection } from './MonzoConnection';
 import { PendingQueue } from './PendingQueue';
+import { RecentPayments } from './RecentPayments';
 import classes from './AdminPanel.module.scss';
 
 /**
@@ -58,6 +59,7 @@ export function AdminPanel() {
 
       <MonzoConnection pin={pin} />
       <PendingQueue pin={pin} />
+      <RecentPayments pin={pin} />
       <CapturedPayloads pin={pin} />
     </div>
   );
