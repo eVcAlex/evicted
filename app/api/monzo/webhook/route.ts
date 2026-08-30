@@ -114,13 +114,27 @@ export async function POST(request: Request) {
   }
 
   try {
-    await applyPayment({
+    const result = await applyPayment({
       entryId: match.member.entryId,
       amountPence: credit.amountPence,
       txId: credit.txId,
       receivedAt: now,
       members,
     });
+
+    // The tx is already in the SEEN set, so Monzo's redeliveries won't get
+    // another go at it — dropping a refusal here would lose a real payment.
+    // Park it for a human instead, pre-attributed to the member we matched.
+    if (!result.applied) {
+      console.warn('applyPayment declined, queueing for review', {
+        txId: credit.txId, reason: result.reason,
+      });
+      await queuePending({
+        id: credit.txId, receivedAt: now, amountPence: credit.amountPence,
+        counterpartyName: credit.counterpartyName, reason: 'unusual',
+        candidates: [{ entryId: match.member.entryId, teamName: match.member.teamName }],
+      });
+    }
   } catch (error) {
     console.error('applyPayment failed during Monzo matching', error);
   }

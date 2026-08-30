@@ -37,15 +37,9 @@ export const POST = withAdminAuth(async (request) => {
       return NextResponse.json({ error: 'not found — it may already be resolved' }, { status: 404 });
     }
 
-    // A re-queued reversal has a synthetic counterparty; don't teach the
-    // aliaser that string.
-    if (!entry.id.startsWith('reversed:')) {
-      await saveAlias(normalizeName(entry.counterpartyName), entryId);
-    }
-
     const standings = await fetchStandings(0);
     const members = resolveMembers(standings);
-    const allocation = await applyPayment({
+    const result = await applyPayment({
       entryId,
       amountPence: entry.amountPence,
       txId: entry.id,
@@ -53,9 +47,23 @@ export const POST = withAdminAuth(async (request) => {
       members,
     });
 
+    // Apply first, then commit the side effects. A refusal leaves the card in
+    // the queue (so the admin can retry once the store recovers) and teaches
+    // the aliaser nothing — an alias learned from a payment that never landed
+    // would silently auto-apply the sender's next one to the same member.
+    if (!result.applied) {
+      return NextResponse.json({ error: result.reason }, { status: 503 });
+    }
+
+    // A re-queued reversal has a synthetic counterparty; don't teach the
+    // aliaser that string.
+    if (!entry.id.startsWith('reversed:')) {
+      await saveAlias(normalizeName(entry.counterpartyName), entryId);
+    }
+
     await dismissPending(id);
 
-    return NextResponse.json({ ok: true, ...allocation });
+    return NextResponse.json({ ok: true, ...result.allocation });
   } catch (error) {
     console.error('approve pending failed', error);
     return NextResponse.json({ error: 'store unavailable' }, { status: 503 });
