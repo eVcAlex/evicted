@@ -28,11 +28,19 @@ export function BalancesTable({
           ? 'unknown'
           : balance.owedPence > 0
             ? 'owes'
-            : 'clear';
+            : balance.owedPence < 0
+              ? 'credit'
+              : 'clear';
 
         const toneClass =
-          state === 'clear' ? classes.figClear : state === 'owes' ? classes.figOwes : classes.figUnknown;
-        const figure = state === 'unknown' ? '—' : pounds(balance.owedPence);
+          state === 'clear'
+            ? classes.figClear
+            : state === 'credit'
+              ? classes.figCredit
+              : state === 'owes'
+                ? classes.figOwes
+                : classes.figUnknown;
+        const figure = state === 'unknown' ? '—' : pounds(Math.abs(balance.owedPence));
         const canPay = state === 'owes' && Boolean(monzoUrl);
         const unit = canPay ? 'Pay' : state;
 

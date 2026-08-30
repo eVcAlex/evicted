@@ -26,13 +26,24 @@ export function YourBalance({
   if (!mine) return null;
 
   const owes = mine.owedPence > 0;
+  const inCredit = mine.owedPence < 0;
 
   return (
-    <div className={owes ? `${classes.line} ${classes.owes}` : classes.line}>
+    <div
+      className={
+        owes
+          ? `${classes.line} ${classes.owes}`
+          : inCredit
+            ? `${classes.line} ${classes.credit}`
+            : classes.line
+      }
+    >
       <span className={classes.label}>
         {owes
           ? `You owe ${pounds(mine.owedPence)} across ${mine.unpaid.length} week${mine.unpaid.length === 1 ? '' : 's'}`
-          : "You're all clear"}
+          : inCredit
+            ? `You're ${pounds(Math.abs(mine.owedPence))} in credit`
+            : "You're all clear"}
       </span>
       {owes && monzoUrl && (
         <a href={monzoUrl} target="_blank" rel="noopener noreferrer" className={classes.pay}>

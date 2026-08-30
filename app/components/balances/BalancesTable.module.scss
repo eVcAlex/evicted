@@ -16,6 +16,12 @@
   background-color: var(--mantine-color-violet-9);
 }
 
+/* Mirrors the neutral `.clear` row — no fill; a faint positive edge marks the
+   member as ahead rather than square. */
+.credit {
+  border-left: mantine.rem(2) solid var(--mantine-color-green-5);
+}
+
 .rowMain {
   display: flex;
   align-items: center;
@@ -73,6 +79,11 @@
 .figClear {
   color: var(--mantine-color-green-4);
   background-color: color-mix(in srgb, var(--mantine-color-green-4) 12%, transparent);
+}
+
+.figCredit {
+  color: var(--mantine-color-green-3);
+  background-color: color-mix(in srgb, var(--mantine-color-green-4) 22%, transparent);
 }
 
 .figOwes {

@@ -5,7 +5,7 @@ import { pounds } from '@/lib/format';
 import { resolveMembers } from '@/lib/league/members';
 import { buildBalances } from '@/lib/league/balances';
 import { buildPot } from '@/lib/league/pot';
-import { safeGetBuyins, safeGetPaid, safeGetResults } from '@/lib/ledger/safe';
+import { safeGetBuyins, safeGetCredit, safeGetPaid, safeGetResults } from '@/lib/ledger/safe';
 import { BalancesTable } from '../components/balances/BalancesTable';
 import { YourBalance } from '../components/balances/YourBalance';
 import classes from './page.module.scss';
@@ -13,29 +13,35 @@ import classes from './page.module.scss';
 export const dynamic = 'force-dynamic';
 
 export default async function BalancesPage() {
-  const [standings, resultsState, paidState, buyinsState] = await Promise.all([
+  const [standings, resultsState, paidState, buyinsState, creditState] = await Promise.all([
     fetchStandings(3600),
     safeGetResults(),
     safeGetPaid(),
     safeGetBuyins(),
+    safeGetCredit(),
   ]);
 
   const { degraded: resultsDegraded } = resultsState;
   const { degraded: paidDegraded } = paidState;
   const { degraded: buyinsDegraded } = buyinsState;
+  const { credit, degraded: creditDegraded } = creditState;
 
   const balances = buildBalances({
     members: resolveMembers(standings),
     results: resultsState.results,
     paid: paidState.paid,
     buyins: buyinsState.buyins,
+    credit,
   });
 
-  const totalOwedPence = balances.reduce((sum, balance) => sum + balance.owedPence, 0);
+  const totalOwedPence = balances.reduce(
+    (sum, balance) => sum + Math.max(balance.owedPence, 0),
+    0,
+  );
 
   // Combines two different stores (fines paid, buy-ins paid); trusting either
   // one alone would understate the real total in the pot.
-  const potReady = !resultsDegraded && !paidDegraded && !buyinsDegraded;
+  const potReady = !resultsDegraded && !paidDegraded && !buyinsDegraded && !creditDegraded;
   const pot = potReady ? buildPot(balances) : null;
 
   return (
@@ -50,6 +56,7 @@ export default async function BalancesPage() {
         <div className={classes.summary}>
           <span className={classes.summaryLabel}>
             Pot &middot; {pot.buyinsPaid} of {pot.buyinsTotal} paid in
+            {pot.creditPence > 0 && ` · ${pounds(pot.creditPence)} credit`}
           </span>
           <span className={classes.summaryValue}>{pounds(pot.potPence)}</span>
         </div>
@@ -60,7 +67,7 @@ export default async function BalancesPage() {
           actually owes money — treat every row as unknown, not clear.
         </Alert>
       ) : (
-        (paidDegraded || buyinsDegraded) && (
+        (paidDegraded || buyinsDegraded || creditDegraded) && (
           <Alert color="red" variant="outline" title="Payment status unavailable" mb="lg">
             Could not reach the payment store. Amounts shown may be out of date.
           </Alert>
