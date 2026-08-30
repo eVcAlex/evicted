@@ -1,0 +1,32 @@
+.section {
+  margin-bottom: var(--mantine-spacing-xl);
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-dark-2);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+  padding: var(--mantine-spacing-sm) 0;
+  border-top: 1px solid var(--border);
+}
+
+.name {
+  flex: 1 1 auto;
+  min-width: 8rem;
+  font-weight: 600;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
