@@ -35,7 +35,7 @@ export type ParsedBody<T> = { ok: true; data: T } | { ok: false; response: Respo
  * discriminated result so the caller decides what happens next rather than
  * this function short-circuiting the route.
  *
- * An unparseable body is the caller's fault, not a server fault — treated as
+ * An unparseable body is the caller's fault, not a server fault, treated as
  * a plain 400 rather than throwing. A previous version let this throw, which
  * surfaced as a 500 the client could only read as "something's wrong", not
  * "you sent something wrong".

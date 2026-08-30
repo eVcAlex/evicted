@@ -31,7 +31,11 @@ export default clerkMiddleware(async (auth, req) => {
   if (isAdminApi(req)) {
     return NextResponse.json({ error: 'unauthorised' }, { status: 401 });
   }
-  return session.redirectToSignIn();
+  // Signed out: send them to sign in. Signed in but not on the allowlist:
+  // a plain 403 - never a bounce back to sign-in, which loops for a user
+  // who already has a session.
+  if (!session.userId) return session.redirectToSignIn();
+  return new NextResponse('Not authorised', { status: 403 });
 });
 
 export const config = {

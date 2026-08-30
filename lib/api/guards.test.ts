@@ -9,7 +9,7 @@ const mockAuth = vi.mocked(auth);
 const savedAllowlist = process.env.ADMIN_ALLOWLIST;
 
 afterEach(() => {
-  vi.clearAllMocks();
+  vi.resetAllMocks();
   if (savedAllowlist === undefined) delete process.env.ADMIN_ALLOWLIST;
   else process.env.ADMIN_ALLOWLIST = savedAllowlist;
 });
@@ -26,10 +26,12 @@ describe('withAdminAuth', () => {
       sessionClaims: { email: 'admin@example.com' },
     } as never);
     const handler = vi.fn(async () => new Response('ok', { status: 200 }));
+    const req = request();
 
-    const response = await withAdminAuth(handler)(request());
+    const response = await withAdminAuth(handler)(req);
 
     expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(req);
     expect(response.status).toBe(200);
   });
 
@@ -50,6 +52,17 @@ describe('withAdminAuth', () => {
       userId: 'user_2',
       sessionClaims: { email: 'intruder@example.com' },
     } as never);
+    const handler = vi.fn(async () => new Response('ok'));
+
+    const response = await withAdminAuth(handler)(request());
+
+    expect(handler).not.toHaveBeenCalled();
+    expect(response.status).toBe(401);
+  });
+
+  it('returns 401 when signed in with a claim-less session (no email)', async () => {
+    process.env.ADMIN_ALLOWLIST = 'admin@example.com';
+    mockAuth.mockResolvedValue({ userId: 'user_3', sessionClaims: {} } as never);
     const handler = vi.fn(async () => new Response('ok'));
 
     const response = await withAdminAuth(handler)(request());
