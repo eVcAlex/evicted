@@ -1,22 +1,27 @@
 import { NextResponse } from 'next/server';
 import type { z } from 'zod';
-import { checkPin } from '@/lib/admin';
+import { auth } from '@clerk/nextjs/server';
+import { isAdmin } from '@/lib/admin';
 
 type Handler = (request: Request) => Promise<Response>;
 
 /**
- * Wraps a route handler with the admin-PIN check shared by most `/api`
- * routes: reject with the same 401 body every one of them already returned
- * before this existed. Not every route wants this — `monzo/auth` takes the
- * PIN as a query param instead (it has to, see that route), `monzo/callback`
- * authenticates via OAuth state, `monzo/webhook` is deliberately
- * unauthenticated (Monzo doesn't sign its payloads), `cron/check-settled`
- * checks a separate cron secret, and `push/subscribe` is deliberately public.
- * Apply this only where the plain PIN-header check is the actual guard.
+ * Wraps a route handler with the admin check shared by most `/api` routes:
+ * a signed-in Clerk session whose verified email is on `ADMIN_ALLOWLIST`.
+ * Rejects with the same 401 body every one of these routes returned under the
+ * old PIN scheme, so clients need no changes.
+ *
+ * This duplicates the check `middleware.ts` already runs for these paths, on
+ * purpose: the guard is the contract each route file relies on, and a second
+ * `auth()` call is cheap. Routes that authenticate differently do not use
+ * this: `monzo/callback` uses OAuth state, `monzo/webhook` is unauthenticated
+ * (Monzo does not sign payloads), `cron/*` checks a cron secret, and
+ * `push/subscribe` is deliberately public.
  */
 export function withAdminAuth(handler: Handler): Handler {
   return async (request) => {
-    if (!checkPin(request.headers.get('x-admin-pin'))) {
+    const { userId, sessionClaims } = await auth();
+    if (!userId || !isAdmin(sessionClaims as { email?: unknown })) {
       return NextResponse.json({ error: 'unauthorised' }, { status: 401 });
     }
     return handler(request);

@@ -2,8 +2,9 @@ import { timingSafeEqual } from 'node:crypto';
 
 /**
  * Compares the supplied header against `CRON_SECRET` without leaking length
- * or content through timing — same technique as `checkPin` in `admin.ts`.
- * Returns false rather than throwing when no secret is configured, so a
+ * or content through timing: compared with `timingSafeEqual` so a wrong
+ * secret cannot be recovered byte-by-byte from response timing. Returns
+ * false rather than throwing when no secret is configured, so a
  * misconfigured deployment fails closed instead of accepting every request.
  */
 export function checkCronSecret(supplied: string | null): boolean {
