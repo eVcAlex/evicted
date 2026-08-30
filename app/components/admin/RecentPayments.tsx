@@ -60,6 +60,10 @@ export function RecentPayments({ pin }: { pin: string }) {
     );
   }
 
+  const reversedIds = new Set(
+    payments.filter((p) => p.source === 'reversal').map((p) => p.id.slice('reversal:'.length)),
+  );
+
   return (
     <div>
       <div className={classes.queueHeading}>
@@ -87,7 +91,7 @@ export function RecentPayments({ pin }: { pin: string }) {
                     {new Date(entry.receivedAt).toLocaleDateString('en-GB')} · {teamName(entry.entryId)}
                   </div>
                 </div>
-                {isMonzo && (
+                {isMonzo && !reversedIds.has(entry.id) && (
                   <Button
                     size="xs"
                     variant="subtle"

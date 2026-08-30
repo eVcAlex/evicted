@@ -61,9 +61,23 @@ describe('reversePayment', () => {
   it('appends a reversal audit entry', async () => {
     await reversePayment('tx_1', members);
     expect(appendPayment).toHaveBeenCalledWith(expect.objectContaining({
-      source: 'reversal', entryId: 1,
+      id: 'reversal:tx_1', source: 'reversal', entryId: 1,
       allocation: { fineGameweeks: [3, 4], buyin: true, creditDeltaPence: -1200 },
     }));
+  });
+
+  it('refuses a second reverse once a reversal entry already exists', async () => {
+    getPayments.mockResolvedValue([
+      logEntry(),
+      { id: 'reversal:tx_1', entryId: 1, amountPence: 2000, source: 'reversal', receivedAt: 'then',
+        allocation: { fineGameweeks: [3, 4], buyin: true, creditDeltaPence: -1200 } },
+    ]);
+    const result = await reversePayment('tx_1', members);
+    expect(result).toEqual({ ok: false, reason: 'already reversed' });
+    expect(setPaid).not.toHaveBeenCalled();
+    expect(setBuyin).not.toHaveBeenCalled();
+    expect(setCredit).not.toHaveBeenCalled();
+    expect(appendPending).not.toHaveBeenCalled();
   });
 
   it('refuses an unknown payment id', async () => {

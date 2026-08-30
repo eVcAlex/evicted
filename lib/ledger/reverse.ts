@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import type { Member } from '@/lib/league/members';
 import { appendPending } from '@/lib/monzo/store';
 import { safeGetCredit } from './safe';
@@ -19,10 +18,14 @@ export async function reversePayment(
   paymentId: string,
   members: Member[],
 ): Promise<{ ok: true } | { ok: false; reason: string }> {
-  const entry = (await getPayments()).find((p) => p.id === paymentId);
+  const payments = await getPayments();
+  const entry = payments.find((p) => p.id === paymentId);
   if (!entry) return { ok: false, reason: 'not found' };
   if (entry.source !== 'monzo') {
     return { ok: false, reason: 'only webhook payments can be reversed' };
+  }
+  if (payments.some((p) => p.id === `reversal:${entry.id}`)) {
+    return { ok: false, reason: 'already reversed' };
   }
 
   const { credit } = await safeGetCredit();
@@ -39,7 +42,7 @@ export async function reversePayment(
       ...(creditDeltaPence !== 0 ? [setCredit(entry.entryId, current - creditDeltaPence)] : []),
     ]);
     await appendPayment({
-      id: `reversal:${randomUUID()}`,
+      id: `reversal:${entry.id}`,
       entryId: entry.entryId,
       amountPence: entry.amountPence,
       source: 'reversal',
