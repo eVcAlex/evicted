@@ -11,7 +11,7 @@ import classes from './AdminPanel.module.scss';
  * Registering re-triggers the status fetch (`registerResult` in the effect's
  * deps) so a successful registration is reflected without a manual refresh.
  */
-export function MonzoConnection({ pin }: { pin: string }) {
+export function MonzoConnection() {
   const [status, setStatus] = useState<MonzoStatus | 'loading' | 'error' | 'unauthorised' | null>(
     null,
   );
@@ -20,11 +20,11 @@ export function MonzoConnection({ pin }: { pin: string }) {
 
   useEffect(() => {
     setStatus('loading');
-    fetch('/api/monzo/status', { headers: { 'x-admin-pin': pin } })
+    fetch('/api/monzo/status')
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then(setStatus)
       .catch((code) => setStatus(code === 401 ? 'unauthorised' : 'error'));
-  }, [pin, registerResult]);
+  }, [registerResult]);
 
   async function register() {
     setRegistering(true);
@@ -32,7 +32,6 @@ export function MonzoConnection({ pin }: { pin: string }) {
     try {
       const res = await fetch('/api/monzo/register-webhook', {
         method: 'POST',
-        headers: { 'x-admin-pin': pin },
       });
       const body = await res.json();
       setRegisterResult(res.ok ? 'Registered.' : `Failed: ${body.error}`);
@@ -59,8 +58,7 @@ export function MonzoConnection({ pin }: { pin: string }) {
       )}
       {status === 'unauthorised' && (
         <Text size="sm" c="red" mt="sm">
-          Admin PIN not accepted. Check ADMIN_PIN is set on the server and is at least 16 characters,
-          then re-enter it.
+          Session expired. Reload the page to sign in again.
         </Text>
       )}
       {status && typeof status === 'object' && (
@@ -77,7 +75,7 @@ export function MonzoConnection({ pin }: { pin: string }) {
       <div className={classes.actionRow}>
         <Button
           component="a"
-          href={`/api/monzo/auth?pin=${encodeURIComponent(pin)}`}
+          href="/api/monzo/auth"
           variant={typeof status === 'object' && status?.connected ? 'default' : 'filled'}
           size="xs"
         >

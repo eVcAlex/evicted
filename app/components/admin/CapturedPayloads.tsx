@@ -5,11 +5,11 @@ import { Button, Code } from '@mantine/core';
 import classes from './AdminPanel.module.scss';
 
 /** Debug-only readback of raw webhook payloads — for seeing what Monzo actually sends. */
-export function CapturedPayloads({ pin }: { pin: string }) {
+export function CapturedPayloads() {
   const [captured, setCaptured] = useState<unknown[] | null>(null);
 
   async function load() {
-    const res = await fetch('/api/monzo/captured', { headers: { 'x-admin-pin': pin } });
+    const res = await fetch('/api/monzo/captured');
     const body = await res.json();
     setCaptured(body.payloads ?? []);
   }

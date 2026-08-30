@@ -7,7 +7,7 @@ import { reasonInfo } from './reasons';
 import classes from './AdminPanel.module.scss';
 
 /** The approval queue for credits the matcher couldn't auto-apply confidently. */
-export function PendingQueue({ pin }: { pin: string }) {
+export function PendingQueue() {
   const [pending, setPending] = useState<PendingMatch[] | null>(null);
   const [members, setMembers] = useState<PendingCandidate[]>([]);
   const [selected, setSelected] = useState<Record<string, number | undefined>>({});
@@ -16,8 +16,8 @@ export function PendingQueue({ pin }: { pin: string }) {
 
   async function load() {
     const [pendingRes, membersRes] = await Promise.all([
-      fetch('/api/monzo/pending', { headers: { 'x-admin-pin': pin } }),
-      fetch('/api/monzo/members', { headers: { 'x-admin-pin': pin } }),
+      fetch('/api/monzo/pending'),
+      fetch('/api/monzo/members'),
     ]);
     const pendingBody = await pendingRes.json();
     const membersBody = await membersRes.json();
@@ -31,7 +31,7 @@ export function PendingQueue({ pin }: { pin: string }) {
     try {
       await fetch('/api/monzo/pending', {
         method: 'DELETE',
-        headers: { 'x-admin-pin': pin, 'content-type': 'application/json' },
+        headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id }),
       });
       setPending((current) => current?.filter((entry) => entry.id !== id) ?? null);
@@ -48,7 +48,7 @@ export function PendingQueue({ pin }: { pin: string }) {
     try {
       const res = await fetch('/api/monzo/pending', {
         method: 'POST',
-        headers: { 'x-admin-pin': pin, 'content-type': 'application/json' },
+        headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id, entryId }),
       });
       if (res.ok) {
