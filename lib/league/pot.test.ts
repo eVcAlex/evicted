@@ -46,4 +46,19 @@ describe('buildPot', () => {
     ]);
     expect(pot.buyinsTotal).toBe(1);
   });
+
+  it('adds remaining credit to the pot total', () => {
+    const pot = buildPot([
+      balance(1, { paidPence: 2000, buyinOwed: false, creditPence: 400 }),
+      balance(2, { paidPence: 200 }),
+    ]);
+    expect(pot.potPence).toBe(2600);
+    expect(pot.creditPence).toBe(400);
+  });
+
+  it('ignores an overdrawn (negative) credit balance in the pot', () => {
+    const pot = buildPot([balance(1, { paidPence: 2000, buyinOwed: false, creditPence: -300 })]);
+    expect(pot.potPence).toBe(2000);
+    expect(pot.creditPence).toBe(0);
+  });
 });
