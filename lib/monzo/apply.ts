@@ -28,7 +28,7 @@ export async function applyIfOwed(params: {
     safeGetResults(),
     safeGetBuyins(),
   ]);
-  const balances = buildBalances({ members, results, paid, buyins });
+  const balances = buildBalances({ members, results, paid, buyins, credit: new Map() });
   const unpaid = balances.find((b) => b.member.entryId === params.entryId)?.unpaid ?? [];
 
   const plan = planApplication({ entryId: params.entryId, amountPence: params.amountPence, unpaid });

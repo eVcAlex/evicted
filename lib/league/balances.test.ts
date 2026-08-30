@@ -188,4 +188,57 @@ describe('buildBalances', () => {
       expect(leaver?.buyinOwed).toBe(false);
     });
   });
+
+  describe('credit', () => {
+    it('subtracts a member’s credit from what they owe, going negative', () => {
+      const balances = buildBalances({
+        members,
+        results: new Map(),
+        paid: new Set(),
+        buyins: allBoughtIn,
+        credit: new Map([[1, 600]]),
+      });
+      const finn = balances.find((b) => b.member.entryId === 1);
+      expect(finn?.owedPence).toBe(-600);
+      expect(finn?.creditPence).toBe(600);
+    });
+
+    it('nets credit against fine and buy-in debt', () => {
+      const balances = buildBalances({
+        members,
+        results,
+        paid: new Set(),
+        buyins: new Set(),
+        credit: new Map([[1, 1000]]),
+      });
+      // Finn owes 2 fines (£4) + £20 buy-in = £24; £10 credit → £14 owed.
+      expect(balances.find((b) => b.member.entryId === 1)?.owedPence).toBe(1400);
+    });
+
+    it('defaults to no credit when the map is omitted', () => {
+      const balances = buildBalances({
+        members,
+        results: new Map(),
+        paid: new Set(),
+        buyins: allBoughtIn,
+      });
+      expect(balances.every((b) => b.creditPence === 0)).toBe(true);
+    });
+
+    it('freezes a departed member’s credit — never shown, never netted', () => {
+      const withLeaver = new Map([
+        [1, { losers: [99], scores: { 99: 12 }, recordedAt: '2026-09-14T00:00:00Z' }],
+      ]);
+      const balances = buildBalances({
+        members,
+        results: withLeaver,
+        paid: new Set(),
+        buyins: new Set(),
+        credit: new Map([[99, 5000]]),
+      });
+      const leaver = balances.find((b) => b.member.entryId === 99);
+      expect(leaver?.creditPence).toBe(0);
+      expect(leaver?.owedPence).toBe(200);
+    });
+  });
 });

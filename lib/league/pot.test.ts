@@ -14,6 +14,7 @@ function balance(entryId: number, overrides: Partial<Balance> = {}): Balance {
     unpaid: [],
     owedPence: 0,
     paidPence: 0,
+    creditPence: 0,
     departed: false,
     buyinOwed: true,
     ...overrides,

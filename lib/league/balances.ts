@@ -10,6 +10,8 @@ export interface Balance {
   unpaid: number[];
   owedPence: number;
   paidPence: number;
+  /** Raw credit balance in pence; negative = overdrawn. 0 for departed members. */
+  creditPence: number;
   /** They owe money but are no longer in the league standings. */
   departed: boolean;
   /**
@@ -39,8 +41,10 @@ export function buildBalances(params: {
   results: Map<number, GameweekResult>;
   paid: Set<string>;
   buyins: Set<number>;
+  credit?: Map<number, number>;
 }): Balance[] {
   const { members, results, paid, buyins } = params;
+  const credit = params.credit ?? new Map<number, number>();
 
   const byEntryId = new Map(members.map((member) => [member.entryId, member]));
 
@@ -67,13 +71,16 @@ export function buildBalances(params: {
       const unpaid = lost.filter((gw) => !paid.has(paidKey(gw, member.entryId)));
       const isDeparted = departed.has(member.entryId);
       const buyinOwed = !isDeparted && !buyins.has(member.entryId);
+      const creditPence = isDeparted ? 0 : (credit.get(member.entryId) ?? 0);
+      const grossOwed = unpaid.length * FINE_PENCE + (buyinOwed ? BUYIN_PENCE : 0);
 
       return {
         member,
         lost,
         unpaid,
         buyinOwed,
-        owedPence: unpaid.length * FINE_PENCE + (buyinOwed ? BUYIN_PENCE : 0),
+        creditPence,
+        owedPence: grossOwed - creditPence,
         paidPence:
           (lost.length - unpaid.length) * FINE_PENCE + (!isDeparted && !buyinOwed ? BUYIN_PENCE : 0),
         departed: isDeparted,
