@@ -6,11 +6,12 @@ const appendPayment = vi.fn();
 const setPaid = vi.fn();
 const setBuyin = vi.fn();
 const setCredit = vi.fn();
-const safeGetCredit = vi.fn();
+const getCredit = vi.fn();
 const appendPending = vi.fn();
 
-vi.mock('./store', () => ({ getPayments, appendPayment, setPaid, setBuyin, setCredit }));
-vi.mock('./safe', () => ({ safeGetCredit }));
+vi.mock('./store', () => ({
+  getPayments, getCredit, appendPayment, setPaid, setBuyin, setCredit,
+}));
 vi.mock('@/lib/monzo/store', () => ({ appendPending }));
 
 const { reversePayment } = await import('./reverse');
@@ -27,7 +28,7 @@ function logEntry(overrides = {}) {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  safeGetCredit.mockResolvedValue({ credit: new Map([[1, 1200]]), degraded: false });
+  getCredit.mockResolvedValue(new Map([[1, 1200]]));
   getPayments.mockResolvedValue([logEntry()]);
 });
 
@@ -45,9 +46,22 @@ describe('reversePayment', () => {
   });
 
   it('drives the credit balance negative without cascading', async () => {
-    safeGetCredit.mockResolvedValue({ credit: new Map([[1, 400]]), degraded: false });
+    getCredit.mockResolvedValue(new Map([[1, 400]]));
     await reversePayment('tx_1', members);
     expect(setCredit).toHaveBeenCalledWith(1, -800);
+  });
+
+  it('adds back credit the original payment spent', async () => {
+    // The original allocation had a *negative* delta (it consumed banked
+    // credit), so reversing it must return that credit, not take more away.
+    getPayments.mockResolvedValue([
+      logEntry({ allocation: { fineGameweeks: [3, 4], buyin: true, creditDeltaPence: -600 } }),
+    ]);
+    getCredit.mockResolvedValue(new Map([[1, 1200]]));
+
+    await reversePayment('tx_1', members);
+
+    expect(setCredit).toHaveBeenCalledWith(1, 1800); // 1200 current − (−600)
   });
 
   it('re-queues a "reversed" pending entry for the original member', async () => {
@@ -88,5 +102,30 @@ describe('reversePayment', () => {
     getPayments.mockResolvedValue([logEntry({ id: 'chase:x', source: 'credit-chase' })]);
     const result = await reversePayment('chase:x', members);
     expect(result.ok).toBe(false);
+  });
+
+  it('refuses rather than clobbering the balance when the credit read fails', async () => {
+    // A degraded read would look like "credit is 0" and write an absolute
+    // 0 − delta over a real balance, inventing an overdraft from stale data.
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => {});
+    getCredit.mockRejectedValue(new Error('store down'));
+
+    const result = await reversePayment('tx_1', members);
+
+    expect(result).toEqual({ ok: false, reason: 'store error' });
+    expect(setCredit).not.toHaveBeenCalled();
+    expect(appendPayment).not.toHaveBeenCalled();
+    expect(appendPending).not.toHaveBeenCalled();
+    expect(logged).toHaveBeenCalled();
+    logged.mockRestore();
+  });
+
+  it('returns the typed union rather than throwing when the payment log read fails', async () => {
+    const logged = vi.spyOn(console, 'error').mockImplementation(() => {});
+    getPayments.mockRejectedValue(new Error('store down'));
+
+    expect(await reversePayment('tx_1', members)).toEqual({ ok: false, reason: 'store error' });
+
+    logged.mockRestore();
   });
 });
