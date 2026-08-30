@@ -45,8 +45,10 @@ describe('extractEligibleCredit', () => {
     expect(extractEligibleCredit({ ...base, amount: -200 })).toBeNull();
   });
 
-  it('rejects an amount that is not a multiple of the fine', () => {
-    expect(extractEligibleCredit({ ...base, amount: 250 })).toBeNull();
+  it('returns an odd amount so the queue can flag it', () => {
+    expect(extractEligibleCredit({ ...base, amount: 250 })).toEqual({
+      txId: 'tx_1', amountPence: 250, counterpartyName: 'ALEXANDER MCGUINESS',
+    });
   });
 
   it('rejects a transaction with no counterparty name', () => {

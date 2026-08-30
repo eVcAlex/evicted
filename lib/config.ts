@@ -11,6 +11,14 @@ export const FINE_PENCE = 200;
 export const BUYIN_PENCE = 2000;
 
 /**
+ * A clean name-match above this auto-applies unattended; anything larger
+ * lands in the pending queue as 'unusual' for the admin to eyeball. The
+ * largest plausible legit payment is a buy-in plus a season of fines, well
+ * under this.
+ */
+export const WEBHOOK_AUTO_APPLY_CAP_PENCE = 10000;
+
+/**
  * A monzo.me link that pre-fills the £2 fine, e.g.
  * `https://monzo.me/alexmcguiness/2`. Unset until configured — every "Pay £2"
  * surface checks this and renders nothing rather than a broken link.

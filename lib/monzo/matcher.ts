@@ -1,4 +1,3 @@
-import { FINE_PENCE } from '@/lib/config';
 import type { Member } from '@/lib/league/members';
 import { monzoTransactionDataSchema } from './schemas';
 
@@ -29,10 +28,15 @@ export interface EligibleCredit {
 }
 
 /**
- * Everything that isn't even a candidate £2-multiple credit is filtered here,
- * before any name matching happens. Spec: "top-ups are positive with
- * is_load: true; refunds and reversals are positive with is_load: false;
- * declined transactions carry decline_reason."
+ * Filters out everything that isn't a genuine inbound credit, before any name
+ * matching happens. Spec: "top-ups are positive with is_load: true; refunds
+ * and reversals are positive with is_load: false; declined transactions carry
+ * decline_reason."
+ *
+ * Odd amounts (not a £2-multiple) are deliberately NOT rejected here — they
+ * pass through and the webhook route surfaces them in the pending queue as
+ * 'unusual' for an admin to eyeball, rather than silently dropping a real
+ * payment.
  */
 export function extractEligibleCredit(data: unknown): EligibleCredit | null {
   const parsed = monzoTransactionDataSchema.safeParse(data);
@@ -42,7 +46,6 @@ export function extractEligibleCredit(data: unknown): EligibleCredit | null {
   if (tx.amount <= 0) return null;
   if (tx.is_load) return null;
   if (tx.decline_reason) return null;
-  if (tx.amount % FINE_PENCE !== 0) return null;
   if (!tx.counterparty?.name) return null;
 
   return { txId: tx.id, amountPence: tx.amount, counterpartyName: tx.counterparty.name };

@@ -82,7 +82,7 @@ export interface PendingCandidate {
   teamName: string;
 }
 
-export type PendingReason = 'ambiguous' | 'no-debt' | 'no-match';
+export type PendingReason = 'ambiguous' | 'no-match' | 'unusual' | 'reversed';
 
 export interface PendingMatch {
   /** The Monzo transaction id — already unique, so it doubles as this entry's id. */

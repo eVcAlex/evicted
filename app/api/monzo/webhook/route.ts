@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { parseJsonBody } from '@/lib/api/guards';
+import { FINE_PENCE, WEBHOOK_AUTO_APPLY_CAP_PENCE } from '@/lib/config';
 import { fetchStandings } from '@/lib/fpl/client';
 import { resolveMembers } from '@/lib/league/members';
-import { applyIfOwed } from '@/lib/monzo/apply';
+import { applyPayment } from '@/lib/monzo/apply';
 import { extractEligibleCredit, matchSender, normalizeName } from '@/lib/monzo/matcher';
 import { monzoWebhookEnvelopeSchema } from '@/lib/monzo/schemas';
 import {
@@ -73,6 +74,7 @@ export async function POST(request: Request) {
   }
 
   const match = matchSender(credit.counterpartyName, members, aliasedEntryId);
+  const now = new Date().toISOString();
 
   if (match.outcome === 'no-match') {
     // Not applied *or* dropped: a bank account's legal name and someone's FPL
@@ -81,52 +83,46 @@ export async function POST(request: Request) {
     // full-name matching can't attribute on its own. A human glancing at the
     // queue can, which is the whole reason it exists.
     await queuePending({
-      id: credit.txId,
-      receivedAt: new Date().toISOString(),
-      amountPence: credit.amountPence,
-      counterpartyName: credit.counterpartyName,
-      reason: 'no-match',
-      candidates: [],
+      id: credit.txId, receivedAt: now, amountPence: credit.amountPence,
+      counterpartyName: credit.counterpartyName, reason: 'no-match', candidates: [],
     });
     return NextResponse.json({ ok: true });
   }
 
   if (match.outcome === 'ambiguous') {
     await queuePending({
-      id: credit.txId,
-      receivedAt: new Date().toISOString(),
-      amountPence: credit.amountPence,
-      counterpartyName: credit.counterpartyName,
-      reason: 'ambiguous',
-      candidates: match.members.map((member) => ({
-        entryId: member.entryId,
-        teamName: member.teamName,
-      })),
+      id: credit.txId, receivedAt: now, amountPence: credit.amountPence,
+      counterpartyName: credit.counterpartyName, reason: 'ambiguous',
+      candidates: match.members.map((m) => ({ entryId: m.entryId, teamName: m.teamName })),
     });
     return NextResponse.json({ ok: true });
   }
 
-  let result;
+  // Name resolves cleanly to one member; the amount check only flags an
+  // otherwise-clean single match. The cap gates *unattended* auto-apply only —
+  // a larger or non-£2-multiple payment is still real, it just wants a human.
+  const isUnusual =
+    credit.amountPence > WEBHOOK_AUTO_APPLY_CAP_PENCE || credit.amountPence % FINE_PENCE !== 0;
+
+  if (isUnusual) {
+    await queuePending({
+      id: credit.txId, receivedAt: now, amountPence: credit.amountPence,
+      counterpartyName: credit.counterpartyName, reason: 'unusual',
+      candidates: [{ entryId: match.member.entryId, teamName: match.member.teamName }],
+    });
+    return NextResponse.json({ ok: true });
+  }
+
   try {
-    result = await applyIfOwed({
+    await applyPayment({
       entryId: match.member.entryId,
       amountPence: credit.amountPence,
+      txId: credit.txId,
+      receivedAt: now,
       members,
     });
   } catch (error) {
-    console.error('applyIfOwed failed during Monzo matching', error);
-    return NextResponse.json({ ok: true });
-  }
-
-  if (!result.applied) {
-    await queuePending({
-      id: credit.txId,
-      receivedAt: new Date().toISOString(),
-      amountPence: credit.amountPence,
-      counterpartyName: credit.counterpartyName,
-      reason: 'no-debt',
-      candidates: [{ entryId: match.member.entryId, teamName: match.member.teamName }],
-    });
+    console.error('applyPayment failed during Monzo matching', error);
   }
 
   return NextResponse.json({ ok: true });
