@@ -49,13 +49,20 @@ export async function checkAndNotifySettled(params: {
     fetchHistories: () => loadHistories(members, REVALIDATE_FOR_RECORDING),
   });
 
-  if (newlyRecorded.length > 0) {
-    await reconcileCredit(members).catch((error) => console.error('reconcileCredit failed', error));
-  }
-
-  after(() =>
-    notifyLosers(newlyRecorded).catch((error) => console.error('notifyLosers failed', error)),
-  );
+  after(async () => {
+    // Unconditional, not gated on `newlyRecorded`: if the tick that recorded a
+    // fine ran while a store was degraded, `reconcileCredit` bailed (correctly)
+    // and every later tick sees an empty `newlyRecorded` — the gameweek is
+    // already HSETNX'd — so the money invariant would stay broken until the
+    // next fine, or forever after the last gameweek. It early-continues per
+    // member and costs nothing when there is nothing to chase, which turns the
+    // cron into a real self-healing loop. Scheduled, so no page render waits on
+    // its reads and writes.
+    await Promise.all([
+      reconcileCredit(members).catch((error) => console.error('reconcileCredit failed', error)),
+      notifyLosers(newlyRecorded).catch((error) => console.error('notifyLosers failed', error)),
+    ]);
+  });
 
   return { results, degraded };
 }
