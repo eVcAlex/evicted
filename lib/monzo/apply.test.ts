@@ -4,79 +4,84 @@ import type { Member } from '@/lib/league/members';
 const safeGetBuyins = vi.fn();
 const safeGetPaid = vi.fn();
 const safeGetResults = vi.fn();
+const safeGetCredit = vi.fn();
 const setPaid = vi.fn();
+const setBuyin = vi.fn();
+const setCredit = vi.fn();
+const appendPayment = vi.fn();
 
-vi.mock('@/lib/ledger/safe', () => ({ safeGetBuyins, safeGetPaid, safeGetResults }));
+vi.mock('@/lib/ledger/safe', () => ({ safeGetBuyins, safeGetPaid, safeGetResults, safeGetCredit }));
 vi.mock('@/lib/ledger/store', () => ({
-  setPaid,
+  setPaid, setBuyin, setCredit, appendPayment,
   paidKey: (gameweek: number, entryId: number) => `${gameweek}:${entryId}`,
 }));
 
-const { applyIfOwed } = await import('./apply');
+const { applyPayment } = await import('./apply');
 
 function member(entryId: number, teamName: string): Member {
   return { entryId, managerName: teamName, teamName, joinedTime: null };
 }
-
 const members: Member[] = [member(1, 'Team A')];
+
+function loss(gw: number) {
+  return [gw, { losers: [1], scores: { 1: -10 }, recordedAt: '' }] as const;
+}
 
 beforeEach(() => {
   vi.clearAllMocks();
   safeGetPaid.mockResolvedValue({ paid: new Set(), degraded: false });
-  safeGetBuyins.mockResolvedValue({ buyins: new Set(), degraded: false });
+  safeGetBuyins.mockResolvedValue({ buyins: new Set([1]), degraded: false });
+  safeGetResults.mockResolvedValue({ results: new Map(), degraded: false });
+  safeGetCredit.mockResolvedValue({ credit: new Map(), degraded: false });
 });
 
-describe('applyIfOwed', () => {
-  it('marks the oldest owed gameweeks paid when the credit covers them exactly', async () => {
-    safeGetResults.mockResolvedValue({
-      results: new Map([
-        [3, { losers: [1], scores: { 1: -10 }, recordedAt: '' }],
-        [5, { losers: [1], scores: { 1: -10 }, recordedAt: '' }],
-      ]),
-      degraded: false,
+describe('applyPayment', () => {
+  it('banks a payment as credit when nothing is owed', async () => {
+    const allocation = await applyPayment({
+      entryId: 1, amountPence: 600, txId: 'tx_1', receivedAt: 'now', members,
     });
-    setPaid.mockResolvedValue(undefined);
+    expect(allocation).toEqual({ fineGameweeks: [], buyin: false, creditDeltaPence: 600 });
+    expect(setCredit).toHaveBeenCalledWith(1, 600);
+    expect(setPaid).not.toHaveBeenCalled();
+  });
 
-    const result = await applyIfOwed({ entryId: 1, amountPence: 200, members });
-
-    expect(result).toEqual({ applied: true, gameweeks: [3] });
+  it('pays the oldest fines and banks the remainder', async () => {
+    safeGetResults.mockResolvedValue({ results: new Map([loss(3), loss(5)]), degraded: false });
+    const allocation = await applyPayment({
+      entryId: 1, amountPence: 600, txId: 'tx_2', receivedAt: 'now', members,
+    });
+    expect(allocation.fineGameweeks).toEqual([3, 5]);
     expect(setPaid).toHaveBeenCalledWith(3, 1, true);
-    expect(setPaid).toHaveBeenCalledTimes(1);
+    expect(setPaid).toHaveBeenCalledWith(5, 1, true);
+    expect(setCredit).toHaveBeenCalledWith(1, 200);
   });
 
-  it('does not apply anything when nothing is owed', async () => {
-    safeGetResults.mockResolvedValue({ results: new Map(), degraded: false });
-
-    const result = await applyIfOwed({ entryId: 1, amountPence: 200, members });
-
-    expect(result).toEqual({ applied: false, gameweeks: [] });
-    expect(setPaid).not.toHaveBeenCalled();
-  });
-
-  it('does not apply anything when the credit overshoots what is owed', async () => {
-    safeGetResults.mockResolvedValue({
-      results: new Map([[3, { losers: [1], scores: { 1: -10 }, recordedAt: '' }]]),
-      degraded: false,
+  it('flips the buy-in for a £20 payment from someone who owes no fines', async () => {
+    safeGetBuyins.mockResolvedValue({ buyins: new Set(), degraded: false });
+    const allocation = await applyPayment({
+      entryId: 1, amountPence: 2000, txId: 'tx_3', receivedAt: 'now', members,
     });
-
-    const result = await applyIfOwed({ entryId: 1, amountPence: 400, members });
-
-    expect(result).toEqual({ applied: false, gameweeks: [] });
-    expect(setPaid).not.toHaveBeenCalled();
+    expect(allocation.buyin).toBe(true);
+    expect(setBuyin).toHaveBeenCalledWith(1, true);
   });
 
-  it('still reports applied when setPaid fails, logging rather than throwing', async () => {
-    safeGetResults.mockResolvedValue({
-      results: new Map([[3, { losers: [1], scores: { 1: -10 }, recordedAt: '' }]]),
-      degraded: false,
+  it('writes a payment-log entry with the allocation', async () => {
+    await applyPayment({ entryId: 1, amountPence: 600, txId: 'tx_4', receivedAt: '2026-08-30T00:00:00Z', members });
+    expect(appendPayment).toHaveBeenCalledWith({
+      id: 'tx_4', entryId: 1, amountPence: 600, source: 'monzo',
+      receivedAt: '2026-08-30T00:00:00Z',
+      allocation: { fineGameweeks: [], buyin: false, creditDeltaPence: 600 },
     });
-    setPaid.mockRejectedValue(new Error('store unavailable'));
+  });
+
+  it('logs rather than throws when a store write fails', async () => {
+    setCredit.mockRejectedValue(new Error('store down'));
     const logged = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-    const result = await applyIfOwed({ entryId: 1, amountPence: 200, members });
-
-    expect(result).toEqual({ applied: true, gameweeks: [3] });
-    expect(logged).toHaveBeenCalledOnce();
+    const allocation = await applyPayment({
+      entryId: 1, amountPence: 600, txId: 'tx_5', receivedAt: 'now', members,
+    });
+    expect(allocation.creditDeltaPence).toBe(600);
+    expect(logged).toHaveBeenCalled();
     logged.mockRestore();
   });
 });

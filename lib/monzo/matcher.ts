@@ -82,26 +82,3 @@ export function matchSender(
   if (matches.length > 1) return { outcome: 'ambiguous', members: matches };
   return { outcome: 'matched', member: matches[0] };
 }
-
-export interface ApplyPlan {
-  entryId: number;
-  /** Oldest-first, exactly `amountPence / FINE_PENCE` of them. */
-  gameweeks: number[];
-}
-
-/**
- * Only plans an application when the credit exactly covers whole gameweeks
- * the member actually owes, and never more than they have unpaid. A credit
- * that overshoots — paid more than they owe, or owes nothing at all — is left
- * for manual review rather than guessed at.
- */
-export function planApplication(params: {
-  entryId: number;
-  amountPence: number;
-  unpaid: number[];
-}): ApplyPlan | null {
-  const { entryId, amountPence, unpaid } = params;
-  const count = amountPence / FINE_PENCE;
-  if (!Number.isInteger(count) || count <= 0 || count > unpaid.length) return null;
-  return { entryId, gameweeks: unpaid.slice(0, count) };
-}

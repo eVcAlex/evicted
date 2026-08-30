@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Member } from '@/lib/league/members';
-import { extractEligibleCredit, matchSender, planApplication } from './matcher';
+import { extractEligibleCredit, matchSender } from './matcher';
 
 function member(entryId: number, managerName: string): Member {
   return { entryId, managerName, teamName: `${managerName}'s team`, joinedTime: null };
@@ -107,26 +107,5 @@ describe('matchSender', () => {
       outcome: 'matched',
       member: members[1],
     });
-  });
-});
-
-describe('planApplication', () => {
-  it('applies to the oldest unpaid gameweeks first', () => {
-    expect(planApplication({ entryId: 1, amountPence: 400, unpaid: [3, 5, 7] })).toEqual({
-      entryId: 1,
-      gameweeks: [3, 5],
-    });
-  });
-
-  it('refuses to apply more than is owed', () => {
-    expect(planApplication({ entryId: 1, amountPence: 600, unpaid: [3, 5] })).toBeNull();
-  });
-
-  it('refuses to apply when nothing is owed', () => {
-    expect(planApplication({ entryId: 1, amountPence: 200, unpaid: [] })).toBeNull();
-  });
-
-  it('refuses a non-multiple amount', () => {
-    expect(planApplication({ entryId: 1, amountPence: 250, unpaid: [3] })).toBeNull();
   });
 });
