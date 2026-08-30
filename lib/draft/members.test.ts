@@ -13,6 +13,7 @@ function details(entries: DraftLeagueDetails['league_entries']): DraftLeagueDeta
       scoring: 'h',
       start_event: 1,
       stop_event: 38,
+      drafts: [],
     },
     league_entries: entries,
     standings: [],
