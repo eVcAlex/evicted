@@ -74,7 +74,7 @@ describe('dismissPending', () => {
   it('removes only the matching entry and rewrites the rest', async () => {
     lrange.mockResolvedValue([
       { id: 'tx_1', receivedAt: '', amountPence: 200, counterpartyName: 'A', reason: 'ambiguous', candidates: [] },
-      { id: 'tx_2', receivedAt: '', amountPence: 200, counterpartyName: 'B', reason: 'no-debt', candidates: [] },
+      { id: 'tx_2', receivedAt: '', amountPence: 200, counterpartyName: 'B', reason: 'no-match', candidates: [] },
     ]);
 
     await dismissPending('tx_1');

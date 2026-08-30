@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button, Select, Text } from '@mantine/core';
 import type { PendingCandidate, PendingMatch } from '@/lib/monzo/store';
-import { REASONS } from './reasons';
+import { reasonInfo } from './reasons';
 import classes from './AdminPanel.module.scss';
 
 /** The approval queue for credits the matcher couldn't auto-apply confidently. */
@@ -84,14 +84,13 @@ export function PendingQueue({ pin }: { pin: string }) {
 
       <div className={classes.queue}>
         {pending.map((entry) => {
-          // 'no-match' has no candidates of its own — the admin picks from
-          // the full roster instead. 'ambiguous' and 'no-debt' already know
-          // who it might be, so offer just those.
-          const options = (entry.reason === 'no-match' ? members : entry.candidates).map(
-            (candidate) => ({ value: String(candidate.entryId), label: candidate.teamName }),
-          );
-          const canApprove = entry.reason !== 'no-debt';
-          const { detail, tag, tone } = REASONS[entry.reason];
+          // Only 'ambiguous' carries its own shortlist of candidates. Every
+          // other reason offers the full roster for the admin to pick from.
+          const options = (entry.reason === 'ambiguous' ? entry.candidates : members).map((c) => ({
+            value: String(c.entryId),
+            label: c.teamName,
+          }));
+          const { detail, tag, tone } = reasonInfo(entry.reason);
 
           return (
             <div key={entry.id} className={`${classes.pendingCard} ${tone}`}>
@@ -111,32 +110,28 @@ export function PendingQueue({ pin }: { pin: string }) {
               </div>
 
               <div className={classes.pendingRow}>
-                {canApprove && (
-                  <>
-                    <Select
-                      placeholder="Who is this?"
-                      data={options}
-                      value={selected[entry.id] != null ? String(selected[entry.id]) : null}
-                      onChange={(value) =>
-                        setSelected((current) => ({
-                          ...current,
-                          [entry.id]: value ? Number(value) : undefined,
-                        }))
-                      }
-                      size="xs"
-                      className={classes.select}
-                    />
-                    <Button
-                      size="xs"
-                      variant="filled"
-                      disabled={!selected[entry.id]}
-                      loading={approving === entry.id}
-                      onClick={() => approvePending(entry.id)}
-                    >
-                      Approve
-                    </Button>
-                  </>
-                )}
+                <Select
+                  placeholder="Who is this?"
+                  data={options}
+                  value={selected[entry.id] != null ? String(selected[entry.id]) : null}
+                  onChange={(value) =>
+                    setSelected((current) => ({
+                      ...current,
+                      [entry.id]: value ? Number(value) : undefined,
+                    }))
+                  }
+                  size="xs"
+                  className={classes.select}
+                />
+                <Button
+                  size="xs"
+                  variant="filled"
+                  disabled={!selected[entry.id]}
+                  loading={approving === entry.id}
+                  onClick={() => approvePending(entry.id)}
+                >
+                  Approve
+                </Button>
                 <Button
                   size="xs"
                   variant="subtle"
