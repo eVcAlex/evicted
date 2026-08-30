@@ -3,7 +3,7 @@ import {
   type NewlyRecordedGameweek,
   type RecordParams,
 } from '@/lib/league/record';
-import { getBuyins, getPaid, getResults, type GameweekResult } from './store';
+import { getBuyins, getPaid, getResults, type GameweekResult, getCredit, getPayments, type PaymentLogEntry } from './store';
 
 /**
  * An unreachable store degrades to "we don't know", never to "settled".
@@ -65,5 +65,23 @@ export async function safeRecordSettledGameweeks(params: RecordParams): Promise<
   } catch (error) {
     console.error('safeRecordSettledGameweeks failed', error);
     return { results: new Map(), newlyRecorded: [], degraded: true };
+  }
+}
+
+export async function safeGetCredit(): Promise<{ credit: Map<number, number>; degraded: boolean }> {
+  try {
+    return { credit: await getCredit(), degraded: false };
+  } catch (error) {
+    console.error('safeGetCredit failed', error);
+    return { credit: new Map(), degraded: true };
+  }
+}
+
+export async function safeGetPayments(): Promise<{ payments: PaymentLogEntry[]; degraded: boolean }> {
+  try {
+    return { payments: await getPayments(), degraded: false };
+  } catch (error) {
+    console.error('safeGetPayments failed', error);
+    return { payments: [], degraded: true };
   }
 }

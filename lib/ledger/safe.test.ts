@@ -1,14 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const getBuyins = vi.fn();
-const getPaid = vi.fn();
-const getResults = vi.fn();
-const recordSettledGameweeks = vi.fn();
+const { getBuyins, getPaid, getResults, getCredit, getPayments, recordSettledGameweeks } = vi.hoisted(
+  () => ({
+    getBuyins: vi.fn(),
+    getPaid: vi.fn(),
+    getResults: vi.fn(),
+    getCredit: vi.fn(),
+    getPayments: vi.fn(),
+    recordSettledGameweeks: vi.fn(),
+  }),
+);
 
-vi.mock('./store', () => ({ getBuyins, getPaid, getResults }));
+vi.mock('./store', () => ({ getBuyins, getPaid, getResults, getCredit, getPayments }));
 vi.mock('@/lib/league/record', () => ({ recordSettledGameweeks }));
 
-const { safeGetBuyins, safeGetPaid, safeGetResults, safeRecordSettledGameweeks } =
+const { safeGetBuyins, safeGetPaid, safeGetResults, safeRecordSettledGameweeks, safeGetCredit, safeGetPayments } =
   await import('./safe');
 
 const recordParams = {
@@ -102,5 +108,37 @@ describe('safeRecordSettledGameweeks', () => {
     expect(degraded).toBe(true);
     expect(logged).toHaveBeenCalledOnce();
     logged.mockRestore();
+  });
+});
+
+describe('safeGetCredit', () => {
+  it('passes the map through when Redis answers', async () => {
+    getCredit.mockResolvedValue(new Map([[1, 600]]));
+    const { credit, degraded } = await safeGetCredit();
+    expect(credit.get(1)).toBe(600);
+    expect(degraded).toBe(false);
+  });
+
+  it('returns an empty map and flags degradation when Redis throws', async () => {
+    getCredit.mockRejectedValue(new Error('connection refused'));
+    const { credit, degraded } = await safeGetCredit();
+    expect(credit.size).toBe(0);
+    expect(degraded).toBe(true);
+  });
+});
+
+describe('safeGetPayments', () => {
+  it('passes the list through when Redis answers', async () => {
+    getPayments.mockResolvedValue([{ id: 'tx_1' }]);
+    const { payments, degraded } = await safeGetPayments();
+    expect(payments).toHaveLength(1);
+    expect(degraded).toBe(false);
+  });
+
+  it('returns an empty list and flags degradation when Redis throws', async () => {
+    getPayments.mockRejectedValue(new Error('connection refused'));
+    const { payments, degraded } = await safeGetPayments();
+    expect(payments).toEqual([]);
+    expect(degraded).toBe(true);
   });
 });
