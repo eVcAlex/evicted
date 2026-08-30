@@ -9,6 +9,7 @@ import {
   createTheme,
   mantineHtmlProps,
 } from '@mantine/core';
+import { ClerkProvider } from '@clerk/nextjs';
 import { Header } from './components/layout/Header';
 import { MeProvider } from './components/common/MeProvider';
 import { ReloadOnResume } from './components/common/ReloadOnResume';
@@ -175,15 +176,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="build-sha" content={process.env.VERCEL_GIT_COMMIT_SHA ?? ''} />
       </head>
       <body>
-        <ReloadOnResume />
-        <MantineProvider theme={theme} defaultColorScheme="dark">
-          <MeProvider>
-            <Header />
-            <Container size="sm" py="xl">
-              {children}
-            </Container>
-          </MeProvider>
-        </MantineProvider>
+        <ClerkProvider appearance={{ variables: { colorPrimary: '#7c3aed' } }}>
+          <ReloadOnResume />
+          <MantineProvider theme={theme} defaultColorScheme="dark">
+            <MeProvider>
+              <Header />
+              <Container size="sm" py="xl">
+                {children}
+              </Container>
+            </MeProvider>
+          </MantineProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
