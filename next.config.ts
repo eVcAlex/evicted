@@ -6,11 +6,9 @@ const nextConfig: NextConfig = {
     loadPaths: [process.cwd()],
     additionalData: '@use "_mantine" as mantine;',
   },
-  // Mostly makes the modern browser default explicit rather than adding new
-  // protection — query strings are already stripped from a cross-origin
-  // `Referer`. The one place that matters here is `/api/monzo/auth`, whose
-  // URL carries `?pin=...`; see the comment on that route for what this does
-  // and does not cover.
+  // Make the modern-browser default explicit: a cross-origin `Referer` carries
+  // only the origin, never the path or query. Nothing sensitive rides in a URL
+  // here now, but it is a sound default to state rather than inherit.
   async headers() {
     return [
       {
