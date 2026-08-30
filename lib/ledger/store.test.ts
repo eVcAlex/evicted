@@ -2,9 +2,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const hgetall = vi.fn();
 const hsetnx = vi.fn();
+const hset = vi.fn();
 const smembers = vi.fn();
 const sadd = vi.fn();
 const srem = vi.fn();
+const lpush = vi.fn();
+const ltrim = vi.fn();
+const lrange = vi.fn();
 
 // `store.ts` constructs `new Redis({ url, token, retry })`, so the mock must be
 // a constructible class — an object with instance members alone would throw.
@@ -12,9 +16,13 @@ vi.mock('@upstash/redis', () => ({
   Redis: class {
     hgetall = hgetall;
     hsetnx = hsetnx;
+    hset = hset;
     smembers = smembers;
     sadd = sadd;
     srem = srem;
+    lpush = lpush;
+    ltrim = ltrim;
+    lrange = lrange;
   },
 }));
 
@@ -25,8 +33,10 @@ vi.mock('@upstash/redis', () => ({
 vi.stubEnv('UPSTASH_REDIS_REST_URL', 'https://mock.upstash.invalid');
 vi.stubEnv('UPSTASH_REDIS_REST_TOKEN', 'mock-token');
 
-const { getBuyins, getPaid, getResults, paidKey, saveResult, setBuyin, setPaid } =
-  await import('./store');
+const {
+  getBuyins, getPaid, getResults, paidKey, saveResult, setBuyin, setPaid,
+  getCredit, setCredit, appendPayment, getPayments,
+} = await import('./store');
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -117,5 +127,48 @@ describe('setBuyin', () => {
   it('removes the entry id when marking unpaid', async () => {
     await setBuyin(394534, false);
     expect(srem).toHaveBeenCalledWith('evicted:buyin', '394534');
+  });
+});
+
+describe('getCredit', () => {
+  it('returns an empty map when no credit is recorded', async () => {
+    hgetall.mockResolvedValue(null);
+    expect(await getCredit()).toEqual(new Map());
+  });
+
+  it('keys credit by entry id as a number', async () => {
+    hgetall.mockResolvedValue({ '1': 600, '2': -800 });
+    const credit = await getCredit();
+    expect(credit.get(1)).toBe(600);
+    expect(credit.get(2)).toBe(-800);
+  });
+});
+
+describe('setCredit', () => {
+  it('writes the absolute pence balance under the entry id', async () => {
+    await setCredit(394534, 1400);
+    expect(hset).toHaveBeenCalledWith('evicted:credit', { '394534': 1400 });
+  });
+});
+
+describe('appendPayment', () => {
+  it('pushes the entry and trims the list to its cap', async () => {
+    const entry = {
+      id: 'tx_1', entryId: 1, amountPence: 2000, source: 'monzo' as const,
+      receivedAt: '2026-08-30T00:00:00Z',
+      allocation: { fineGameweeks: [3], buyin: true, creditDeltaPence: 0 },
+    };
+    await appendPayment(entry);
+    expect(lpush).toHaveBeenCalledWith('evicted:payments', entry);
+    expect(ltrim).toHaveBeenCalledWith('evicted:payments', 0, 199);
+  });
+});
+
+describe('getPayments', () => {
+  it('reads the list newest first', async () => {
+    const entries = [{ id: 'tx_2' }, { id: 'tx_1' }];
+    lrange.mockResolvedValue(entries);
+    expect(await getPayments()).toBe(entries);
+    expect(lrange).toHaveBeenCalledWith('evicted:payments', 0, 199);
   });
 });
