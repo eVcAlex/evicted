@@ -22,14 +22,27 @@ export function RecentPayments({ pin }: { pin: string }) {
   const [payments, setPayments] = useState<PaymentLogEntry[] | null>(null);
   const [members, setMembers] = useState<PendingCandidate[]>([]);
   const [reversing, setReversing] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
 
   async function load() {
-    const [payRes, memRes] = await Promise.all([
-      fetch('/api/admin/payments', { headers: { 'x-admin-pin': pin } }),
-      fetch('/api/monzo/members', { headers: { 'x-admin-pin': pin } }),
-    ]);
-    setPayments((await payRes.json()).payments ?? []);
-    setMembers((await memRes.json()).members ?? []);
+    setFailed(false);
+    try {
+      const [payRes, memRes] = await Promise.all([
+        fetch('/api/admin/payments', { headers: { 'x-admin-pin': pin } }),
+        fetch('/api/monzo/members', { headers: { 'x-admin-pin': pin } }),
+      ]);
+      // A 503 body has no `payments`, so `?? []` used to render this as the
+      // "nothing recorded yet" empty state — an outage that looks like an
+      // empty ledger is how an admin reverses a payment they can't see.
+      if (!payRes.ok) {
+        setFailed(true);
+        return;
+      }
+      setPayments((await payRes.json()).payments ?? []);
+      setMembers(memRes.ok ? ((await memRes.json()).members ?? []) : []);
+    } catch {
+      setFailed(true);
+    }
   }
 
   function teamName(entryId: number): string {
@@ -48,6 +61,19 @@ export function RecentPayments({ pin }: { pin: string }) {
     } finally {
       setReversing(null);
     }
+  }
+
+  if (failed) {
+    return (
+      <div className={classes.actionRow}>
+        <Text size="sm" c="dimmed">
+          Couldn’t load payments.
+        </Text>
+        <Button onClick={load} variant="default" size="xs">
+          Try again
+        </Button>
+      </div>
+    );
   }
 
   if (payments === null) {

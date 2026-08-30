@@ -37,3 +37,16 @@ allocation. It is **not authoritative** — `evicted:paid` / `evicted:buyin` /
   `'unusual'`. Approve is uncapped.
 - Cross-key writes aren't transactional. A partial failure is logged loudly
   and left visible, never silently retried or hidden.
+- A reversal's log id is **deterministic** — `reversal:<originalId>`, not a
+  uuid. That is what makes the "already reversed" guard a cheap lookup in the
+  payment log; replacing it with a random id would silently remove
+  double-reverse protection.
+- `applyPayment`'s writes are non-transactional and its audit entry
+  (`appendPayment`) is written **last**, which is what lets the replay guard
+  tell a completed payment from a partially-applied one. The accepted residual:
+  a run that writes `evicted:paid` / `evicted:buyin` / `evicted:credit`
+  successfully and then fails on `appendPayment` leaves a `console.error`, no
+  audit entry, and a balance the admin can see — recoverable by hand, or by
+  Reverse once the payment is re-applied. Retrying is safe for fines (a paid
+  fine can't be re-paid, since `planWaterfall` re-derives the allocation from
+  live state), so the exposure is limited to a re-banked credit remainder.

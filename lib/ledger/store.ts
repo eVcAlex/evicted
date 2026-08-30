@@ -88,8 +88,13 @@ export async function setCredit(entryId: number, pence: number): Promise<void> {
 }
 
 export interface PaymentLogEntry {
-  /** Monzo txId for webhook payments; `chase:<uuid>`, `reversal:<uuid>` or
-   *  `reversed:<originalId>` for entries the app creates itself. */
+  /** Monzo txId for webhook payments; `chase:<uuid>`, `reversal:<originalId>`
+   *  or `reversed:<originalId>` for entries the app creates itself.
+   *
+   *  The `reversal:` id is deterministic on purpose — `reversePayment`'s
+   *  "already reversed" guard is a lookup for `reversal:<originalId>` in this
+   *  log, so a random id there would silently remove double-reverse
+   *  protection. `chase:` is genuinely a uuid; nothing looks one up. */
   id: string;
   entryId: number;
   amountPence: number;

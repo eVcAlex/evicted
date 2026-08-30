@@ -88,7 +88,7 @@ Redis list, bounded to ~200 (same `lpush` + `ltrim` pattern as
 ```ts
 interface PaymentLogEntry {
   /** Monzo txId for webhook payments; a synthetic id otherwise —
-   *  `chase:<uuid>`, `reversal:<uuid>`, `reversed:<originalId>`. */
+   *  `chase:<uuid>`, `reversal:<originalId>`, `reversed:<originalId>`. */
   id: string;
   entryId: number;
   amountPence: number;
@@ -285,8 +285,10 @@ New route **`POST /api/admin/reverse-payment`** `{ paymentId }`, PIN-gated.
    deliberate, cascade logic is not worth it for a six-person league.)
 4. The original Monzo `txId` **stays in the SEEN set** — redelivery will not
    silently re-apply it.
-5. Append a `reversal:<uuid>` log entry (negative of the original allocation, for
-   the audit trail).
+5. Append a `reversal:<originalId>` log entry (negative of the original
+   allocation, for the audit trail). The id is **deterministic, not a uuid**:
+   the "already reversed" guard is a lookup for `reversal:<originalId>` in this
+   log, so a random id would silently remove double-reverse protection.
 6. Re-queue a pending entry: `reason: 'reversed'`, candidate = original member,
    so the admin can immediately re-attribute or Remove.
 
