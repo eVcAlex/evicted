@@ -147,7 +147,7 @@ describe('notifyLosers', () => {
     const minePayload = payloads.find((_, i) => sendNotification.mock.calls[i][0] === mine);
     const theirsPayload = payloads.find((_, i) => sendNotification.mock.calls[i][0] === someoneElses);
 
-    expect(minePayload.title).toBe("You're evicted — £2.00");
+    expect(minePayload.title).toBe("You're evicted: £2.00");
     expect(theirsPayload.title).toBe('Evicted: Borussia Teeth');
   });
 });

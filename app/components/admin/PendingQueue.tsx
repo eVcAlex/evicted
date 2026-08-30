@@ -105,7 +105,7 @@ export function PendingQueue({ pin }: { pin: string }) {
               <div className={classes.pendingDetail}>
                 {detail}
                 {entry.candidates.length > 0
-                  ? ` — ${entry.candidates.map((c) => c.teamName).join(', ')}`
+                  ? `: ${entry.candidates.map((c) => c.teamName).join(', ')}`
                   : ''}
               </div>
 

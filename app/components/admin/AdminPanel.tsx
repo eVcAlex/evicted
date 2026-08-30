@@ -52,7 +52,7 @@ export function AdminPanel() {
         <Alert color="green" variant="light" title="Monzo account authorised">
           Now confirm access in your Monzo app if it hasn't prompted already, then
           click Register webhook below. Registering right after this step often
-          fails with a 403 until that confirmation lands — that's expected, just
+          fails with a 403 until that confirmation lands. That's expected, just
           retry once you've confirmed.
         </Alert>
       )}

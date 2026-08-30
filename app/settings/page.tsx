@@ -68,13 +68,13 @@ export default async function SettingsPage() {
 
       {classic.degraded && (
         <Alert color="red" variant="outline" title="Roster unavailable" mb="lg">
-          Could not reach the FPL standings — nobody can be picked right now. Try
+          Could not reach the FPL standings. Nobody can be picked right now. Try
           again shortly.
         </Alert>
       )}
       {!classic.degraded && draft.degraded && (
         <Alert color="yellow" variant="outline" title="Draft roster unavailable" mb="lg">
-          Could not reach the draft league — picking still highlights the classic
+          Could not reach the draft league. Picking still highlights the classic
           screens, just not the draft ones, until this loads.
         </Alert>
       )}

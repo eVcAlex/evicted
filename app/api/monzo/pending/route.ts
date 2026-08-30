@@ -34,7 +34,7 @@ export const POST = withAdminAuth(async (request) => {
     const pending = await getPending();
     const entry = pending.find((p) => p.id === id);
     if (!entry) {
-      return NextResponse.json({ error: 'not found — it may already be resolved' }, { status: 404 });
+      return NextResponse.json({ error: 'not found, it may already be resolved' }, { status: 404 });
     }
 
     const standings = await fetchStandings(0);

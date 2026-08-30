@@ -50,7 +50,7 @@ export default async function BalancesPage() {
         Balances
       </Title>
       <Text c="dimmed" size="sm" mb="lg">
-        £20 buy-in, plus £2 per gameweek finished bottom — all into the pot.
+        £20 buy-in, plus £2 per gameweek finished bottom. All into the pot.
       </Text>
       {pot && (
         <div className={classes.summary}>
@@ -64,7 +64,7 @@ export default async function BalancesPage() {
       {resultsDegraded ? (
         <Alert color="red" variant="outline" title="Balances unavailable" mb="lg">
           Could not reach the results store. The table below does not reflect who
-          actually owes money — treat every row as unknown, not clear.
+          actually owes money. Treat every row as unknown, not clear.
         </Alert>
       ) : (
         (paidDegraded || buyinsDegraded || creditDegraded) && (

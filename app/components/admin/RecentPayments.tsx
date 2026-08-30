@@ -111,7 +111,7 @@ export function RecentPayments({ pin }: { pin: string }) {
               <div className={classes.pendingTop}>
                 <div>
                   <div className={classes.pendingAmount}>
-                    {entry.amountPence > 0 ? `£${(entry.amountPence / 100).toFixed(2)}` : '—'}
+                    {entry.amountPence > 0 ? `£${(entry.amountPence / 100).toFixed(2)}` : '–'}
                   </div>
                   <div className={classes.pendingFrom}>
                     {new Date(entry.receivedAt).toLocaleDateString('en-GB')} · {teamName(entry.entryId)}

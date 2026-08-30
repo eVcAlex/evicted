@@ -12,7 +12,9 @@ import classes from './AdminPanel.module.scss';
  * deps) so a successful registration is reflected without a manual refresh.
  */
 export function MonzoConnection({ pin }: { pin: string }) {
-  const [status, setStatus] = useState<MonzoStatus | 'loading' | 'error' | null>(null);
+  const [status, setStatus] = useState<MonzoStatus | 'loading' | 'error' | 'unauthorised' | null>(
+    null,
+  );
   const [registerResult, setRegisterResult] = useState<string | null>(null);
   const [registering, setRegistering] = useState(false);
 
@@ -21,7 +23,7 @@ export function MonzoConnection({ pin }: { pin: string }) {
     fetch('/api/monzo/status', { headers: { 'x-admin-pin': pin } })
       .then((res) => (res.ok ? res.json() : Promise.reject(res.status)))
       .then(setStatus)
-      .catch(() => setStatus('error'));
+      .catch((code) => setStatus(code === 401 ? 'unauthorised' : 'error'));
   }, [pin, registerResult]);
 
   async function register() {
@@ -53,6 +55,12 @@ export function MonzoConnection({ pin }: { pin: string }) {
       {status === 'error' && (
         <Text size="sm" c="red" mt="sm">
           Could not reach the store.
+        </Text>
+      )}
+      {status === 'unauthorised' && (
+        <Text size="sm" c="red" mt="sm">
+          Admin PIN not accepted. Check ADMIN_PIN is set on the server and is at least 16 characters,
+          then re-enter it.
         </Text>
       )}
       {status && typeof status === 'object' && (

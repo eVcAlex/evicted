@@ -40,7 +40,7 @@ export function BalancesTable({
               : state === 'owes'
                 ? classes.figOwes
                 : classes.figUnknown;
-        const figure = state === 'unknown' ? '—' : pounds(Math.abs(balance.owedPence));
+        const figure = state === 'unknown' ? '–' : pounds(Math.abs(balance.owedPence));
         const canPay = state === 'owes' && Boolean(monzoUrl);
         const unit = canPay ? 'Pay' : state;
 

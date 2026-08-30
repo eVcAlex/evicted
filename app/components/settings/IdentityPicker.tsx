@@ -32,7 +32,7 @@ export function IdentityPicker({ roster }: { roster: RosterEntry[] }) {
   }
 
   if (roster.length === 0) {
-    return <p className={classes.empty}>Nobody to pick yet — try again once the roster loads.</p>;
+    return <p className={classes.empty}>Nobody to pick yet. Try again once the roster loads.</p>;
   }
 
   return (
@@ -58,7 +58,7 @@ export function IdentityPicker({ roster }: { roster: RosterEntry[] }) {
 
       {me && (
         <Button variant="subtle" size="xs" mt="sm" onClick={clearPick}>
-          Not me — clear
+          Not me, clear
         </Button>
       )}
     </div>

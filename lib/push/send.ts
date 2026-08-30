@@ -45,7 +45,7 @@ function personaliseFor(
   if (subscription.entryId !== payload.entryId) {
     return { title: payload.title, body: payload.body };
   }
-  return { title: `You're evicted — ${pounds(FINE_PENCE)}`, body: payload.body };
+  return { title: `You're evicted: ${pounds(FINE_PENCE)}`, body: payload.body };
 }
 
 async function sendOne(

@@ -19,12 +19,12 @@ const REASONS: Record<PendingReason, ReasonInfo> = {
     tone: classes.noMatch,
   },
   unusual: {
-    detail: 'Unusual amount — check before applying',
+    detail: 'Unusual amount, check before applying',
     tag: 'Unusual',
     tone: classes.ambiguous,
   },
   reversed: {
-    detail: 'Payment reversed — re-attribute or remove',
+    detail: 'Payment reversed, re-attribute or remove',
     tag: 'Reversed',
     tone: classes.noDebt,
   },

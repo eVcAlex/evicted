@@ -93,8 +93,8 @@ export function SeasonGrid({
                   const played = member.entryId in result.scores;
                   const evicted = result.losers.includes(member.entryId);
                   const label = played
-                    ? `GW${gw} — ${member.teamName}, ${net} pts${evicted ? `, ${verb}` : ''}`
-                    : `GW${gw} — not yet a member`;
+                    ? `GW${gw}: ${member.teamName}, ${net} pts${evicted ? `, ${verb}` : ''}`
+                    : `GW${gw}: not yet a member`;
 
                   return (
                     <td key={gw} className={classes.cell}>

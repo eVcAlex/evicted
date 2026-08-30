@@ -13,7 +13,7 @@ export const POST = withAdminAuth(async (request) => {
   }
 
   if (!tokens) {
-    return NextResponse.json({ error: 'not connected — click Connect Monzo first' }, { status: 409 });
+    return NextResponse.json({ error: 'not connected, click Connect Monzo first' }, { status: 409 });
   }
 
   try {

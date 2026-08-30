@@ -48,7 +48,7 @@ export function PushToggle() {
     }
     if (!('PushManager' in window)) {
       setUnsupportedReason(
-        'This browser has no Push API here — on iOS, only an app opened from an installed Home Screen icon gets one.',
+        'This browser has no Push API here. On iOS, only an app opened from an installed Home Screen icon gets one.',
       );
       setStatus('unsupported');
       return;
@@ -85,7 +85,7 @@ export function PushToggle() {
       if (permission !== 'granted') {
         setSubscribeError(
           permission === 'denied'
-            ? 'Notification permission was denied — check this app’s notification settings on your phone.'
+            ? 'Notification permission was denied. Check this app’s notification settings on your phone.'
             : 'Notification permission prompt was dismissed.',
         );
         setStatus('unsubscribed');
