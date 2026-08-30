@@ -15,14 +15,33 @@ import { appendPayment, setCredit, setPaid } from './store';
  * proceed.
  */
 export async function reconcileCredit(members: Member[]): Promise<void> {
-  const [{ paid }, { results }, { buyins }, { credit }] = await Promise.all([
+  const [paidState, resultsState, buyinsState, creditState] = await Promise.all([
     safeGetPaid(),
     safeGetResults(),
     safeGetBuyins(),
     safeGetCredit(),
   ]);
 
-  const balances = buildBalances({ members, results, paid, buyins, credit });
+  // A degraded getter falls back to an empty set/map. Spending real credit
+  // against that fallback would clear fines that a partial outage merely hid —
+  // money out of the pot for nothing. Do nothing until every store is healthy.
+  if (
+    paidState.degraded ||
+    resultsState.degraded ||
+    buyinsState.degraded ||
+    creditState.degraded
+  ) {
+    console.warn('reconcileCredit skipped: a ledger store is degraded');
+    return;
+  }
+
+  const balances = buildBalances({
+    members,
+    results: resultsState.results,
+    paid: paidState.paid,
+    buyins: buyinsState.buyins,
+    credit: creditState.credit,
+  });
 
   for (const balance of balances) {
     if (balance.departed || balance.creditPence <= 0 || balance.unpaid.length === 0) continue;

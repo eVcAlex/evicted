@@ -25,6 +25,9 @@ function loss(gw: number, who: number) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  setPaid.mockReset();
+  setCredit.mockReset();
+  appendPayment.mockReset();
   safeGetPaid.mockResolvedValue({ paid: new Set(), degraded: false });
   safeGetBuyins.mockResolvedValue({ buyins: new Set([1, 2]), degraded: false });
   safeGetResults.mockResolvedValue({ results: new Map(), degraded: false });
@@ -69,6 +72,50 @@ describe('reconcileCredit', () => {
     safeGetResults.mockResolvedValue({ results: new Map([loss(3, 1)]), degraded: false });
     await reconcileCredit(members);
     expect(setPaid).not.toHaveBeenCalled();
+  });
+
+  it('does nothing when any ledger store is degraded', async () => {
+    safeGetResults.mockResolvedValue({ results: new Map([loss(3, 1)]), degraded: true });
+    safeGetCredit.mockResolvedValue({ credit: new Map([[1, 600]]), degraded: false });
+
+    await reconcileCredit(members);
+
+    expect(setPaid).not.toHaveBeenCalled();
+    expect(setCredit).not.toHaveBeenCalled();
+    expect(appendPayment).not.toHaveBeenCalled();
+  });
+
+  it('logs and carries on when one member’s write fails', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    safeGetResults.mockResolvedValue({
+      results: new Map([loss(3, 1), loss(4, 2)]),
+      degraded: false,
+    });
+    safeGetCredit.mockResolvedValue({ credit: new Map([[1, 200], [2, 200]]), degraded: false });
+    setPaid.mockImplementation((_gw: number, entryId: number) =>
+      entryId === 1 ? Promise.reject(new Error('boom')) : Promise.resolve(),
+    );
+
+    await reconcileCredit(members);
+
+    expect(setCredit).toHaveBeenCalledExactlyOnceWith(2, 0);
+    expect(appendPayment).toHaveBeenCalledTimes(1);
+    expect(appendPayment).toHaveBeenCalledWith(
+      expect.objectContaining({ entryId: 2, source: 'credit-chase' }),
+    );
+    expect(consoleError).toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
+
+  it('skips a departed member holding credit with an unpaid fine', async () => {
+    safeGetResults.mockResolvedValue({ results: new Map([loss(3, 99)]), degraded: false });
+    safeGetCredit.mockResolvedValue({ credit: new Map([[99, 600]]), degraded: false });
+
+    await reconcileCredit(members);
+
+    expect(setPaid).not.toHaveBeenCalled();
+    expect(setCredit).not.toHaveBeenCalled();
+    expect(appendPayment).not.toHaveBeenCalled();
   });
 
   it('never touches the buy-in', async () => {
