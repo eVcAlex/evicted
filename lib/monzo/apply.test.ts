@@ -65,6 +65,15 @@ describe('applyPayment', () => {
     expect(setBuyin).toHaveBeenCalledWith(1, true);
   });
 
+  it('never flips the buy-in for an entry that is not in the member list', async () => {
+    safeGetBuyins.mockResolvedValue({ buyins: new Set(), degraded: false });
+    const allocation = await applyPayment({
+      entryId: 999, amountPence: 2000, txId: 'tx_absent', receivedAt: 'now', members: [],
+    });
+    expect(allocation.buyin).toBe(false);
+    expect(setBuyin).not.toHaveBeenCalled();
+  });
+
   it('writes a payment-log entry with the allocation', async () => {
     await applyPayment({ entryId: 1, amountPence: 600, txId: 'tx_4', receivedAt: '2026-08-30T00:00:00Z', members });
     expect(appendPayment).toHaveBeenCalledWith({

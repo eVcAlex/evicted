@@ -37,7 +37,7 @@ export async function applyPayment(params: {
   const allocation = planWaterfall({
     amountPence,
     unpaidFines: mine?.unpaid ?? [],
-    buyinPaid: !(mine?.buyinOwed ?? true),
+    buyinPaid: !(mine?.buyinOwed ?? false),
     creditPence,
   });
 
