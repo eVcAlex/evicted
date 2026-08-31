@@ -18,7 +18,7 @@ function allocationSummary(entry: PaymentLogEntry): string {
   return parts.join(' · ') || 'nothing';
 }
 
-export function RecentPayments({ pin }: { pin: string }) {
+export function RecentPayments() {
   const [payments, setPayments] = useState<PaymentLogEntry[] | null>(null);
   const [members, setMembers] = useState<PendingCandidate[]>([]);
   const [reversing, setReversing] = useState<string | null>(null);
@@ -28,8 +28,8 @@ export function RecentPayments({ pin }: { pin: string }) {
     setFailed(false);
     try {
       const [payRes, memRes] = await Promise.all([
-        fetch('/api/admin/payments', { headers: { 'x-admin-pin': pin } }),
-        fetch('/api/monzo/members', { headers: { 'x-admin-pin': pin } }),
+        fetch('/api/admin/payments'),
+        fetch('/api/monzo/members'),
       ]);
       // A 503 body has no `payments`, so `?? []` used to render this as the
       // "nothing recorded yet" empty state — an outage that looks like an
@@ -54,7 +54,7 @@ export function RecentPayments({ pin }: { pin: string }) {
     try {
       const res = await fetch('/api/admin/reverse-payment', {
         method: 'POST',
-        headers: { 'x-admin-pin': pin, 'content-type': 'application/json' },
+        headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ paymentId: id }),
       });
       if (res.ok) await load();

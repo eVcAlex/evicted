@@ -7,11 +7,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "oxlint lib app",
+    "lint": "oxlint lib app middleware.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@clerk/nextjs": "^7.8.3",
     "@mantine/core": "9.5.1",
     "@mantine/hooks": "9.5.1",
     "@upstash/redis": "1.38.2",

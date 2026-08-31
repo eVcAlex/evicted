@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Alert, Button } from '@mantine/core';
-import { PIN_STORAGE_KEY } from '@/lib/adminPinStorage';
+import { Alert } from '@mantine/core';
 import { CapturedPayloads } from './CapturedPayloads';
 import { MonzoConnection } from './MonzoConnection';
 import { PendingQueue } from './PendingQueue';
@@ -10,41 +9,21 @@ import { RecentPayments } from './RecentPayments';
 import classes from './AdminPanel.module.scss';
 
 /**
- * Everything here is capture-phase tooling for one admin, not the group —
- * see app/admin/page.tsx for why this page has no link pointing at it.
- *
- * This shell owns only the PIN unlock and the post-OAuth banner; connection
- * status, the pending queue, and the captured-payload viewer are each their
- * own component below, so each can be read (and changed) on its own.
+ * Capture-phase tooling for the one admin. The page this renders on is gated
+ * by `middleware.ts`, so this component can assume it is only ever shown to a
+ * signed-in admin - it owns only the post-OAuth banner now.
  */
 export function AdminPanel() {
-  const [pin, setPin] = useState<string | null>(null);
   const [justConnected, setJustConnected] = useState(false);
 
   useEffect(() => {
-    setPin(window.localStorage.getItem(PIN_STORAGE_KEY));
-
     const url = new URL(window.location.href);
     if (url.searchParams.get('monzo') === 'connected') {
       setJustConnected(true);
-      // Strip the param so refreshing or bookmarking this URL doesn't re-show
-      // the banner forever — it's a one-time "you just did this" notice set
-      // by the OAuth callback's redirect, not an ongoing connection state.
       url.searchParams.delete('monzo');
       window.history.replaceState({}, '', url);
     }
   }, []);
-
-  function unlock() {
-    const entered = window.prompt('Admin PIN');
-    if (!entered) return;
-    window.localStorage.setItem(PIN_STORAGE_KEY, entered);
-    setPin(entered);
-  }
-
-  if (!pin) {
-    return <Button onClick={unlock}>Enter admin PIN</Button>;
-  }
 
   return (
     <div className={classes.stack}>
@@ -57,10 +36,10 @@ export function AdminPanel() {
         </Alert>
       )}
 
-      <MonzoConnection pin={pin} />
-      <PendingQueue pin={pin} />
-      <RecentPayments pin={pin} />
-      <CapturedPayloads pin={pin} />
+      <MonzoConnection />
+      <PendingQueue />
+      <RecentPayments />
+      <CapturedPayloads />
     </div>
   );
 }

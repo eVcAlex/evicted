@@ -1,24 +1,19 @@
 import { randomBytes } from 'node:crypto';
 import { NextResponse } from 'next/server';
-import { checkPin } from '@/lib/admin';
+import { auth } from '@clerk/nextjs/server';
+import { isAdmin } from '@/lib/admin';
 import { MONZO_AUTH_URL, monzoClientCredentials, monzoRedirectUri } from '@/lib/monzo/config';
 
 /**
- * Starts the OAuth handshake. Gated behind the admin PIN — this is the step
- * that links a real Monzo account, not a read of already-public league data.
- *
- * The PIN travels as a query param here, not a header, because the browser
- * must navigate (not fetch) to Monzo's authorise screen. That is the one
- * exception to "PIN never in a URL" in this codebase, and it is short-lived:
- * the link is generated client-side from the PIN already in `localStorage`
- * and used once, immediately — the request line this PIN rides in is never
- * itself sent anywhere; only the *destination* of the redirect below
- * (`auth.monzo.com`, cross-origin) sees a `Referer`, and the app-wide
- * `Referrer-Policy` in `next.config.ts` strips the query string from that.
+ * Starts the OAuth handshake. Admin-only - this is the step that links a real
+ * Monzo account, not a read of already-public league data. The browser
+ * navigates here (it cannot `fetch` to Monzo's authorise screen), so the
+ * Clerk session cookie rides along and `auth()` authenticates it like every
+ * other admin route. `middleware.ts` also covers this path.
  */
-export async function GET(request: Request) {
-  const suppliedPin = new URL(request.url).searchParams.get('pin');
-  if (!checkPin(suppliedPin)) {
+export async function GET() {
+  const { userId, sessionClaims } = await auth();
+  if (!userId || !isAdmin(sessionClaims as { email?: unknown })) {
     return NextResponse.json({ error: 'unauthorised' }, { status: 401 });
   }
 
@@ -41,7 +36,7 @@ export async function GET(request: Request) {
 
   const response = NextResponse.redirect(authorizeUrl);
   // Read back on /api/monzo/callback and compared with timingSafeEqual to
-  // confirm the callback is answering *this* request, not a forged one.
+  // confirm the callback is answering this request, not a forged one.
   response.cookies.set('monzo_oauth_state', state, {
     httpOnly: true,
     secure: true,

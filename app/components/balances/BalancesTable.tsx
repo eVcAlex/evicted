@@ -1,9 +1,7 @@
 'use client';
 
-import { Group } from '@mantine/core';
 import { pounds } from '@/lib/format';
 import type { Balance } from '@/lib/league/balances';
-import { AdminToggle } from '../common/AdminToggle';
 import { Avatar } from '../common/Avatar';
 import { useMe } from '../common/MeProvider';
 import classes from './BalancesTable.module.scss';
@@ -86,28 +84,6 @@ export function BalancesTable({
               <div className={classes.meta}>
                 {balance.lost.length} lost &middot; {pounds(balance.paidPence)} paid
               </div>
-            )}
-
-            {!resultsDegraded && (balance.buyinOwed || balance.unpaid.length > 0) && (
-              <Group gap={6} mt="xs" className={classes.toggles}>
-                {balance.buyinOwed && (
-                  <AdminToggle
-                    endpoint="/api/admin/toggle-buyin"
-                    requestBody={{ entryId: balance.member.entryId }}
-                    paid={false}
-                    label="Buy-in"
-                  />
-                )}
-                {balance.unpaid.map((gameweek) => (
-                  <AdminToggle
-                    key={gameweek}
-                    endpoint="/api/admin/toggle"
-                    requestBody={{ gameweek, entryId: balance.member.entryId }}
-                    paid={false}
-                    label={`GW${gameweek}`}
-                  />
-                ))}
-              </Group>
             )}
           </div>
         );

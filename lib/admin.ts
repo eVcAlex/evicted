@@ -1,37 +1,29 @@
-import { timingSafeEqual } from 'node:crypto';
-
 /**
- * The shortest `ADMIN_PIN` this app will accept.
+ * True when a verified Clerk session belongs to an allowlisted admin.
  *
- * The site is public and `/api/admin/toggle` accepts unlimited POSTs, so the
- * only thing standing between a stranger and the ledger is the secret's search
- * space. `timingSafeEqual` defeats a timing attack; nothing here defeats brute
- * force. A four-digit "PIN" is enumerable in seconds, and the name invites
- * exactly that, so a short secret is refused outright rather than trusted.
+ * `ADMIN_ALLOWLIST` is a comma-separated list of email addresses. Unset or
+ * empty denies everyone, so a half-configured deployment fails closed rather
+ * than open. The email is compared case-insensitively after trimming, and a
+ * non-string `email` claim is treated as absent.
  */
-const MIN_SECRET_LENGTH = 16;
-
-/**
- * Compares the supplied PIN against `ADMIN_PIN` without leaking length or
- * content through timing. Returns false rather than throwing when no PIN is
- * configured, so a misconfigured deployment fails closed.
- */
-export function checkPin(supplied: string | null): boolean {
-  const expected = process.env.ADMIN_PIN;
-  if (!expected || !supplied) return false;
-
-  if (expected.length < MIN_SECRET_LENGTH) {
-    console.error(
-      `ADMIN_PIN is ${expected.length} characters; at least ${MIN_SECRET_LENGTH} are required. ` +
-        'The admin endpoint is public and unthrottled, so a short secret can be guessed. ' +
-        'Admin writes are refused until it is replaced with a long random string.',
-    );
+export function isAdmin(claims: { email?: unknown } | null | undefined): boolean {
+  const email = typeof claims?.email === 'string' ? claims.email.toLowerCase().trim() : '';
+  if (!email) {
+    // A null/undefined claims object is the ordinary signed-out path. A real
+    // object with no string `email` means a signed-in caller is being locked
+    // out silently - almost always a missing Clerk session-token claim.
+    if (claims != null) {
+      console.warn(
+        'isAdmin: session claims have no string "email"; check the Clerk "Customize session token" claim',
+      );
+    }
     return false;
   }
 
-  const a = Buffer.from(supplied);
-  const b = Buffer.from(expected);
-  if (a.length !== b.length) return false;
+  const allowed = (process.env.ADMIN_ALLOWLIST ?? '')
+    .split(',')
+    .map((entry) => entry.toLowerCase().trim())
+    .filter(Boolean);
 
-  return timingSafeEqual(a, b);
+  return allowed.includes(email);
 }
