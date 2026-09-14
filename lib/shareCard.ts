@@ -357,12 +357,35 @@ export async function drawShareCard(
   ctx.globalAlpha = 1;
 }
 
+/**
+ * Hands the PNG to the device. Prefers the Web Share API with the image as
+ * a file attachment: on iOS Safari, an `<a download>` doesn't actually
+ * download at all, it just opens the blob in a new tab for a manual
+ * long-press save, and Android's save-image flow is clumsier than its
+ * native share sheet. A direct share sheet with the file already attached
+ * is the whole point for an app whose audience is a phone group chat.
+ * Falls back to the anchor-download trick where file sharing isn't
+ * supported (desktop browsers, mostly).
+ */
 export async function downloadShareCard(
   canvas: HTMLCanvasElement,
   fileName: string,
 ): Promise<void> {
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) return;
+
+  const file = new File([blob], `${fileName}.png`, { type: 'image/png' });
+
+  if (navigator.canShare?.({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file] });
+      return;
+    } catch (err) {
+      // AbortError is the user cancelling the share sheet, not a failure —
+      // leave them where they were rather than also firing a download.
+      if (err instanceof Error && err.name === 'AbortError') return;
+    }
+  }
 
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
