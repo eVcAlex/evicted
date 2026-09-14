@@ -105,6 +105,18 @@ const CARDS: Array<{ label: string; previousLosses: number[]; summary: Parameter
   },
 ];
 
+// Prior gameweeks for the CARDS above, so the "Third eviction of the
+// season" card (gameweek 6) has real history to draw its form sparkline
+// from. Gameweeks at or after each card's own don't matter — `recentForm`
+// only looks strictly earlier — so one fixture covers every card here.
+const CARD_RESULTS = new Map<number, GameweekResult>([
+  [1, { losers: [2], scores: { 1: 44, 2: 18 }, recordedAt: '2026-08-24T00:00:00Z' }],
+  [2, { losers: [1], scores: { 1: 22, 2: 41 }, recordedAt: '2026-08-31T00:00:00Z' }],
+  [3, { losers: [], scores: { 1: 36, 2: 33 }, recordedAt: '2026-09-07T00:00:00Z' }],
+  [4, { losers: [1], scores: { 1: 28, 2: 32 }, recordedAt: '2026-09-14T00:00:00Z' }],
+  [5, { losers: [], scores: { 1: 50, 2: 30 }, recordedAt: '2026-09-21T00:00:00Z' }],
+]);
+
 const SEASON_MEMBERS: Member[] = [
   member({ entryId: 1, teamName: 'Høgh are you?', managerName: 'Alex McGuiness' }),
   member({ entryId: 2, teamName: 'Jacquet Potato', managerName: 'Ben Hopla' }),
@@ -135,6 +147,7 @@ export default function PreviewPage() {
                 paid={new Set()}
                 degraded={false}
                 previousLosses={new Map([[1, previousLosses]])}
+                results={CARD_RESULTS}
               />
             </div>
           ))}

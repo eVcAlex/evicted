@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Evicted — UI directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{--bg:#0e0f12;--panel:#16181d;--stroke:#262a31;--fg:#eceae4;--dim:#8a8f99;--accent:#7c3aed}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font-family:"Archivo",sans-serif;-webkit-font-smoothing:antialiased}
+  .head{max-width:1300px;margin:0 auto;padding:46px 24px 10px}
+  .head .k{font-family:"Spline Sans Mono";font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  h1{font-size:40px;font-weight:900;letter-spacing:-.02em;margin-top:6px}
+  .head p{color:var(--dim);max-width:70ch;margin-top:12px;line-height:1.55;font-size:15px}
+  .grid{max-width:1300px;margin:0 auto;padding:28px 24px 90px;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:26px}
+  .cell{background:var(--panel);border:1px solid var(--stroke);border-radius:14px;overflow:hidden;
+    display:flex;flex-direction:column}
+  .meta{padding:16px 18px;border-bottom:1px solid var(--stroke)}
+  .meta .n{font-family:"Spline Sans Mono";font-size:12px;color:var(--accent)}
+  .meta .t{font-size:19px;font-weight:700;margin-top:2px}
+  .meta .d{color:var(--dim);font-size:13px;margin-top:6px;line-height:1.45}
+  .frameWrap{position:relative;background:#000;height:520px;overflow:hidden}
+  /* Render each mockup at full width, scaled down to a thumbnail. */
+  iframe{width:1000px;height:1444px;border:0;transform:scale(.52);transform-origin:top left}
+  .open{display:block;text-align:center;font-family:"Spline Sans Mono";font-size:12px;
+    letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--fg);
+    padding:12px;border-top:1px solid var(--stroke)}
+  .open:hover{background:var(--accent);color:#fff}
+  .section{max-width:1300px;margin:0 auto;padding:36px 24px 0}
+  .section h2{font-size:24px;font-weight:900;letter-spacing:-.01em}
+  .section h2 span{color:var(--accent)}
+  .section p{color:var(--dim);max-width:70ch;margin-top:8px;line-height:1.5;font-size:14px}
+</style>
+</head>
+<body>
+  <div class="head">
+    <div class="k">Evicted · UI exploration</div>
+    <h1>Ways to serve an eviction notice</h1>
+    <p>One screen — <em>This week / who finished bottom</em> — rendered in every direction below, each committed to a single design idea rather than a default. Identical content throughout (Gameweek 6, Vardy Party on a net 31, &pound;2 owed) so directions are directly comparable. Thumbnails are live pages scaled down; click any to open it full size.</p>
+  </div>
+
+  <div class="section">
+    <h2><span>01&ndash;15</span> · The original set</h2>
+    <p>Fifteen directions spread across the aesthetic map — none repeating the same move.</p>
+  </div>
+  <div class="grid" id="grid-main"></div>
+
+  <div class="section">
+    <h2><span>SB1&ndash;5</span> · Sportsbook, five more takes</h2>
+    <p>Sportsbook Dash (15) was the pick. These push further into that lane: broadcast graphics, the actual FPL/Premier League palette, a trading-desk terminal, stats-provider analytics, and a daily-fantasy app card.</p>
+  </div>
+  <div class="grid" id="grid-sb"></div>
+
+  <div class="section">
+    <h2><span>UK1&ndash;5</span> · Betting slip, grounded in real UK bookmakers</h2>
+    <p>The betting-slip idea (05), redone as five real UK betting formats — a Racing Post racecard, an in-play coupon (bet365 lineage), a cheeky high-street bookie (Paddy Power lineage), a Betfair-style back/lay exchange, and a literal shop-counter docket. Every one carries an authentic 18+ / BeGambleAware.org responsible-gambling strip.</p>
+  </div>
+  <div class="grid" id="grid-uk"></div>
+
+<script>
+  const mainItems = [
+    ['01','Terrace Ledger','01-terrace-ledger.html','Sports-almanac ledger — bone paper, iron ink, one blood-red. Heavy grotesque over mono figures, hairline rules, a scores ticker.'],
+    ['02','Ceefax / Teletext','02-teletext.html','Saturday-afternoon football results on Page 316. Blue-black ground, saturated primary blocks, one bitmap face.'],
+    ['03','Tabloid Back Page','03-tabloid.html','Red-top back page. Screaming Anton headline, halftone dots, a rotated EXCLUSIVE flash, boxed verdict.'],
+    ['04','Enamel Programme','04-enamel.html','Vintage matchday programme and club enamel sign. Forest green, cream, brass gold, a high-contrast serif, a crest roundel.'],
+    ['05','Bookmaker&#39;s Coupon','05-betting-slip.html','A high-street betting slip. Dot-matrix figures, perforated edges, a pink carbon tint, a stamped UNPAID. See UK1&ndash;5 below for the grounded rework.'],
+    ['06','Neo-Brutalist','06-neo-brutalist.html','The beui/rareui lane, disciplined — thick ink borders, hard offset shadows, a committed acid-yellow + ink palette.'],
+    ['07','Money Broadsheet','07-broadsheet.html','A financial paper&#39;s money desk. Salmon stock, optical serif, drop cap, two-column body, one navy rule.'],
+    ['08','Terminal / TUI','08-terminal.html','A phosphor console. Box-drawing chrome, ANSI colour, a blinking cursor and a faint scanline.'],
+    ['09','Swiss Grid','09-swiss.html','International typographic. Strict modular grid, one red signal, a vast display numeral against the baseline.'],
+    ['10','Aurora Glass','10-aurora-glass.html','The magicui/aceternity lane, restrained — one slow aurora, one glass card, exactly one gradient.'],
+    ['11','Riso Zine','11-riso.html','Two-colour risograph. Fluoro coral over federal blue, overprint multiply, misregistration, paper grain.'],
+    ['12','Stadium Scoreboard','12-scoreboard.html','A floodlit LED matrix board. Amber dot-matrix numerals on pitch-night black, bezelled panel.'],
+    ['13','Casino Lux','13-casino-lux.html','The pot as a members&#39; jackpot. Matte black felt, gold foil, fine display serif, gold shimmer on the total.'],
+    ['14','Soft Clay','14-clay.html','Neumorphism kept legible. Warm putty, moulded dual shadows, one terracotta accent, inset stat wells.'],
+    ['15','Sportsbook Dash &#9733;','15-sportsbook-dash.html','Data-dense fixtures desk. Slate + teal, KPI strip, tabular figures, an inline &ldquo;times bottom&rdquo; bar chart. The pick — see SB1&ndash;5 above.'],
+  ];
+  const sbItems = [
+    ['SB1','Broadcast Graphics','sb1-broadcast.html','TV match-graphics lower-third. Floodlit dark ground, electric-blue rail, skewed angled plates, a pulsing LIVE pip.'],
+    ['SB2','FPL Official Palette','sb2-fpl-official.html','The actual Fantasy Premier League colour language — PL purple, electric green, cyan and magenta as data signals.'],
+    ['SB3','Trading Desk','sb3-terminal-desk.html','A Bloomberg-style terminal. Black ground, amber data, green/red deltas, an amber ticker crawl of the standings.'],
+    ['SB4','Opta Analytics','sb4-opta-analytics.html','Light stats-provider sheet. One ink-blue accent, a real drawn sparkline of the last six gameweeks, dense but legible.'],
+    ['SB5','DFS App Card','sb5-dfs-neon.html','DraftKings/FanDuel lane. Deep navy, one neon green, a glowing LOCKED contest chip, a bold slab entry card.'],
+  ];
+  const ukItems = [
+    ['UK1','Racing Post Form','uk1-racing-post.html','The Racing Post racecard — signature salmon-pink stock, form-figure string, fractional SP, black section bars.'],
+    ['UK2','In-Play Coupon','uk2-inplay.html','bet365-lineage in-play sportsbook. Bookmaker green header, yellow highlight rail, live clock, a green Cash Out pill.'],
+    ['UK3','Cheeky High-Street Bookie','uk3-paddy.html','Paddy Power-lineage tone. Loud bookmaker green + gold, a mickey-taking headline, still closed with a proper 18+ strip.'],
+    ['UK4','Betting Exchange','uk4-exchange.html','Betfair-lineage back/lay exchange. Signature yellow/black chrome, blue-back/pink-lay price ladder, decimal odds, matched volumes.'],
+    ['UK5','Shop-Counter Docket','uk5-highstreet-coupon.html','William Hill-lineage betting-shop slip. Printed docket on bookmaker blue, biro-style selection, till barcode, red SETTLED stamp.'],
+  ];
+  function render(id, items) {
+    document.getElementById(id).innerHTML = items.map(([n,t,f,d]) => `
+      <div class="cell">
+        <div class="meta"><div class="n">${n}</div><div class="t">${t}</div><div class="d">${d}</div></div>
+        <div class="frameWrap"><iframe loading="lazy" src="${f}" title="${t}"></iframe></div>
+        <a class="open" href="${f}" target="_blank" rel="noopener">Open full size &rarr;</a>
+      </div>`).join('');
+  }
+  render('grid-main', mainItems);
+  render('grid-sb', sbItems);
+  render('grid-uk', ukItems);
+</script>
+</body>
+</html>

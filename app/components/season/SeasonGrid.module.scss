@@ -7,7 +7,7 @@
 
 .emptyKicker {
   @include card.kicker;
-  color: var(--mantine-color-violet-4);
+  color: var(--mantine-color-brand-3);
 }
 
 .emptyHeading {
@@ -38,8 +38,16 @@
   gap: mantine.rem(6);
 }
 
+/* Not `@extend .absent` — that cell now belongs to the elevated-card grid
+ * below. This swatch lives on the plain empty-state panel above it and
+ * needs that panel's own border token instead. */
 .emptyPreviewCell {
-  @extend .absent;
+  display: inline-block;
+  width: mantine.rem(14);
+  height: mantine.rem(14);
+  border-radius: mantine.rem(3);
+  border: mantine.rem(1) dashed var(--border);
+  opacity: 0.6;
 }
 
 .emptyPreviewLabel {
@@ -51,11 +59,12 @@
   opacity: 0.8;
 }
 
+/* Same elevated card as the loser card — the season grid is the single
+ * densest readout in the app, exactly the kind of "real data, tabular
+ * figures" moment the rework is for. */
 .scroll {
+  @include card.light-card;
   overflow-x: auto;
-  background-color: var(--surface);
-  border: mantine.rem(1) solid var(--border);
-  border-radius: mantine.rem(6);
 }
 
 .table {
@@ -77,14 +86,14 @@
   font-size: mantine.rem(11);
   font-weight: 600;
   letter-spacing: mantine.rem(0.5);
-  color: var(--mantine-color-violet-4);
+  color: var(--mantine-color-brand-3);
   text-align: center;
   white-space: nowrap;
-  border-bottom: mantine.rem(1) solid var(--border);
+  border-bottom: mantine.rem(1) solid card.$rule;
 }
 
 .corner {
-  border-bottom: mantine.rem(1) solid var(--border);
+  border-bottom: mantine.rem(1) solid card.$rule;
 }
 
 .rowHeader {
@@ -93,8 +102,8 @@
   justify-content: space-between;
   gap: mantine.rem(10);
   padding: mantine.rem(10) mantine.rem(14);
-  border-bottom: mantine.rem(1) solid var(--border);
-  border-right: mantine.rem(1) solid var(--border);
+  border-bottom: mantine.rem(1) solid card.$rule;
+  border-right: mantine.rem(1) solid card.$rule;
   text-align: left;
   white-space: nowrap;
   font-family: var(--font-body);
@@ -118,7 +127,7 @@
   text-overflow: ellipsis;
   font-weight: 700;
   font-size: mantine.rem(13);
-  color: var(--text);
+  color: card.$ink;
 }
 
 .evictionCount {
@@ -126,13 +135,13 @@
   font-family: var(--font-mono);
   font-size: mantine.rem(11);
   font-weight: 600;
-  color: var(--mantine-color-violet-4);
+  color: var(--mantine-color-brand-3);
   font-variant-numeric: tabular-nums;
 }
 
 .cell {
   padding: mantine.rem(10);
-  border-bottom: mantine.rem(1) solid var(--border);
+  border-bottom: mantine.rem(1) solid card.$rule;
   text-align: center;
 
   tr:last-child & {
@@ -150,22 +159,21 @@
 }
 
 .evicted {
-  background-color: var(--mantine-color-violet-6);
+  background-color: var(--mantine-color-brand-5);
 }
 
 .played {
-  border: mantine.rem(1.5) solid var(--text-dim);
+  border: mantine.rem(1.5) solid card.$ink-dim;
 }
 
 .absent {
-  border: mantine.rem(1) dashed var(--border);
+  border: mantine.rem(1) dashed card.$rule;
   opacity: 0.6;
 }
 
 .you {
   .rowHeader {
-    border-left: mantine.rem(2) solid var(--mantine-color-violet-6);
-    background-color: var(--mantine-color-violet-9);
+    @include card.light-you;
   }
 }
 

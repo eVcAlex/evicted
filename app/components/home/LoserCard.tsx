@@ -1,9 +1,14 @@
-import { Alert, Stack, Text, Title } from '@mantine/core';
-import { MONZO_ME_URL } from '@/lib/config';
+import { Stack, Text, Title } from '@mantine/core';
+import type { GridResult } from '@/lib/gameweekResult';
+import { FINE_PENCE, MONZO_ME_URL } from '@/lib/config';
+import { pounds } from '@/lib/format';
+import { colorForTeam, initialsFor, photoUrlFor } from '@/lib/league/avatar';
 import { paidKey } from '@/lib/ledger/store';
+import { recentForm } from '@/lib/league/form';
 import { quipFor } from '@/lib/league/quips';
 import type { LoserSummary } from '@/lib/league/summary';
 import { Avatar } from '../common/Avatar';
+import { ShareButton } from './ShareButton';
 import classes from './LoserCard.module.scss';
 
 function undecidedCopy(noScores: boolean): { kicker: string; sub: string } {
@@ -23,6 +28,7 @@ export function LoserCard({
   paid,
   degraded,
   previousLosses,
+  results,
 }: {
   summary: LoserSummary;
   paid: Set<string>;
@@ -30,6 +36,8 @@ export function LoserCard({
   degraded: boolean;
   /** Recorded losses per entry id, for quips that reference streak history. */
   previousLosses: Map<number, number[]>;
+  /** The full recorded ledger — feeds the form sparkline's real history. */
+  results: Map<number, GridResult>;
 }) {
   const noScores = summary.losers.length === 0;
   // Nine managers level on zero between the deadline and the first kick-off are
@@ -41,16 +49,23 @@ export function LoserCard({
 
   return (
     <Stack gap="lg">
-      <Text size="sm" c="dimmed" tt="uppercase" fw={600} className={classes.gameweek}>
-        Gameweek {summary.gameweek}
-      </Text>
+      <div className={classes.meta}>
+        <div className={classes.metaRow}>
+          <Text size="sm" c="dimmed" tt="uppercase" fw={600} className={classes.gameweek}>
+            Gameweek {summary.gameweek}
+          </Text>
+          {summary.provisional && !noScores && (
+            <span className={classes.provisionalTag}>Provisional</span>
+          )}
+        </div>
 
-      {summary.provisional && !noScores && (
-        <Alert color="red" variant="outline" title="Provisional">
-          Bonus points and auto-substitutions have not been applied yet. The bottom
-          spot can still change.
-        </Alert>
-      )}
+        {summary.provisional && !noScores && (
+          <Text size="xs" c="dimmed" className={classes.provisionalNote}>
+            Bonus points and auto-substitutions haven&apos;t been applied yet, so the
+            bottom spot can still change.
+          </Text>
+        )}
+      </div>
 
       {undecidedText && (
         <div className={classes.undecidedHero}>
@@ -76,64 +91,129 @@ export function LoserCard({
             previousLosses: previousLosses.get(member.entryId) ?? [],
           });
 
+          // Real settled history only, plus this gameweek's own (possibly
+          // still-provisional) score tacked on at the end — never invented.
+          // Omitted below the chart entirely once there's nothing prior to
+          // compare against, rather than drawing a one-bar "trend".
+          const priorForm = recentForm(results, member.entryId, summary.gameweek);
+          const form = [...priorForm, { gameweek: summary.gameweek, net: score.net }];
+          const maxNet = Math.max(...form.map((point) => point.net), 1);
+
+          const margin =
+            summary.runnerUpNet !== null ? summary.runnerUpNet - score.net : null;
+
+          const status = degraded
+            ? { label: 'Status unknown', tone: classes.statusUnknown }
+            : settled
+              ? { label: 'Paid', tone: classes.statusPaid }
+              : { label: `Owes ${pounds(FINE_PENCE)}`, tone: classes.statusOwed };
+
+          const marginCopy =
+            margin === null
+              ? null
+              : margin === 0
+                ? 'Tied with the next-worst score.'
+                : `${margin} point${margin === 1 ? '' : 's'} clear of safety.`;
+
           return (
-            <div key={member.entryId}>
-              <div className={classes.receipt}>
-                <div className={classes.receiptHead}>
-                  <div className={classes.receiptAvatar}>
-                    <Avatar teamName={member.teamName} managerName={member.managerName} size={54} />
+            <div key={member.entryId} className={classes.entry}>
+              <div className={classes.grid}>
+                <div className={classes.card}>
+                  <div className={classes.head}>
+                    <Avatar teamName={member.teamName} managerName={member.managerName} size={48} />
+                    <div className={classes.identity}>
+                      <span className={classes.kicker}>Bottom of the week</span>
+                      <Title order={2} className={classes.team}>
+                        {member.teamName}
+                      </Title>
+                      <span className={classes.manager}>{member.managerName}</span>
+                    </div>
+                    <ShareButton
+                      content={{
+                        kicker: 'Bottom of the week',
+                        name: member.teamName,
+                        sub: `Gameweek ${summary.gameweek}`,
+                        meta: member.managerName,
+                        quip,
+                        note: degraded ? undefined : status.label,
+                        avatarUrl: photoUrlFor(member.managerName),
+                        avatarInitials: initialsFor(member.teamName),
+                        avatarColor: colorForTeam(member.teamName),
+                        statValue: String(score.net),
+                        statLabel: 'net pts',
+                        fileName: `evicted-gw${summary.gameweek}`,
+                      }}
+                    />
                   </div>
-                  <div className={classes.receiptTitle}>Evicted</div>
-                  <div className={classes.receiptSub}>#EvictionNotice</div>
+
+                  <div className={classes.heroRow}>
+                    <div className={classes.net}>
+                      <span className={classes.netVal}>{score.net}</span>
+                      <span className={classes.netLabel}>net pts</span>
+                    </div>
+                    <span className={status.tone}>{status.label}</span>
+                  </div>
+
+                  <div className={classes.metrics}>
+                    <div className={classes.metricRow}>
+                      <span className={classes.metricKey}>Team score</span>
+                      <span className={classes.metricVal}>{score.gross}</span>
+                    </div>
+                    <div className={classes.metricRow}>
+                      <span className={classes.metricKey}>Transfer hits</span>
+                      <span className={classes.metricVal}>&minus;{score.hits}</span>
+                    </div>
+                    <div className={classes.metricRow}>
+                      <span className={classes.metricKey}>Bench, unused</span>
+                      <span className={classes.metricVal}>{score.bench}</span>
+                    </div>
+                    {margin !== null && (
+                      <div className={classes.metricRow}>
+                        <span className={classes.metricKey}>Gap to safety</span>
+                        <span className={classes.metricVal}>
+                          {margin === 0 ? 'Tied' : margin}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                <div className={classes.dash} />
-
-                <div className={classes.line}>
-                  <span>
-                    {member.managerName} ({member.teamName})
-                  </span>
-                  <span />
-                </div>
-                <div className={classes.line}>
-                  <span>Team score</span>
-                  <span>{score.gross}</span>
-                </div>
-                <div className={classes.line}>
-                  <span>Hits</span>
-                  <span>&minus;{score.hits}</span>
-                </div>
-                <div className={classes.line}>
-                  <span>Bench (unused)</span>
-                  <span>{score.bench}</span>
-                </div>
-
-                <div className={classes.dash} />
-
-                <div className={classes.lineTotal}>
-                  <span>Net pts</span>
-                  <span>{score.net}</span>
-                </div>
-                <div className={classes.lineTotal}>
-                  <span>Amount due</span>
-                  <span>£2.00</span>
-                </div>
-
-                <Text className={classes.quip}>&ldquo;{quip}&rdquo;</Text>
-
-                {degraded ? (
-                  <span className={classes.stamp}>Status unknown</span>
-                ) : settled ? (
-                  <span className={classes.stampPaid}>Paid</span>
-                ) : MONZO_ME_URL ? (
-                  <a className={classes.stamp} href={MONZO_ME_URL} target="_blank" rel="noopener noreferrer">
-                    Pay £2
-                  </a>
-                ) : (
-                  <span className={classes.stamp}>Owes £2</span>
+                {priorForm.length > 0 && (
+                  <div className={classes.formCard}>
+                    <span className={classes.formHeading}>
+                      Net score &middot; last {form.length} GWs
+                    </span>
+                    <div className={classes.sparkline}>
+                      {form.map((point, index) => (
+                        <div key={point.gameweek} className={classes.bar}>
+                          <span
+                            className={
+                              index === form.length - 1 ? classes.barFillNow : classes.barFill
+                            }
+                            style={{
+                              height: `${Math.max(8, Math.round((Math.max(point.net, 0) / maxNet) * 100))}%`,
+                            }}
+                          />
+                          <span className={classes.barLabel}>GW{point.gameweek}</span>
+                        </div>
+                      ))}
+                    </div>
+                    {marginCopy && <p className={classes.marginNote}>{marginCopy}</p>}
+                  </div>
                 )}
               </div>
-              <div className={classes.zigzagBottom} />
+
+              <blockquote className={classes.quip}>&ldquo;{quip}&rdquo;</blockquote>
+
+              {degraded ? (
+                <span className={classes.ctaUnknown}>Status unknown</span>
+              ) : settled ? (
+                <span className={classes.ctaPaid}>Paid</span>
+              ) : MONZO_ME_URL ? (
+                <a className={classes.cta} href={MONZO_ME_URL} target="_blank" rel="noopener noreferrer">
+                  Pay {pounds(FINE_PENCE)}
+                </a>
+              ) : null}
             </div>
           );
         })}

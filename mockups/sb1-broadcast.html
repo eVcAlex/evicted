@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SB1 · Broadcast Graphics — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800&family=Saira:wght@400;500;600&family=Saira+Semi+Condensed:wght@600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     SPORTSBOOK VARIATION 1 — BROADCAST GRAPHICS
+     TV match-graphics: a floodlit dark ground, an electric-blue brand
+     rail, skewed lower-third name plates, a live lime pip. Type: Saira
+     Condensed for plates, Saira for body. Motion: the LIVE pip pulses.
+     Signature: angled lower-third bars with a bright leading edge, like
+     a Sky/TNT score bug.
+     ------------------------------------------------------------------ */
+  :root{--bg:#0a0e14;--panel:#111722;--blue:#1f6fff;--blue2:#0b3aa0;--lime:#c6ff2e;
+    --fg:#f2f5fa;--dim:#8794a8;--red:#ff4d5e;--line:#1e2836}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:
+    radial-gradient(120% 60% at 50% -10%,#16233a,var(--bg) 60%);
+    color:var(--fg);font-family:"Saira",sans-serif;min-height:100vh}
+  .wrap{max-width:680px;margin:0 auto;padding:20px 18px 80px}
+  header{display:flex;justify-content:space-between;align-items:center}
+  .logo{font-family:"Saira Condensed";font-weight:800;font-size:24px;letter-spacing:.02em;text-transform:uppercase;font-style:italic}
+  .logo b{color:var(--blue)}
+  nav{display:flex;gap:4px}
+  nav a{font-family:"Saira Semi Condensed";font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+    text-decoration:none;color:var(--dim);padding:6px 11px;clip-path:polygon(8% 0,100% 0,92% 100%,0 100%)}
+  nav a.on{color:#fff;background:var(--blue)}
+  .bug{display:flex;align-items:stretch;margin-top:20px;box-shadow:0 20px 50px -24px #000}
+  .bug .score{background:var(--blue);color:#fff;font-family:"Saira Condensed";font-weight:800;
+    font-size:64px;line-height:1;padding:14px 22px;display:flex;align-items:center;clip-path:polygon(0 0,100% 0,88% 100%,0 100%)}
+  .bug .plate{background:var(--panel);flex:1;padding:14px 30px 14px 24px;display:flex;flex-direction:column;justify-content:center;
+    margin-left:-14px}
+  .bug .plate .lab{font-family:"Saira Semi Condensed";font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--lime)}
+  .bug .plate .team{font-family:"Saira Condensed";font-weight:800;font-size:34px;line-height:1;text-transform:uppercase}
+  .bug .plate .mgr{font-size:13px;color:var(--dim);margin-top:2px}
+  .live{display:flex;align-items:center;gap:7px;font-family:"Saira Semi Condensed";font-weight:700;font-size:12px;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--red);padding:0 18px;background:var(--panel)}
+  .live .pip{width:9px;height:9px;border-radius:50%;background:var(--red);animation:p 1.2s ease-in-out infinite}
+  @keyframes p{50%{opacity:.25}}
+  .strip{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:2px;background:var(--line)}
+  .strip div{background:var(--panel);padding:14px 20px}
+  .strip .lab{font-family:"Saira Semi Condensed";font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  .strip .val{font-family:"Saira Condensed";font-weight:800;font-size:30px;line-height:1;margin-top:2px}
+  .strip .val.red{color:var(--red)}.strip .val.lime{color:var(--lime)}
+  .lower{position:relative;margin-top:22px;background:linear-gradient(90deg,var(--blue2),transparent);
+    border-left:4px solid var(--lime);padding:14px 20px}
+  .lower .q{font-size:15px;font-style:italic}
+  .lower .k{font-family:"Saira Semi Condensed";font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin-bottom:4px}
+  .foot{display:flex;justify-content:space-between;align-items:center;margin-top:22px;
+    border-top:1px solid var(--line);padding-top:16px}
+  .pot{font-family:"Saira Semi Condensed";font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+  .pot b{color:var(--fg)}
+  .pay{font-family:"Saira Condensed";font-weight:800;font-size:18px;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;
+    color:#04122e;background:var(--lime);padding:12px 26px;clip-path:polygon(6% 0,100% 0,94% 100%,0 100%)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">EV<b>/</b>ICTED</div>
+      <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+    </header>
+
+    <div class="bug">
+      <div class="score">31</div>
+      <div class="plate">
+        <div class="lab">Gameweek 6 · Bottom of the week</div>
+        <div class="team">Vardy Party</div>
+        <div class="mgr">Danny Rose · net points · owes &pound;2</div>
+      </div>
+      <div class="live"><span class="pip"></span>Settled</div>
+    </div>
+
+    <div class="strip">
+      <div><div class="lab">Team</div><div class="val">35</div></div>
+      <div><div class="lab">Hits</div><div class="val red">&minus;4</div></div>
+      <div><div class="lab">Bench</div><div class="val lime">12</div></div>
+      <div><div class="lab">Runner-up</div><div class="val">36</div></div>
+    </div>
+
+    <div class="lower">
+      <div class="k">Analyst's view</div>
+      <div class="q">&ldquo;Second week running. The sofa has your shape now.&rdquo;</div>
+    </div>
+
+    <div class="foot">
+      <span class="pot">Pot <b>&pound;84.00</b> · 7/12 bought in</span>
+      <a class="pay" href="#">Pay &pound;2</a>
+    </div>
+  </div>
+</body>
+</html>

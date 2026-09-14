@@ -1,29 +1,33 @@
 @use '../../styles/card';
 
+/* The personal line sits directly on the balances sheet below it, so it
+   gets the same card treatment — a brand-coloured top edge marks it as
+   "about you" specifically, distinct from the plain rows underneath. */
 .line {
-  @include card.surface;
+  @include card.light-card;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: mantine.rem(12);
   padding: mantine.rem(12) mantine.rem(16);
   margin-bottom: mantine.rem(16);
-  border-color: var(--mantine-color-violet-7);
+  border-top: mantine.rem(3) solid var(--mantine-color-brand-5);
+  border-radius: mantine.rem(4) mantine.rem(4) mantine.rem(10) mantine.rem(10);
 }
 
 .label {
   font-family: var(--font-mono);
   font-size: mantine.rem(13);
   font-weight: 600;
-  color: var(--text);
+  color: card.$ink;
 }
 
 .owes .label {
-  color: var(--mantine-color-yellow-4);
+  color: var(--mantine-color-yellow-8);
 }
 
 .credit .label {
-  color: var(--mantine-color-green-3);
+  color: var(--mantine-color-green-8);
 }
 
 .pay {
@@ -35,7 +39,7 @@
   text-transform: uppercase;
   padding: mantine.rem(5) mantine.rem(10);
   border-radius: mantine.rem(6);
-  color: var(--mantine-color-yellow-4);
-  background-color: color-mix(in srgb, var(--mantine-color-yellow-4) 14%, transparent);
+  color: var(--mantine-color-yellow-8);
+  background-color: var(--mantine-color-yellow-1);
   text-decoration: none;
 }

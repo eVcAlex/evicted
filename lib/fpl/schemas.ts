@@ -58,8 +58,19 @@ export const gameweekEntrySchema = z.object({
   points_on_bench: z.number(),
 });
 
+/**
+ * One chip play. `name` is FPL's internal code: `bboost` (Bench Boost),
+ * `3xc` (Triple Captain), `freehit`, `wildcard`. Only `bboost` matters here -
+ * in that gameweek the bench actually scored, so those points were not wasted.
+ */
+export const chipPlaySchema = z.object({
+  name: z.string(),
+  event: z.number(),
+});
+
 export const entryHistorySchema = z.object({
   current: z.array(gameweekEntrySchema),
+  chips: z.array(chipPlaySchema).optional(),
 });
 
 export type GameweekEvent = z.infer<typeof gameweekEventSchema>;

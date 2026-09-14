@@ -8,11 +8,10 @@ import { useMe } from '../common/MeProvider';
 import classes from './SettingsLink.module.scss';
 
 /**
- * The header's right-hand control — replaces the old bare `PushToggle` bell.
- * Shows your own avatar once you've picked who you are on `/settings`
- * (`Avatar` has no client-only dependencies, so it renders fine bundled
- * into this client component — the same pattern `BalancesTable` already
- * uses), otherwise a neutral placeholder.
+ * The header's right-hand control. Shows your own avatar once you've picked
+ * who you are on `/settings` (`Avatar` has no client-only dependencies, so it
+ * renders fine bundled into this client component — the same pattern
+ * `BalancesTable` already uses), otherwise a neutral placeholder.
  */
 export function SettingsLink() {
   const pathname = usePathname();

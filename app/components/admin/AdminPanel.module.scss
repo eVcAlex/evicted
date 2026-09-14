@@ -13,7 +13,7 @@
 
 .sectionKicker {
   @include card.kicker;
-  color: var(--mantine-color-violet-4);
+  color: var(--mantine-color-brand-3);
 }
 
 .statusLine {
@@ -61,7 +61,7 @@
 .queueCount {
   font-family: var(--font-mono);
   font-size: mantine.rem(11);
-  color: var(--mantine-color-yellow-4);
+  color: var(--mantine-color-yellow-8);
 }
 
 .queue {
@@ -83,7 +83,7 @@
 }
 
 .pendingCard.noMatch {
-  border-left-color: var(--mantine-color-violet-7);
+  border-left-color: var(--mantine-color-brand-3);
 }
 
 .pendingCard.noDebt {
@@ -133,13 +133,13 @@
 }
 
 .reasonTag.ambiguous {
-  color: var(--mantine-color-yellow-4);
+  color: var(--mantine-color-yellow-8);
   border: mantine.rem(1) solid var(--mantine-color-yellow-7);
 }
 
 .reasonTag.noMatch {
-  color: var(--mantine-color-violet-4);
-  border: mantine.rem(1) solid var(--mantine-color-violet-7);
+  color: var(--mantine-color-brand-3);
+  border: mantine.rem(1) solid var(--mantine-color-brand-3);
 }
 
 .reasonTag.noDebt {

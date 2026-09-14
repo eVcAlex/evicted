@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SB3 · Trading Desk — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     SPORTSBOOK VARIATION 3 — TRADING DESK
+     The sportsbook as a Bloomberg terminal: pure black, amber data,
+     green up / red down, a market grid where "bottom of the week" is a
+     position that got shorted. Type: IBM Plex Mono. Motion: an amber
+     ticker crawl of the standings. Signature: financial market rows with
+     up/down deltas and a monospaced amber-on-black grid.
+     ------------------------------------------------------------------ */
+  :root{--bg:#000;--panel:#0b0b0b;--amber:#ffb000;--amber-dim:#7a5500;
+    --green:#26d07c;--red:#ff433d;--fg:#e8e6df;--dim:#6f6f68;--line:#1c1c1a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font-family:"IBM Plex Mono",monospace;font-size:13px;line-height:1.5}
+  .wrap{max-width:720px;margin:0 auto;padding:0 0 80px}
+  header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--amber-dim);padding:12px 18px}
+  .logo{font-family:"IBM Plex Sans";font-weight:700;font-size:16px;letter-spacing:.04em;color:var(--amber)}
+  nav{display:flex;gap:14px}
+  nav a{text-decoration:none;color:var(--dim);font-size:12px;letter-spacing:.04em}
+  nav a.on{color:var(--amber)}
+  .ticker{overflow:hidden;white-space:nowrap;border-bottom:1px solid var(--line);color:var(--dim);padding:5px 0;font-size:12px}
+  .ticker span{display:inline-block;animation:t 24s linear infinite}
+  .ticker b.up{color:var(--green)}.ticker b.dn{color:var(--red)}
+  @keyframes t{to{transform:translateX(-50%)}}
+  .cmd{padding:14px 18px 6px;color:var(--dim)}
+  .cmd b{color:var(--amber)}
+  .quote{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;padding:6px 18px 16px;border-bottom:1px solid var(--line)}
+  .quote .team{font-family:"IBM Plex Sans";font-weight:700;font-size:24px;color:var(--fg)}
+  .quote .sub{color:var(--dim);font-size:12px;margin-top:2px}
+  .quote .px{text-align:right}
+  .quote .px .big{font-size:40px;font-weight:600;color:var(--amber);line-height:.9}
+  .quote .px .delta{color:var(--red);font-size:12px}
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;color:var(--dim);font-weight:500;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    padding:8px 18px;border-bottom:1px solid var(--line)}
+  th:last-child,td:last-child{text-align:right}
+  td{padding:8px 18px;border-bottom:1px solid var(--line)}
+  td .k{color:var(--dim)}
+  .up{color:var(--green)}.dn{color:var(--red)}.hl{color:var(--amber)}
+  .note{padding:12px 18px;color:var(--dim);font-style:italic}
+  .foot{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-top:1px solid var(--amber-dim)}
+  .foot .l{color:var(--dim)}.foot .l b{color:var(--green)}
+  .pay{text-decoration:none;background:var(--amber);color:#000;font-weight:700;padding:9px 18px;letter-spacing:.04em}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">EVICTED&nbsp;TERMINAL</div>
+      <nav><a class="on" href="#">WK</a><a href="#">SEASON</a><a href="#">BAL</a><a href="#">DRAFT</a></nav>
+    </header>
+    <div class="ticker"><span>GW6 SETTLED &nbsp; VARDY <b class="dn">31 &#9660;5</b> &nbsp; MIDFIELD GEN <b class="up">36 &#9650;2</b> &nbsp; XHAKA KHAN <b class="up">41 &#9650;7</b> &nbsp; SON OF PITCH <b class="up">44 &#9650;9</b> &nbsp; POT <b class="up">&pound;84.00</b> &nbsp;&nbsp; GW6 SETTLED &nbsp; VARDY <b class="dn">31 &#9660;5</b> &nbsp; MIDFIELD GEN <b class="up">36 &#9650;2</b> &nbsp; XHAKA KHAN <b class="up">41 &#9650;7</b> &nbsp; SON OF PITCH <b class="up">44 &#9650;9</b> &nbsp; POT <b class="up">&pound;84.00</b> &nbsp;&nbsp;</span></div>
+
+    <div class="cmd"><b>VARDY&nbsp;PARTY</b> &lt;GW6&gt; EQUITY · BOTTOM OF THE WEEK · SHORT</div>
+    <div class="quote">
+      <div>
+        <div class="team">Vardy Party</div>
+        <div class="sub">DANNY ROSE · NET PTS · liability &pound;2.00</div>
+      </div>
+      <div class="px"><div class="big">31</div><div class="delta">&#9660; 5 vs field</div></div>
+    </div>
+
+    <table>
+      <thead><tr><th>Line</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Team score (gross)</td><td class="hl">35</td></tr>
+        <tr><td class="k">Transfer hits</td><td class="dn">&minus;4</td></tr>
+        <tr><td class="k">Bench, unrealised</td><td>12</td></tr>
+        <tr><td class="k">Runner-up net</td><td class="up">36</td></tr>
+        <tr><td class="k">Amount due</td><td class="hl">&pound;2.00</td></tr>
+      </tbody>
+    </table>
+
+    <p class="note">// note: "second week running. the sofa has your shape now."</p>
+
+    <div class="foot">
+      <span class="l">POT <b>&pound;84.00</b> · BUY-INS 7/12 · STATUS SETTLED</span>
+      <a class="pay" href="#">EXECUTE PAY &pound;2</a>
+    </div>
+  </div>
+</body>
+</html>

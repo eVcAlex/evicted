@@ -9,8 +9,7 @@ const isAdminPage = createRouteMatcher(['/admin(.*)']);
  * Admin API. Unauthenticated -> 401 with the body every client already
  * branches on. Listed one path at a time on purpose: `/api/monzo/callback`
  * (OAuth state), `/api/monzo/webhook` (Monzo does not sign its payloads),
- * `/api/cron/*` (separate cron secret) and `/api/push/subscribe` (public)
- * must never be caught here.
+ * and `/api/cron/*` (separate cron secret) must never be caught here.
  */
 const isAdminApi = createRouteMatcher([
   '/api/admin/(.*)',

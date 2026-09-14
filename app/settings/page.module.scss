@@ -5,21 +5,14 @@
 }
 
 .section {
-  @include card.surface;
+  @include card.light-card;
   padding: mantine.rem(18) mantine.rem(18) mantine.rem(20);
   margin-bottom: mantine.rem(16);
 }
 
 .sectionKicker {
   @include card.kicker;
-  color: var(--mantine-color-violet-4);
+  color: var(--mantine-color-brand-3);
   display: block;
   margin-bottom: mantine.rem(12);
-}
-
-.notificationRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: mantine.rem(12);
 }

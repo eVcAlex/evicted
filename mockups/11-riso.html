@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>11 · Riso Zine — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     DIRECTION 11 — RISO ZINE
+     Two-colour risograph print: fluoro coral + federal blue on newsprint.
+     Overprint via mix-blend multiply, deliberate misregistration, paper
+     grain. Type: Syne (chunky display) + Space Mono. Layout: cut-and-paste
+     zine collage with a slightly rotated hero block. Motion: none (print).
+     Signature: overprinted blocks where coral crosses blue into a third
+     colour, plus a grain overlay.
+     ------------------------------------------------------------------ */
+  :root{--paper:#efe9d8;--coral:#ff4d3d;--blue:#1c2fbf;--ink:#161616}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:"Space Mono",monospace;position:relative}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E")}
+  .wrap{max-width:600px;margin:0 auto;padding:24px 20px 80px;position:relative;z-index:1}
+  header{display:flex;justify-content:space-between;align-items:flex-start}
+  .logo{font-family:"Syne";font-weight:800;font-size:30px;color:var(--blue);letter-spacing:-.02em;
+    text-transform:uppercase}
+  .logo b{color:var(--coral);mix-blend-mode:multiply}
+  .tag{font-size:11px;text-transform:uppercase;letter-spacing:.05em;text-align:right;color:var(--blue)}
+  nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  nav a{font-size:11px;text-transform:uppercase;text-decoration:none;color:var(--ink);
+    border:2px solid var(--ink);padding:4px 9px}
+  nav a.on{background:var(--coral);mix-blend-mode:multiply;border-color:var(--coral)}
+  .hero{position:relative;margin-top:30px}
+  .block{background:var(--coral);color:var(--paper);mix-blend-mode:multiply;
+    padding:22px 20px;transform:rotate(-1.5deg);border:3px solid var(--ink)}
+  .block .k{font-size:11px;text-transform:uppercase;letter-spacing:.14em}
+  .block h1{font-family:"Syne";font-weight:800;font-size:52px;line-height:.9;text-transform:uppercase;margin-top:6px}
+  .stamp{position:absolute;right:-6px;top:-22px;background:var(--blue);color:var(--paper);
+    mix-blend-mode:multiply;font-family:"Syne";font-weight:800;font-size:34px;line-height:.8;
+    padding:12px 14px;transform:rotate(6deg);border:3px solid var(--ink);text-align:center}
+  .stamp small{display:block;font-family:"Space Mono";font-size:10px;font-weight:700}
+  .who{margin-top:18px;font-size:13px;color:var(--blue);text-transform:uppercase;letter-spacing:.04em}
+  .who b{color:var(--ink)}
+  .lines{margin-top:18px;border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);padding:6px 0}
+  .lines div{display:flex;justify-content:space-between;padding:5px 2px;font-size:14px;font-weight:700}
+  .lines .k{color:var(--blue);font-weight:400}
+  .quip{font-size:14px;margin-top:16px;color:var(--ink);
+    background:var(--paper);border-left:4px solid var(--coral);padding:8px 12px}
+  .foot{display:flex;justify-content:space-between;align-items:center;margin-top:22px}
+  .pot{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--blue)}
+  .pay{font-family:"Syne";font-weight:800;text-transform:uppercase;font-size:16px;text-decoration:none;
+    color:var(--paper);background:var(--blue);mix-blend-mode:multiply;padding:12px 20px;border:3px solid var(--ink)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">EV<b>ICT</b>ED</div>
+      <div class="tag">ISSUE #6<br>SETTLED · GW6</div>
+    </header>
+    <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+
+    <div class="hero">
+      <div class="block">
+        <div class="k">Bottom of the week</div>
+        <h1>Vardy<br>Party</h1>
+      </div>
+      <div class="stamp">31<small>NET PTS</small></div>
+    </div>
+
+    <p class="who">Managed by <b>Danny Rose</b> — lowest net score, owes &pound;2</p>
+
+    <div class="lines">
+      <div><span class="k">Team score</span><span>35</span></div>
+      <div><span class="k">Transfer hits</span><span>&minus;4</span></div>
+      <div><span class="k">Bench (unused)</span><span>12</span></div>
+      <div><span class="k">Runner-up net</span><span>36</span></div>
+    </div>
+
+    <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+
+    <div class="foot">
+      <span class="pot">Pot &pound;84.00<br>7/12 bought in</span>
+      <a class="pay" href="#">Pay &pound;2</a>
+    </div>
+  </div>
+</body>
+</html>

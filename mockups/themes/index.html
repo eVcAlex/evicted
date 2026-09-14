@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Evicted — theme options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{--bg:#0e0f12;--panel:#16181d;--stroke:#262a31;--fg:#eceae4;--dim:#8a8f99}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font-family:"Archivo",sans-serif;-webkit-font-smoothing:antialiased}
+  .head{max-width:1300px;margin:0 auto;padding:46px 24px 10px}
+  .head .k{font-family:"Spline Sans Mono";font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#7c3aed}
+  h1{font-size:40px;font-weight:900;letter-spacing:-.02em;margin-top:6px}
+  .head p{color:var(--dim);max-width:70ch;margin-top:12px;line-height:1.55;font-size:15px}
+  .grid{max-width:1300px;margin:0 auto;padding:28px 24px 90px;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:26px}
+  .cell{background:var(--panel);border:1px solid var(--stroke);border-radius:14px;overflow:hidden;
+    display:flex;flex-direction:column}
+  .meta{padding:16px 18px;border-bottom:1px solid var(--stroke);display:flex;align-items:center;gap:10px}
+  .swatch{width:14px;height:14px;border-radius:4px;flex-shrink:0}
+  .meta .t{font-size:17px;font-weight:700}
+  .frameWrap{position:relative;background:#000;height:420px;overflow:hidden}
+  iframe{width:900px;height:900px;border:0;transform:scale(.52);transform-origin:top left}
+  .open{display:block;text-align:center;font-family:"Spline Sans Mono";font-size:12px;
+    letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--fg);
+    padding:12px;border-top:1px solid var(--stroke)}
+  .open:hover{background:#7c3aed;color:#fff}
+</style>
+</head>
+<body>
+  <div class="head">
+    <div class="k">Evicted · theme exploration</div>
+    <h1>10 accent &amp; dark-mode options</h1>
+    <p>Same sb4 layout, one variable swapped: the accent hue, bundled with a light or dark base. Pick one to become the site's real theme.</p>
+  </div>
+  <div class="grid">
+    <div class="cell">
+      <div class="meta"><span class="swatch" style="background:#1552f0"></span><span class="t">Blue Light</span></div>
+      <div class="frameWrap"><iframe src="blue-light.html" loading="lazy"></iframe></div>
+      <a class="open" href="blue-light.html" target="_blank">Open full size</a>
+    </div>
+    <div class="cell">
+      <div class="meta"><span class="swatch" style="background:#1552f0"></span><span class="t">Blue Dark</span></div>
+      <div class="frameWrap"><iframe src="blue-dark.html" loading="lazy"></iframe></div>
+      <a class="open" href="blue-dark.html" target="_blank">Open full size</a>
+    </div>
+    <div class="cell">
+      <div class="meta"><span class="swatch" style="background:#0f7a44"></span><span class="t">Emerald Light</span></div>
+      <div class="frameWrap"><iframe src="green-light.html" loading="lazy"></iframe></div>
+      <a class="open" href="green-light.html" target="_blank">Open full size</a>
+    </div>
+    <div class="cell">
+      <div class="meta"><span class="swatch" style="background:#0f7a44"></span><span class="t">Emerald Dark</span></div>
+      <div class="frameWrap"><iframe src="green-dark.html" loading="lazy"></iframe></div>
+      <a class="open" href="green-dark.html" target="_blank">Open full size</a>
+    </div>
+    <div class="cell">
+      <div class="meta"><span class="swatch" style="background:#9c6b0a"></span><span class="t">Amber Light</span></div>
+      <div class="frameWrap"><iframe src="amber-light.html" loading="lazy"></iframe></div>
+      <a class="open" href="amber-light.html" target="_blank">Open full size</a>
+    </div>
+    <div class="cell">
+      <div class="meta"><span class="swatch" style="background:#9c6b0a"></span><span class="t">Amber Dark</span></div>
+      <div class="frameWrap"><iframe src="amber-dark.html" loading="lazy"></iframe></div>
+      <a class="open" href="amber-dark.html" target="_blank">Open full size</a>
+    </div>
+    <div class="cell">
+      <div class="meta"><span class="swatch" style="background:#c62839"></span><span class="t">Crimson Light</span></div>
+      <div class="frameWrap"><iframe src="crimson-light.html" loading="lazy"></iframe></div>
+      <a class="open" href="crimson-light.html" target="_blank">Open full size</a>
+    </div>
+    <div class="cell">
+      <div class="meta"><span class="swatch" style="background:#c62839"></span><span class="t">Crimson Dark</span></div>
+      <div class="frameWrap"><iframe src="crimson-dark.html" loading="lazy"></iframe></div>
+      <a class="open" href="crimson-dark.html" target="_blank">Open full size</a>
+    </div>
+    <div class="cell">
+      <div class="meta"><span class="swatch" style="background:#5d3fd3"></span><span class="t">Violet Light</span></div>
+      <div class="frameWrap"><iframe src="violet-light.html" loading="lazy"></iframe></div>
+      <a class="open" href="violet-light.html" target="_blank">Open full size</a>
+    </div>
+    <div class="cell">
+      <div class="meta"><span class="swatch" style="background:#5d3fd3"></span><span class="t">Violet Dark</span></div>
+      <div class="frameWrap"><iframe src="violet-dark.html" loading="lazy"></iframe></div>
+      <a class="open" href="violet-dark.html" target="_blank">Open full size</a>
+    </div>
+  </div>
+</body>
+</html>

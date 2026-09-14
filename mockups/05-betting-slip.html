@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>05 · Betting Slip — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     DIRECTION 05 — BOOKMAKER'S COUPON
+     A high-street betting slip. Newsprint slip white, a pink carbon
+     copy tint, dot-matrix figures (Courier Prime), Oswald for the
+     shop banners. Layout: perforated-edge slip, boxed selections,
+     stamped SETTLED. Motion: none. Signature: torn perforations top
+     and bottom via radial-gradient punches.
+     ------------------------------------------------------------------ */
+  :root{--felt:#123b2e;--slip:#fdfcf8;--pink:#fbe3ea;--ink:#1b1b1b;
+    --dim:#7a746c;--stamp:#b4143a;--line:#d9d4c8}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--felt);font-family:"Courier Prime",monospace;color:var(--ink);
+    background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.02) 0 12px,transparent 12px 24px)}
+  .wrap{max-width:440px;margin:0 auto;padding:26px 16px 70px}
+  nav{display:flex;justify-content:center;gap:16px;margin-bottom:18px}
+  nav a{font-family:"Oswald";text-transform:uppercase;letter-spacing:.08em;font-size:12px;
+    color:#bfe6d4;text-decoration:none;font-weight:500}
+  nav a.on{color:#fff;border-bottom:2px solid #fff;padding-bottom:2px}
+  .slip{background:var(--slip);position:relative;padding:22px 22px 26px;
+    box-shadow:0 22px 40px -18px rgba(0,0,0,.6)}
+  .perf{height:14px;background:var(--slip);
+    -webkit-mask:radial-gradient(9px at 9px 50%,transparent 98%,#000) -9px/18px 100%;
+    mask:radial-gradient(9px at 9px 50%,transparent 98%,#000) -9px/18px 100%}
+  .shop{text-align:center;border-bottom:2px dashed var(--line);padding-bottom:12px}
+  .shop .name{font-family:"Oswald";font-weight:700;font-size:26px;letter-spacing:.12em;text-transform:uppercase}
+  .shop .name b{color:var(--stamp)}
+  .shop .addr{font-size:11px;color:var(--dim);letter-spacing:.06em;margin-top:2px}
+  .meta{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);
+    padding:10px 0;border-bottom:1px dashed var(--line)}
+  .sel{padding:14px 0;border-bottom:1px dashed var(--line)}
+  .sel .mkt{font-family:"Oswald";text-transform:uppercase;letter-spacing:.06em;font-size:12px;color:var(--dim)}
+  .sel .pick{font-family:"Oswald";font-weight:600;font-size:22px;text-transform:uppercase;margin-top:2px}
+  .sel .pick .odds{float:right;background:var(--ink);color:var(--slip);font-size:15px;padding:2px 8px}
+  .lines{padding:12px 0;border-bottom:1px dashed var(--line)}
+  .lines div{display:flex;justify-content:space-between;padding:3px 0;font-size:13px}
+  .lines .k{color:var(--dim)}
+  .quip{font-size:12px;font-style:italic;color:var(--dim);padding:12px 0;text-align:center}
+  .stake{background:var(--pink);margin:0 -22px;padding:14px 22px;display:flex;
+    justify-content:space-between;align-items:center;border-top:2px dashed var(--line);border-bottom:2px dashed var(--line)}
+  .stake .lab{font-family:"Oswald";text-transform:uppercase;letter-spacing:.08em;font-size:13px}
+  .stake .amt{font-family:"Oswald";font-weight:700;font-size:26px}
+  .stamp{border:3px solid var(--stamp);color:var(--stamp);font-family:"Oswald";font-weight:700;
+    text-transform:uppercase;letter-spacing:.14em;font-size:15px;text-align:center;padding:8px;
+    transform:rotate(-4deg);margin:20px auto 0;width:70%}
+  .pay{display:block;text-align:center;font-family:"Oswald";font-weight:600;text-transform:uppercase;
+    letter-spacing:.1em;background:var(--stamp);color:#fff;text-decoration:none;padding:13px;margin-top:16px}
+  .foot{text-align:center;font-size:11px;color:var(--dim);margin-top:14px;letter-spacing:.05em}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+    <div class="perf"></div>
+    <div class="slip">
+      <div class="shop">
+        <div class="name">EV<b>&#9642;</b>ICTED</div>
+        <div class="addr">Class of '79294 · est. deadline day</div>
+      </div>
+      <div class="meta"><span>SLIP 0006</span><span>GW6</span><span>SETTLED</span></div>
+
+      <div class="sel">
+        <div class="mkt">Bottom of the gameweek</div>
+        <div class="pick">Vardy Party <span class="odds">NET 31</span></div>
+      </div>
+
+      <div class="lines">
+        <div><span class="k">Team score</span><span>35</span></div>
+        <div><span class="k">Transfer hits</span><span>-4</span></div>
+        <div><span class="k">Bench (unused)</span><span>12</span></div>
+        <div><span class="k">Beaten by</span><span>Midfield General, 36</span></div>
+      </div>
+
+      <p class="quip">"Second week running. The sofa has your shape now."</p>
+
+      <div class="stake">
+        <span class="lab">Settlement due</span>
+        <span class="amt">&pound;2.00</span>
+      </div>
+
+      <div class="stamp">Unpaid</div>
+      <a class="pay" href="#">Pay &pound;2 &rarr;</a>
+      <div class="foot">POT &pound;84.00 &nbsp;&#9642;&nbsp; 7/12 BOUGHT IN &nbsp;&#9642;&nbsp; KEEP THIS SLIP</div>
+    </div>
+    <div class="perf"></div>
+  </div>
+</body>
+</html>

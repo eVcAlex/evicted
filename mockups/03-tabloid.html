@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>03 · Back Page — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     DIRECTION 03 — TABLOID BACK PAGE
+     The red-top sports back page. Screaming Anton headline, condensed
+     Barlow decks, one splash red, halftone dot texture. Layout: a splash
+     headline that owns the fold, a stand-first, then a boxed "verdict".
+     Motion: none needed. Signature: reversed-out headline knockout with
+     a rotated "EXCLUSIVE" flash.
+     ------------------------------------------------------------------ */
+  :root{--paper:#fbfaf7;--ink:#111;--red:#e2001a;--grey:#f0eee9;--dim:#666}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:"Barlow",sans-serif;
+    background-image:radial-gradient(var(--grey) 1px,transparent 1px);
+    background-size:5px 5px}
+  .wrap{max-width:640px;margin:0 auto;background:var(--paper);padding:0 20px 70px;
+    box-shadow:0 0 60px rgba(0,0,0,.06)}
+  header{display:flex;justify-content:space-between;align-items:center;
+    border-bottom:5px solid var(--ink);padding:18px 0 12px}
+  .logo{font-family:"Anton";font-size:30px;letter-spacing:.01em}
+  .logo b{color:var(--red)}
+  .price{font-family:"Barlow Condensed";font-weight:700;font-size:13px;
+    text-transform:uppercase;letter-spacing:.06em;text-align:right;line-height:1.1}
+  nav{display:flex;gap:20px;border-bottom:1px solid var(--ink);padding:8px 0}
+  nav a{font-family:"Barlow Condensed";font-weight:700;text-transform:uppercase;
+    font-size:15px;letter-spacing:.03em;text-decoration:none;color:var(--dim)}
+  nav a.on{color:var(--red)}
+  .flash{display:inline-block;background:var(--red);color:#fff;font-family:"Barlow Condensed";
+    font-weight:700;text-transform:uppercase;font-size:13px;letter-spacing:.1em;
+    padding:4px 12px;transform:rotate(-2deg);margin:26px 0 8px}
+  h1{font-family:"Anton";font-size:88px;line-height:.82;text-transform:uppercase;
+    letter-spacing:-.01em}
+  h1 em{font-style:normal;color:var(--red)}
+  .stand{font-family:"Barlow Condensed";font-weight:600;font-size:22px;line-height:1.15;
+    margin-top:14px;max-width:34ch}
+  .stand b{background:var(--ink);color:var(--paper);padding:0 6px}
+  .verdict{border:3px solid var(--ink);margin-top:26px;padding:0}
+  .vh{background:var(--ink);color:var(--paper);font-family:"Barlow Condensed";
+    font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:14px;padding:8px 16px}
+  .vgrid{display:grid;grid-template-columns:repeat(4,1fr)}
+  .vgrid div{padding:14px 16px;border-right:1px solid #ddd}
+  .vgrid div:last-child{border-right:none}
+  .vgrid .lab{font-family:"Barlow Condensed";text-transform:uppercase;font-size:12px;
+    letter-spacing:.06em;color:var(--dim)}
+  .vgrid .val{font-family:"Anton";font-size:34px;line-height:1}
+  .vgrid .val.red{color:var(--red)}
+  .quip{font-style:italic;font-size:16px;color:#333;padding:14px 16px;border-top:1px solid #ddd}
+  .foot{display:flex;justify-content:space-between;align-items:center;margin-top:24px;
+    border-top:5px solid var(--ink);padding-top:14px}
+  .pot{font-family:"Barlow Condensed";font-weight:700;text-transform:uppercase;font-size:16px}
+  .pot span{color:var(--dim)}
+  .pay{font-family:"Barlow Condensed";font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+    background:var(--red);color:#fff;text-decoration:none;font-size:18px;padding:12px 22px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">THE <b>EVICTED</b></div>
+      <div class="price">Gameweek 6<br>Settled · Final</div>
+    </header>
+    <nav>
+      <a class="on" href="#">This Week</a>
+      <a href="#">Season</a>
+      <a href="#">Balances</a>
+      <a href="#">Draft</a>
+    </nav>
+
+    <span class="flash">Exclusive · GW6</span>
+    <h1>Rose left<br><em>bottom</em> of pile</h1>
+    <p class="stand">Danny Rose's <b>Vardy Party</b> limp to a net 31 &mdash; the week's lowest &mdash; and owe the pot &pound;2. Sources close to the bench describe the mood as "unused."</p>
+
+    <div class="verdict">
+      <div class="vh">The damage · net 31 pts</div>
+      <div class="vgrid">
+        <div><div class="lab">Team</div><div class="val">35</div></div>
+        <div><div class="lab">Hits</div><div class="val red">&minus;4</div></div>
+        <div><div class="lab">Bench</div><div class="val">12</div></div>
+        <div><div class="lab">Missed by</div><div class="val">5</div></div>
+      </div>
+      <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+    </div>
+
+    <div class="foot">
+      <div class="pot">Pot &pound;84.00 <span>· 7 of 12 bought in</span></div>
+      <a class="pay" href="#">Pay &pound;2 &rarr;</a>
+    </div>
+  </div>
+</body>
+</html>

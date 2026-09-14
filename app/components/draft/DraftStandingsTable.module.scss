@@ -1,7 +1,7 @@
 @use '../../styles/card';
 
 .scroll {
-  @include card.surface;
+  @include card.light-card;
   overflow-x: auto;
 }
 
@@ -20,8 +20,8 @@ thead {
     font-weight: 600;
     letter-spacing: mantine.rem(0.5);
     text-transform: uppercase;
-    color: var(--mantine-color-violet-4);
-    border-bottom: mantine.rem(1) solid var(--border);
+    color: var(--mantine-color-brand-3);
+    border-bottom: mantine.rem(1) solid card.$rule;
     white-space: nowrap;
   }
 
@@ -31,7 +31,7 @@ thead {
 }
 
 .row {
-  border-bottom: mantine.rem(1) solid var(--border);
+  border-bottom: mantine.rem(1) solid card.$rule;
 
   &:last-child {
     border-bottom: none;
@@ -45,7 +45,7 @@ thead {
   font-family: var(--font-mono);
   font-size: mantine.rem(12);
   font-weight: 600;
-  color: var(--text-dim);
+  color: card.$ink-dim;
   font-variant-numeric: tabular-nums;
 }
 
@@ -71,14 +71,14 @@ thead {
   @include card.truncate;
   font-weight: 700;
   font-size: mantine.rem(13);
-  color: var(--text);
+  color: card.$ink;
 }
 
 .managerName {
   @include card.truncate;
   font-family: var(--font-mono);
   font-size: mantine.rem(11);
-  color: var(--text-dim);
+  color: card.$ink-dim;
 }
 
 .stat {
@@ -87,13 +87,13 @@ thead {
   font-family: var(--font-mono);
   font-size: mantine.rem(13);
   font-variant-numeric: tabular-nums;
-  color: var(--text-dim);
+  color: card.$ink-dim;
 }
 
 .statTotal {
   @extend .stat;
   font-weight: 700;
-  color: var(--text);
+  color: card.$ink;
 }
 
 .average {
@@ -102,6 +102,5 @@ thead {
 }
 
 .you {
-  border-left: mantine.rem(2) solid var(--mantine-color-violet-6);
-  background-color: var(--mantine-color-violet-9);
+  @include card.light-you;
 }

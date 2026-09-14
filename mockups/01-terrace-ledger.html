@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>01 · Terrace Ledger — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;900&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     DIRECTION 01 — TERRACE LEDGER
+     A sports-almanac ledger. Bone paper, iron ink, one blood-red.
+     Type: Archivo (heavy grotesque) over Spline Sans Mono for figures.
+     Layout: hairline-ruled results table, everything on a baseline grid.
+     Motion: none. Print does not animate. Signature: a scrolling
+     results ticker rule under the masthead.
+     ------------------------------------------------------------------ */
+  :root{
+    --bone:#efe9dd; --paper:#f7f3ea; --ink:#1a1815; --ink-dim:#6b6459;
+    --rule:#cfc6b4; --blood:#b3121a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bone);color:var(--ink);font-family:"Archivo",sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.4}
+  .wrap{max-width:660px;margin:0 auto;padding:0 20px 80px}
+  /* masthead */
+  header{border-bottom:3px solid var(--ink);padding-top:26px}
+  .masthead{display:flex;align-items:baseline;justify-content:space-between}
+  .title{font-weight:900;font-size:44px;letter-spacing:-.02em;text-transform:uppercase}
+  .title b{color:var(--blood)}
+  .edition{font-family:"Spline Sans Mono";font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-dim)}
+  nav{display:flex;gap:0;border-top:1px solid var(--rule);margin-top:14px}
+  nav a{font-family:"Spline Sans Mono";font-size:12px;letter-spacing:.08em;
+    text-transform:uppercase;text-decoration:none;color:var(--ink-dim);
+    padding:9px 14px 8px;border-right:1px solid var(--rule)}
+  nav a.on{color:var(--paper);background:var(--ink)}
+  .ticker{overflow:hidden;border-bottom:1px solid var(--rule);
+    font-family:"Spline Sans Mono";font-size:11px;color:var(--ink-dim);
+    white-space:nowrap;padding:6px 0;letter-spacing:.05em}
+  .ticker span{display:inline-block;animation:tick 26s linear infinite}
+  @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .kick{font-family:"Spline Sans Mono";font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--blood);margin:34px 0 4px}
+  h1{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;
+    color:var(--ink-dim)}
+  /* the ledger card */
+  .card{background:var(--paper);border:1px solid var(--ink);margin-top:18px}
+  .cardhead{display:flex;justify-content:space-between;align-items:flex-end;
+    padding:18px 20px 14px;border-bottom:3px double var(--ink)}
+  .who .team{font-size:30px;font-weight:900;line-height:.95;text-transform:uppercase;letter-spacing:-.01em}
+  .who .mgr{font-family:"Spline Sans Mono";font-size:12px;color:var(--ink-dim);margin-top:6px}
+  .net{text-align:right}
+  .net b{font-family:"Spline Sans Mono";font-size:46px;font-weight:600;line-height:.8;display:block}
+  .net small{font-family:"Spline Sans Mono";font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim)}
+  table{width:100%;border-collapse:collapse;font-family:"Spline Sans Mono";font-size:13px}
+  td{padding:9px 20px;border-bottom:1px solid var(--rule)}
+  td:last-child{text-align:right;font-weight:500}
+  tr:last-child td{border-bottom:none}
+  .quip{padding:16px 20px;font-size:14px;font-style:italic;color:var(--ink-dim);border-top:1px solid var(--rule)}
+  .foot{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:var(--ink)}
+  .due{font-family:"Spline Sans Mono";color:var(--bone);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+  .pay{font-family:"Spline Sans Mono";background:var(--blood);color:#fff;text-decoration:none;
+    font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:11px 20px}
+  .pot{margin-top:20px;font-family:"Spline Sans Mono";font-size:12px;letter-spacing:.05em;
+    color:var(--ink-dim);border-top:1px solid var(--rule);padding-top:12px;
+    display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="masthead">
+        <div class="title">Ev<b>i</b>cted</div>
+        <div class="edition">Vol. VI · GW6 · Settled</div>
+      </div>
+      <nav>
+        <a class="on" href="#">This week</a>
+        <a href="#">Season</a>
+        <a href="#">Balances</a>
+        <a href="#">Draft</a>
+      </nav>
+    </header>
+    <div class="ticker"><span>VARDY PARTY 31 · MIDFIELD GENERAL 36 · XHAKA KHAN 41 · SON OF A PITCH 44 · POT £84.00 · 7/12 BOUGHT IN · &nbsp;&nbsp; VARDY PARTY 31 · MIDFIELD GENERAL 36 · XHAKA KHAN 41 · SON OF A PITCH 44 · POT £84.00 · 7/12 BOUGHT IN · &nbsp;&nbsp;</span></div>
+
+    <p class="kick">Bottom of the week</p>
+    <h1>Whoever posts the lowest net score pays into the pot</h1>
+
+    <div class="card">
+      <div class="cardhead">
+        <div class="who">
+          <div class="team">Vardy Party</div>
+          <div class="mgr">Danny Rose</div>
+        </div>
+        <div class="net"><b>31</b><small>net pts</small></div>
+      </div>
+      <table>
+        <tr><td>Team score</td><td>35</td></tr>
+        <tr><td>Transfer hits</td><td>&minus;4</td></tr>
+        <tr><td>Bench (unused)</td><td>12</td></tr>
+        <tr><td>Runner-up net</td><td>36</td></tr>
+      </table>
+      <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+      <div class="foot">
+        <span class="due">Amount due · £2.00</span>
+        <a class="pay" href="#">Pay £2 &rarr;</a>
+      </div>
+    </div>
+
+    <div class="pot"><span>Pot to date</span><span>£84.00 · 7 of 12 bought in</span></div>
+  </div>
+</body>
+</html>

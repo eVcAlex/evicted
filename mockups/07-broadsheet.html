@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>07 · Money Broadsheet — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=Newsreader:ital,opsz@1,6..72&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     DIRECTION 07 — MONEY BROADSHEET (FT/pink-'un restraint)
+     A financial paper's league-money desk. Salmon paper, ink text, one
+     navy rule. Type: Newsreader throughout (optical serif), italics for
+     the standfirst. Layout: masthead + rule, two-column body, a drop cap,
+     a boxed "statement". Motion: none — gravitas over motion. Signature:
+     hairline navy rules + a genuine drop cap.
+     ------------------------------------------------------------------ */
+  :root{--paper:#f7ece3;--ink:#26201b;--navy:#1c3049;--dim:#75695f;--rule:#d8c7ba;--red:#9e2b25}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;line-height:1.5}
+  .wrap{max-width:660px;margin:0 auto;padding:0 24px 80px}
+  header{padding-top:30px;text-align:center;border-bottom:3px double var(--ink)}
+  .mast{font-size:52px;font-weight:700;letter-spacing:-.01em}
+  .mast em{font-style:italic;color:var(--red)}
+  .dateline{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);
+    padding:8px 0 14px}
+  nav{display:flex;justify-content:center;gap:26px;border-bottom:1px solid var(--ink);padding:9px 0}
+  nav a{font-size:13px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--dim)}
+  nav a.on{color:var(--navy);font-weight:600}
+  .section{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);
+    margin:28px 0 6px;text-align:center}
+  h1{font-size:40px;font-weight:600;line-height:1.05;text-align:center;max-width:20ch;margin:0 auto}
+  .standfirst{font-style:italic;font-size:19px;color:var(--dim);text-align:center;margin:12px auto 0;max-width:44ch}
+  .body{columns:2;column-gap:30px;column-rule:1px solid var(--rule);margin-top:28px;font-size:15px}
+  .body p{margin-bottom:12px;text-align:justify}
+  .body p:first-child::first-letter{font-size:56px;font-weight:700;float:left;line-height:.8;
+    padding:4px 8px 0 0;color:var(--navy)}
+  .statement{border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);margin-top:26px;padding:16px 0}
+  .statement .h{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+  .statement .r{display:flex;justify-content:space-between;padding:5px 0;font-size:16px;
+    border-bottom:1px dotted var(--rule)}
+  .statement .r:last-child{border-bottom:none}
+  .statement .r b{font-variant-numeric:tabular-nums}
+  .statement .r.tot b{color:var(--red);font-weight:700}
+  .foot{display:flex;justify-content:space-between;align-items:baseline;margin-top:22px}
+  .pot{font-size:14px;color:var(--dim);font-style:italic}
+  .pay{font-size:14px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;
+    color:var(--paper);background:var(--navy);padding:11px 22px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="mast">The <em>Evicted</em> Times</div>
+      <div class="dateline">Gameweek 6 · Settled · Money Desk</div>
+      <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+    </header>
+
+    <p class="section">Bottom of the Week</p>
+    <h1>Rose faces the &pound;2 levy as Vardy Party fold to a net 31</h1>
+    <p class="standfirst">Bench points unspent, a four-point hit taken in vain: the week's lowest return lands squarely with the champagne set.</p>
+
+    <div class="body">
+      <p>Danny Rose's Vardy Party posted the lowest net score of gameweek six, a return of 31 points that leaves the manager liable for the customary &pound;2 fine into the season pot. A gross of 35 was undone by a four-point transfer hit and twelve points left idle on the bench.</p>
+      <p>It is the second consecutive week the side has propped up the table. Midfield General, on 36, escaped the drop by the narrowest of margins. The pot now stands at &pound;84.00, with seven of twelve managers having settled their season buy-in.</p>
+    </div>
+
+    <div class="statement">
+      <div class="h">Statement of account · V. Party</div>
+      <div class="r"><span>Team score</span><b>35</b></div>
+      <div class="r"><span>Transfer hits</span><b>&minus;4</b></div>
+      <div class="r"><span>Bench, unused</span><b>12</b></div>
+      <div class="r tot"><span>Owed to the pot</span><b>&pound;2.00</b></div>
+    </div>
+
+    <div class="foot">
+      <span class="pot">Pot &pound;84.00 — seven of twelve bought in.</span>
+      <a class="pay" href="#">Settle &pound;2</a>
+    </div>
+  </div>
+</body>
+</html>

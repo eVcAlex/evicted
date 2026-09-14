@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>12 · Scoreboard — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     DIRECTION 12 — STADIUM SCOREBOARD / LED MATRIX
+     A floodlit end-of-match scoreboard. Deep pitch-night ground, amber
+     LED dot-matrix numerals rendered with a real dot texture, green
+     accents for "clear". Type: Chakra Petch (technical, squared).
+     Layout: a bezelled board with dot-matrix digits and stat rows.
+     Motion: a faint amber flicker on the big number. Signature: LED
+     digits built from a radial-gradient dot grid clipped to the glyph.
+     ------------------------------------------------------------------ */
+  :root{--night:#0a0e0a;--board:#111813;--bezel:#05070500;--amber:#ffb42e;
+    --amber-dim:#6b5220;--green:#39d353;--fg:#dfe6df;--dim:#7c8a7c;--red:#ff5252}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(circle at 50% -10%,#16261a,var(--night) 60%);
+    color:var(--fg);font-family:"Chakra Petch",sans-serif;min-height:100vh}
+  .wrap{max-width:600px;margin:0 auto;padding:24px 18px 80px}
+  header{display:flex;justify-content:space-between;align-items:center}
+  .logo{font-weight:700;font-size:20px;letter-spacing:.12em;text-transform:uppercase}
+  .logo b{color:var(--amber)}
+  nav{display:flex;gap:14px}
+  nav a{font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--dim)}
+  nav a.on{color:var(--amber)}
+  .board{margin-top:22px;background:var(--board);border:2px solid #1e2a20;border-radius:10px;
+    box-shadow:inset 0 0 60px rgba(0,0,0,.7),0 20px 50px -20px rgba(0,0,0,.9);overflow:hidden}
+  .strip{display:flex;justify-content:space-between;background:#0c120d;padding:8px 16px;
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid #1e2a20}
+  .strip .on{color:var(--red)}
+  .main{display:flex;align-items:center;gap:20px;padding:26px 22px}
+  .led{font-size:120px;font-weight:700;line-height:.8;letter-spacing:.02em;
+    color:var(--amber);
+    background-image:radial-gradient(circle,rgba(0,0,0,.55) 30%,transparent 32%);
+    background-size:5px 5px;-webkit-background-clip:text;background-clip:text;
+    text-shadow:0 0 18px rgba(255,180,46,.35);animation:flick 4s steps(1) infinite}
+  @keyframes flick{0%,97%,100%{opacity:1}98%{opacity:.82}}
+  .who .t{font-size:30px;font-weight:700;text-transform:uppercase;line-height:1}
+  .who .m{color:var(--dim);font-size:13px;margin-top:6px;letter-spacing:.04em}
+  .who .u{margin-top:10px;display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--night);background:var(--amber);padding:3px 10px;border-radius:3px;font-weight:700}
+  .rows{border-top:1px solid #1e2a20}
+  .rows div{display:flex;justify-content:space-between;padding:12px 22px;border-bottom:1px solid #141c15;
+    font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+  .rows div:last-child{border-bottom:none}
+  .rows .k{color:var(--dim)}
+  .rows .v{font-weight:700;font-variant-numeric:tabular-nums}
+  .rows .v.a{color:var(--amber)} .rows .v.r{color:var(--red)} .rows .v.g{color:var(--green)}
+  .quip{padding:14px 22px;font-size:13px;color:var(--dim);font-style:italic;border-top:1px solid #1e2a20}
+  .foot{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;background:#0c120d;border-top:1px solid #1e2a20}
+  .pot{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  .pot b{color:var(--green)}
+  .pay{font-size:13px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;text-decoration:none;
+    color:var(--night);background:var(--amber);padding:12px 22px;border-radius:4px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">EV<b>&#9642;</b>ICTED</div>
+      <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+    </header>
+
+    <div class="board">
+      <div class="strip"><span>Gameweek 06</span><span>Bottom of the week</span><span class="on">&#9679; Settled</span></div>
+      <div class="main">
+        <div class="led">31</div>
+        <div class="who">
+          <div class="t">Vardy Party</div>
+          <div class="m">Danny Rose · net pts</div>
+          <div class="u">Owes &pound;2</div>
+        </div>
+      </div>
+      <div class="rows">
+        <div><span class="k">Team score</span><span class="v">35</span></div>
+        <div><span class="k">Transfer hits</span><span class="v r">&minus;4</span></div>
+        <div><span class="k">Bench (unused)</span><span class="v a">12</span></div>
+        <div><span class="k">Runner-up net</span><span class="v g">36</span></div>
+      </div>
+      <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+      <div class="foot">
+        <span class="pot">Pot <b>&pound;84.00</b> · 7/12 in</span>
+        <a class="pay" href="#">Pay &pound;2</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

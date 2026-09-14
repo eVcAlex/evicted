@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UK4 · Betting Exchange — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     UK BETTING VARIATION 4 — BETTING EXCHANGE (Betfair lineage)
+     The peer-to-peer exchange: the signature Betfair yellow/black, and
+     the back/lay price ladder in its exact house colours — back = blue,
+     lay = pink — with decimal odds and matched volumes. Perfect fit for
+     a friend-group pot: you're not betting a bookie, you're betting each
+     other. Type: Inter + Roboto Mono. Signature: the blue/pink back-lay
+     two-column grid with decimal prices and £ matched.
+     ------------------------------------------------------------------ */
+  :root{--yellow:#ffb80c;--black:#1a1a18;--bg:#f0f0ee;--card:#fff;--ink:#1a1a18;--dim:#6d6d68;
+    --back:#a6d8ff;--back-d:#75bdf5;--lay:#fac0d0;--lay-d:#f58fb0;--line:#e3e3df;--green:#158b45}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif}
+  .wrap{max-width:640px;margin:0 auto;background:var(--card);min-height:100vh}
+  header{background:var(--black);color:var(--yellow);padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+  .logo{font-weight:800;font-size:19px;letter-spacing:-.01em}
+  .logo b{color:#fff}
+  .bal{font-family:"Roboto Mono";font-size:12px;color:#fff}
+  nav{display:flex;background:var(--yellow)}
+  nav a{flex:1;text-align:center;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;
+    text-decoration:none;color:var(--black);padding:10px 0;opacity:.6}
+  nav a.on{opacity:1;box-shadow:inset 0 -3px 0 var(--black)}
+  .mkt{padding:14px 16px 6px}
+  .mkt .t{font-weight:700;font-size:16px}
+  .mkt .s{font-size:12px;color:var(--dim);margin-top:2px}
+  .laddhead{display:grid;grid-template-columns:1fr 72px 72px;gap:0;padding:6px 16px;font-size:10px;
+    text-transform:uppercase;letter-spacing:.04em;color:var(--dim);font-weight:700}
+  .laddhead span:nth-child(2){text-align:center;color:#1462a8}
+  .laddhead span:nth-child(3){text-align:center;color:#b23a63}
+  .runner{display:grid;grid-template-columns:1fr 72px 72px;gap:0;align-items:stretch;border-top:1px solid var(--line)}
+  .runner .who{padding:12px 16px}
+  .runner .who .n{font-weight:600;font-size:15px}
+  .runner .who .n small{display:block;color:var(--dim);font-weight:400;font-size:12px;margin-top:2px}
+  .cell{display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:"Roboto Mono";font-weight:700}
+  .cell .price{font-size:15px}
+  .cell .vol{font-size:10px;color:var(--dim);font-weight:500}
+  .cell.back{background:var(--back)}
+  .cell.lay{background:var(--lay)}
+  .runner.hot .cell.back{background:var(--back-d)}
+  .runner.hot .who .n small{color:var(--green);font-weight:600}
+  .slip{margin:14px 16px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .slip .bh{background:var(--back);padding:9px 14px;font-weight:700;font-size:13px;display:flex;justify-content:space-between}
+  .slip .br{display:flex;justify-content:space-between;padding:8px 14px;font-size:13px;font-family:"Roboto Mono"}
+  .slip .br .k{font-family:"Inter";color:var(--dim)}
+  .slip .br.tot{font-weight:700;border-top:1px solid var(--line)}
+  .pay{display:block;margin:0 16px 12px;text-align:center;background:var(--yellow);color:var(--black);font-weight:800;
+    text-decoration:none;padding:13px;border-radius:8px;font-size:15px}
+  .quip{padding:0 16px 12px;font-size:13px;color:var(--dim);font-style:italic}
+  .rg{background:var(--black);color:#b7b7b0;font-size:11px;padding:12px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .rg .b{border:1px solid #45453f;border-radius:3px;padding:2px 6px;font-weight:700;color:var(--yellow)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">ev<b>&bull;</b>ictchange</div>
+      <div class="bal">Pot &pound;84.00</div>
+    </header>
+    <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+
+    <div class="mkt">
+      <div class="t">Bottom of Gameweek 6 &mdash; to finish last</div>
+      <div class="s">Matched: &pound;168 &middot; In-play &middot; Settled</div>
+    </div>
+
+    <div class="laddhead"><span>Selection</span><span>Back</span><span>Lay</span></div>
+
+    <div class="runner hot">
+      <div class="who"><div class="n">Vardy Party <small>Danny Rose · net 31 · WINNER</small></div></div>
+      <div class="cell back"><span class="price">6.0</span><span class="vol">&pound;42</span></div>
+      <div class="cell lay"><span class="price">6.4</span><span class="vol">&pound;38</span></div>
+    </div>
+    <div class="runner">
+      <div class="who"><div class="n">Midfield General <small>net 36</small></div></div>
+      <div class="cell back"><span class="price">2.5</span><span class="vol">&pound;60</span></div>
+      <div class="cell lay"><span class="price">2.6</span><span class="vol">&pound;54</span></div>
+    </div>
+    <div class="runner">
+      <div class="who"><div class="n">Xhaka Khan <small>net 41</small></div></div>
+      <div class="cell back"><span class="price">5.5</span><span class="vol">&pound;20</span></div>
+      <div class="cell lay"><span class="price">6.0</span><span class="vol">&pound;16</span></div>
+    </div>
+
+    <div class="slip">
+      <div class="bh"><span>Settled bet</span><span>Vardy Party @ 6.0</span></div>
+      <div class="br"><span class="k">Team 35 · Hits &minus;4 · Bench 12</span><span>net 31</span></div>
+      <div class="br"><span class="k">Runner-up net</span><span>36</span></div>
+      <div class="br tot"><span class="k">Owed to the pot</span><span>&pound;2.00</span></div>
+    </div>
+    <a class="pay" href="#">Pay &pound;2 &middot; Settle</a>
+    <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+
+    <div class="rg">
+      <span class="b">18+</span>
+      <span>BeGambleAware.org &middot; When the Fun Stops, Stop</span>
+      <span>&middot; 7/12 bought in</span>
+    </div>
+  </div>
+</body>
+</html>

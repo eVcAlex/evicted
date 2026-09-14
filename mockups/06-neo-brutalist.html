@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>06 · Neo-Brutalist — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     DIRECTION 06 — NEO-BRUTALIST WEB (the beui/rareui lane, disciplined)
+     Thick ink borders, hard offset shadows, flat colour blocks. The tell
+     to avoid is the stock lilac + one gradient; here the palette is a
+     committed ACID + INK: bic-blue paper, acid-yellow accent, black rules.
+     Type: Space Grotesk / DM Mono. Motion: press-down on the button
+     (shadow collapses). Signature: every surface a hard 5px-offset shadow.
+     ------------------------------------------------------------------ */
+  :root{--paper:#dfe7ff;--ink:#0b0b0b;--acid:#e8ff3a;--card:#fff;--pink:#ff5d8f;--dim:#4b4b4b}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:"Space Grotesk",sans-serif}
+  .wrap{max-width:620px;margin:0 auto;padding:22px 18px 80px}
+  header{display:flex;align-items:center;justify-content:space-between;
+    background:var(--acid);border:3px solid var(--ink);box-shadow:6px 6px 0 var(--ink);padding:12px 16px}
+  .logo{font-weight:700;font-size:24px;letter-spacing:-.02em;text-transform:uppercase}
+  .logo b{background:var(--ink);color:var(--acid);padding:0 6px}
+  .tag{font-family:"DM Mono";font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+  nav{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  nav a{font-family:"DM Mono";font-size:13px;text-transform:uppercase;text-decoration:none;color:var(--ink);
+    background:var(--card);border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:6px 12px}
+  nav a.on{background:var(--ink);color:#fff}
+  .kick{font-family:"DM Mono";font-size:12px;text-transform:uppercase;letter-spacing:.08em;
+    margin:28px 0 10px;color:var(--dim)}
+  .card{background:var(--card);border:3px solid var(--ink);box-shadow:8px 8px 0 var(--ink)}
+  .top{display:flex;justify-content:space-between;align-items:center;padding:20px;border-bottom:3px solid var(--ink)}
+  .top .team{font-size:34px;font-weight:700;line-height:.95;text-transform:uppercase}
+  .top .mgr{font-family:"DM Mono";font-size:12px;color:var(--dim);margin-top:6px}
+  .badge{background:var(--pink);border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);
+    padding:8px 12px;text-align:center;transform:rotate(3deg)}
+  .badge .n{font-size:40px;font-weight:700;line-height:.8}
+  .badge .l{font-family:"DM Mono";font-size:10px;text-transform:uppercase}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr)}
+  .stats div{padding:16px 20px;border-right:3px solid var(--ink)}
+  .stats div:last-child{border-right:none}
+  .stats .l{font-family:"DM Mono";font-size:11px;text-transform:uppercase;color:var(--dim)}
+  .stats .v{font-size:28px;font-weight:700}
+  .quip{padding:16px 20px;border-top:3px solid var(--ink);font-size:15px;font-style:italic;background:var(--acid)}
+  .foot{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-top:3px solid var(--ink)}
+  .due{font-family:"DM Mono";text-transform:uppercase;font-size:14px}
+  .due b{font-size:22px}
+  .pay{font-family:"DM Mono";text-transform:uppercase;font-weight:500;text-decoration:none;color:#fff;
+    background:var(--ink);border:3px solid var(--ink);box-shadow:5px 5px 0 var(--pink);
+    padding:12px 20px;transition:transform .05s,box-shadow .05s}
+  .pay:active{transform:translate(5px,5px);box-shadow:0 0 0 var(--pink)}
+  .pot{font-family:"DM Mono";font-size:12px;text-transform:uppercase;color:var(--dim);
+    margin-top:16px;text-align:center;letter-spacing:.04em}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">EV<b>ICT</b>ED</div>
+      <div class="tag">GW6 / SETTLED</div>
+    </header>
+    <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+
+    <p class="kick">// bottom of the week — pays &pound;2 into the pot</p>
+    <div class="card">
+      <div class="top">
+        <div><div class="team">Vardy<br>Party</div><div class="mgr">Danny Rose</div></div>
+        <div class="badge"><div class="n">31</div><div class="l">net pts</div></div>
+      </div>
+      <div class="stats">
+        <div><div class="l">Team</div><div class="v">35</div></div>
+        <div><div class="l">Hits</div><div class="v">&minus;4</div></div>
+        <div><div class="l">Bench</div><div class="v">12</div></div>
+      </div>
+      <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+      <div class="foot">
+        <div class="due">Due <b>&pound;2.00</b></div>
+        <a class="pay" href="#">PAY &pound;2</a>
+      </div>
+    </div>
+    <p class="pot">[ pot &pound;84.00 · 7 of 12 bought in ]</p>
+  </div>
+</body>
+</html>

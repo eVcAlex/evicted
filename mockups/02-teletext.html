@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>02 · Teletext — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     DIRECTION 02 — CEEFAX / TELETEXT
+     Saturday-afternoon football results on Page 316. Blue-black ground,
+     saturated primary blocks, one bitmap face (VT323). Layout: fixed
+     40-column mono grid, header/footer bars in flat colour. Motion:
+     a single blinking "REVEAL". Signature: coloured double-height
+     row headers, exactly like the old results service.
+     ------------------------------------------------------------------ */
+  :root{--bg:#0a0a2a;--white:#fff;--yellow:#ffff00;--cyan:#00ffff;
+    --green:#00ff66;--red:#ff3355;--mag:#ff55ff}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#05051a;color:var(--white);font-family:"VT323",monospace;
+    font-size:22px;line-height:1.15;padding:22px 12px 70px}
+  .screen{max-width:560px;margin:0 auto;background:var(--bg);
+    border:2px solid #1a1a4a;padding:0}
+  .bar{display:flex;justify-content:space-between;padding:6px 12px}
+  .bar.top{background:var(--white);color:var(--bg)}
+  .bar .p{color:var(--red)}
+  .row{padding:2px 12px;white-space:pre}
+  nav{padding:6px 12px;display:flex;gap:0;flex-wrap:wrap}
+  nav a{text-decoration:none;padding:0 10px;color:var(--bg)}
+  nav a.tw{background:var(--yellow)}
+  nav a.se{background:var(--cyan)}
+  nav a.ba{background:var(--green)}
+  nav a.dr{background:var(--mag)}
+  .hdr{font-size:40px;line-height:1;text-align:center;padding:14px 0 4px;
+    color:var(--yellow);letter-spacing:.05em}
+  .sub{text-align:center;color:var(--cyan);padding-bottom:10px}
+  .band{background:var(--cyan);color:var(--bg);font-size:30px;line-height:1.1;
+    padding:4px 12px;margin:14px 0 0}
+  .big{font-size:56px;line-height:1;color:var(--white);padding:8px 12px 0}
+  .big .n{color:var(--green)}
+  .mgr{color:var(--cyan);padding:0 12px 10px}
+  .tbl{padding:8px 12px}
+  .tbl div{display:flex;justify-content:space-between}
+  .tbl .num{color:var(--yellow)}
+  .band.mag{background:var(--mag)}
+  .quip{color:#c9c9ff;padding:10px 12px;font-size:20px}
+  .pay{background:var(--green);color:var(--bg);text-decoration:none;
+    display:block;text-align:center;font-size:28px;padding:6px;margin:6px 12px 0}
+  .reveal{color:var(--yellow);animation:bl 1s steps(1) infinite}
+  @keyframes bl{50%{opacity:0}}
+  .bar.bot{margin-top:14px}
+  .bar.bot .g{color:var(--green)} .bar.bot .y{color:var(--yellow)}
+  .bar.bot .c{color:var(--cyan)} .bar.bot .m{color:var(--mag)}
+</style>
+</head>
+<body>
+  <div class="screen">
+    <div class="bar top"><span>EVICTED</span><span>P316 <span class="p">SETTLED</span></span></div>
+    <nav>
+      <a class="tw" href="#">316 THIS WK</a>
+      <a class="se" href="#">317 SEASON</a>
+      <a class="ba" href="#">318 BALANCE</a>
+      <a class="dr" href="#">319 DRAFT</a>
+    </nav>
+    <div class="hdr">EVICTED</div>
+    <div class="sub">GAMEWEEK 6 &#9642; BOTTOM OF THE WEEK</div>
+
+    <div class="band">*** EVICTED THIS WEEK ***</div>
+    <div class="big">VARDY PARTY <span class="n">31</span></div>
+    <div class="mgr">Danny Rose &#9642; net points</div>
+
+    <div class="tbl">
+      <div><span>Team score</span><span class="num">35</span></div>
+      <div><span>Transfer hits</span><span class="num">-4</span></div>
+      <div><span>Bench unused</span><span class="num">12</span></div>
+      <div><span>Runner-up net</span><span class="num">36</span></div>
+    </div>
+
+    <p class="quip">"Second week running. The sofa has your shape now."</p>
+
+    <div class="band mag">AMOUNT DUE &#9642; &pound;2.00 <span class="reveal">&#9654; PAY</span></div>
+    <a class="pay" href="#">PRESS TO PAY &pound;2 VIA MONZO</a>
+
+    <div class="bar bot">
+      <span class="g">POT &pound;84.00</span>
+      <span class="y">7/12 IN</span>
+      <span class="c">SETTLED</span>
+      <span class="m">GW6</span>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>09 · Swiss Grid — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     DIRECTION 09 — SWISS / INTERNATIONAL TYPOGRAPHIC
+     Strict modular grid, flush-left, one red. White ground, black text,
+     red as the single active signal. Type: Archivo (grotesque) at a few
+     deliberate sizes only. Layout: a 12-col grid, a vast display numeral,
+     rotated vertical section label, generous whitespace. Motion: none.
+     Signature: the giant "31" set against the baseline grid.
+     ------------------------------------------------------------------ */
+  :root{--paper:#f4f4f2;--ink:#111;--red:#e5271c;--dim:#8a8a86;--line:#dcdcd8}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:"Archivo",sans-serif}
+  .wrap{max-width:720px;margin:0 auto;padding:0 28px 90px}
+  header{display:grid;grid-template-columns:1fr auto;align-items:center;
+    padding:24px 0 14px;border-bottom:2px solid var(--ink)}
+  .logo{font-weight:900;font-size:22px;letter-spacing:-.02em;text-transform:uppercase}
+  nav{display:flex;gap:22px}
+  nav a{font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+    text-decoration:none;color:var(--dim)}
+  nav a.on{color:var(--ink);border-bottom:2px solid var(--red);padding-bottom:2px}
+  .meta{display:grid;grid-template-columns:repeat(12,1fr);gap:0;
+    border-bottom:1px solid var(--line);padding:14px 0}
+  .meta div{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  .meta div:nth-child(1){grid-column:1/4}
+  .meta div:nth-child(2){grid-column:5/8}
+  .meta div:nth-child(3){grid-column:9/13;text-align:right;color:var(--red)}
+  .hero{display:grid;grid-template-columns:repeat(12,1fr);align-items:end;margin-top:46px}
+  .vlab{grid-column:1/2;writing-mode:vertical-rl;transform:rotate(180deg);
+    font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);align-self:start}
+  .num{grid-column:2/9;font-weight:900;font-size:200px;line-height:.8;letter-spacing:-.04em}
+  .num small{color:var(--red)}
+  .who{grid-column:9/13;padding-bottom:14px}
+  .who .t{font-size:26px;font-weight:700;line-height:1;text-transform:uppercase}
+  .who .m{font-size:13px;color:var(--dim);margin-top:6px}
+  .who .u{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--red);margin-top:10px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:50px;
+    border-top:2px solid var(--ink)}
+  .grid div{padding:16px 0 0;border-right:1px solid var(--line)}
+  .grid div:last-child{border-right:none;padding-left:0}
+  .grid .l{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+  .grid .v{font-size:34px;font-weight:700;margin-top:6px}
+  .grid .v.red{color:var(--red)}
+  .quip{font-size:18px;margin-top:44px;max-width:40ch;line-height:1.35}
+  .foot{display:grid;grid-template-columns:1fr auto;align-items:center;margin-top:44px;
+    border-top:2px solid var(--ink);padding-top:16px}
+  .pot{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+  .pay{font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+    text-decoration:none;color:var(--paper);background:var(--red);padding:12px 26px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">Evicted</div>
+      <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+    </header>
+    <div class="meta"><div>Gameweek 6</div><div>Settled</div><div>Bottom of the week</div></div>
+
+    <div class="hero">
+      <div class="vlab">Net points</div>
+      <div class="num">31<small>.</small></div>
+      <div class="who">
+        <div class="t">Vardy Party</div>
+        <div class="m">Danny Rose</div>
+        <div class="u">Owes &pound;2.00</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div><div class="l">Team score</div><div class="v">35</div></div>
+      <div><div class="l">Transfer hits</div><div class="v red">&minus;4</div></div>
+      <div><div class="l">Bench unused</div><div class="v">12</div></div>
+      <div><div class="l">Runner-up</div><div class="v">36</div></div>
+    </div>
+
+    <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+
+    <div class="foot">
+      <span class="pot">Pot &pound;84.00 / 7 of 12 bought in</span>
+      <a class="pay" href="#">Pay &pound;2</a>
+    </div>
+  </div>
+</body>
+</html>

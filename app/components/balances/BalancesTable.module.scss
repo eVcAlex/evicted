@@ -1,7 +1,7 @@
 @use '../../styles/card';
 
 .sheet {
-  @include card.surface;
+  @include card.light-card;
 }
 
 .row {
@@ -9,17 +9,17 @@
   flex-direction: column;
   align-items: stretch;
   gap: mantine.rem(4);
+  border-bottom-color: card.$rule;
 }
 
 .you {
-  border-left: mantine.rem(2) solid var(--mantine-color-violet-6);
-  background-color: var(--mantine-color-violet-9);
+  @include card.light-you;
 }
 
 /* Mirrors the neutral `.clear` row — no fill; a faint positive edge marks the
    member as ahead rather than square. */
 .credit {
-  border-left: mantine.rem(2) solid var(--mantine-color-green-5);
+  border-left: mantine.rem(2) solid var(--mantine-color-green-6);
 }
 
 .rowMain {
@@ -40,14 +40,14 @@
   @include card.truncate;
   font-weight: 700;
   font-size: mantine.rem(14);
-  color: var(--text);
+  color: card.$ink;
 }
 
 .manager {
   @include card.truncate;
   font-family: var(--font-mono);
   font-size: mantine.rem(12);
-  color: var(--text-dim);
+  color: card.$ink-dim;
 }
 
 .figChip {
@@ -76,35 +76,37 @@
   opacity: 0.75;
 }
 
+/* Filled tints, a self-contained pastel chip that carries its own contrast
+   regardless of what card it sits on. */
 .figClear {
-  color: var(--mantine-color-green-4);
-  background-color: color-mix(in srgb, var(--mantine-color-green-4) 12%, transparent);
+  color: var(--mantine-color-green-8);
+  background-color: var(--mantine-color-green-1);
 }
 
 .figCredit {
-  color: var(--mantine-color-green-3);
-  background-color: color-mix(in srgb, var(--mantine-color-green-4) 22%, transparent);
+  color: var(--mantine-color-green-9);
+  background-color: var(--mantine-color-green-2);
 }
 
 .figOwes {
-  color: var(--mantine-color-yellow-4);
-  background-color: color-mix(in srgb, var(--mantine-color-yellow-4) 14%, transparent);
+  color: var(--mantine-color-yellow-8);
+  background-color: var(--mantine-color-yellow-1);
   transition: background-color 150ms ease;
 
   @include mantine.hover {
-    background-color: color-mix(in srgb, var(--mantine-color-yellow-4) 22%, transparent);
+    background-color: var(--mantine-color-yellow-2);
   }
 }
 
 .figUnknown {
-  color: var(--text-dim);
-  background-color: color-mix(in srgb, var(--text-dim) 10%, transparent);
+  color: card.$ink-dim;
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .meta {
   font-family: var(--font-mono);
   font-size: mantine.rem(11);
-  color: var(--text-dim);
+  color: card.$ink-dim;
   font-variant-numeric: tabular-nums;
   padding-left: mantine.rem(52);
 }

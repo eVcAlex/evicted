@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SB2 · FPL Official — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     SPORTSBOOK VARIATION 2 — FPL / PREMIER LEAGUE OFFICIAL PALETTE
+     The most on-brand of the set: the actual Fantasy Premier League
+     colour language — deep PL purple ground, electric green primary,
+     cyan and magenta as the two data signals. Type: Archivo (a close
+     stand-in for the PL's geometric face). Motion: none needed; the
+     colour does the shouting. Signature: green "pill" CTA + magenta
+     fine tag, exactly like the official FPL app.
+     ------------------------------------------------------------------ */
+  :root{--purple:#37003c;--purple2:#2a002e;--card:#490d54;--green:#00ff87;
+    --cyan:#04f5ff;--magenta:#e90052;--fg:#ffffff;--dim:#b79dbd}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--purple);color:var(--fg);font-family:"Archivo",sans-serif;min-height:100vh}
+  .wrap{max-width:640px;margin:0 auto;padding:0 0 80px}
+  header{background:var(--purple2);padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+  .logo{font-weight:900;font-size:20px;letter-spacing:-.01em;text-transform:uppercase}
+  .logo b{color:var(--green)}
+  nav{display:flex;gap:0}
+  nav a{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.02em;text-decoration:none;color:var(--dim);padding:8px 12px}
+  nav a.on{color:var(--purple);background:var(--green);border-radius:20px}
+  .inner{padding:20px}
+  .kick{display:inline-block;font-weight:700;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--purple);background:var(--cyan);padding:4px 10px;border-radius:4px}
+  .card{background:var(--card);border-radius:14px;margin-top:14px;overflow:hidden}
+  .top{display:flex;align-items:center;gap:18px;padding:22px}
+  .disc{width:88px;height:88px;border-radius:14px;background:var(--purple2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .disc span{font-weight:900;font-size:42px;color:var(--green)}
+  .top .team{font-weight:800;font-size:28px;line-height:1}
+  .top .mgr{color:var(--dim);font-size:14px;margin-top:4px}
+  .top .fine{display:inline-block;margin-top:10px;font-weight:800;font-size:12px;letter-spacing:.04em;text-transform:uppercase;
+    color:#fff;background:var(--magenta);padding:4px 10px;border-radius:4px}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.08)}
+  .grid div{background:var(--card);padding:14px 8px;text-align:center}
+  .grid .l{font-weight:700;font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--dim)}
+  .grid .v{font-weight:900;font-size:26px;margin-top:2px}
+  .grid .v.c{color:var(--cyan)}.grid .v.m{color:var(--magenta)}.grid .v.g{color:var(--green)}
+  .quip{padding:16px 22px;font-size:14px;font-style:italic;color:#e9d9ec}
+  .pay{display:block;margin:16px 20px 0;text-align:center;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.04em;
+    text-decoration:none;color:var(--purple);background:var(--green);padding:15px;border-radius:30px}
+  .pot{display:flex;justify-content:space-between;margin:16px 20px 0;padding:14px 18px;
+    background:var(--purple2);border-radius:12px;font-weight:700;font-size:13px}
+  .pot .l{color:var(--dim);text-transform:uppercase;letter-spacing:.04em}
+  .pot .v{color:var(--cyan)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">EV<b>&#9632;</b>ICTED</div>
+      <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+    </header>
+    <div class="inner">
+      <span class="kick">Gameweek 6 · Settled · Bottom of the week</span>
+      <div class="card">
+        <div class="top">
+          <div class="disc"><span>31</span></div>
+          <div>
+            <div class="team">Vardy Party</div>
+            <div class="mgr">Danny Rose · net points</div>
+            <span class="fine">Owes &pound;2 to the pot</span>
+          </div>
+        </div>
+        <div class="grid">
+          <div><div class="l">Team</div><div class="v">35</div></div>
+          <div><div class="l">Hits</div><div class="v m">&minus;4</div></div>
+          <div><div class="l">Bench</div><div class="v g">12</div></div>
+          <div><div class="l">Runner-up</div><div class="v c">36</div></div>
+        </div>
+        <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+        <a class="pay" href="#">Pay &pound;2</a>
+      </div>
+      <div class="pot"><span class="l">Pot to date</span><span class="v">&pound;84.00 · 7/12 bought in</span></div>
+    </div>
+  </div>
+</body>
+</html>

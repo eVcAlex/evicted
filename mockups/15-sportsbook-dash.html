@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>15 · Sportsbook Dash — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     DIRECTION 15 — SPORTSBOOK DASHBOARD (data-dense)
+     For the stats obsessives: a dense, legible fixtures-desk dashboard.
+     Cool slate ground, teal signal, tabular figures, a real inline bar
+     chart of who has lost most. Type: IBM Plex Sans + Plex Mono. Layout:
+     KPI strip, hero row, a "form" mini-chart. Motion: bars grow on load.
+     Signature: information density that still reads — hierarchy by size
+     and one accent, not decoration.
+     ------------------------------------------------------------------ */
+  :root{--bg:#0f141b;--panel:#151c26;--panel2:#1a222e;--stroke:#232d3b;
+    --fg:#e6edf3;--dim:#7d8ba0;--teal:#2dd4bf;--amber:#f6c343;--red:#f2555a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font-family:"IBM Plex Sans",sans-serif}
+  .wrap{max-width:720px;margin:0 auto;padding:18px 16px 80px}
+  header{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--stroke)}
+  .logo{font-weight:700;font-size:18px;letter-spacing:-.01em}
+  .logo b{color:var(--teal)}
+  nav{display:flex;gap:4px}
+  nav a{font-family:"IBM Plex Mono";font-size:11px;text-transform:uppercase;letter-spacing:.03em;
+    text-decoration:none;color:var(--dim);padding:6px 10px;border-radius:6px}
+  nav a.on{color:var(--teal);background:var(--panel)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+  .kpi{background:var(--panel);border:1px solid var(--stroke);border-radius:10px;padding:12px 14px}
+  .kpi .l{font-family:"IBM Plex Mono";font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--dim)}
+  .kpi .v{font-size:22px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+  .kpi .v.teal{color:var(--teal)}.kpi .v.amber{color:var(--amber)}
+  .hero{display:grid;grid-template-columns:1.2fr 1fr;gap:12px;margin-top:12px}
+  .card{background:var(--panel);border:1px solid var(--stroke);border-radius:12px;padding:18px}
+  .tag{display:inline-block;font-family:"IBM Plex Mono";font-size:10px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--red);background:rgba(242,85,90,.12);padding:3px 8px;border-radius:5px}
+  .team{font-size:26px;font-weight:700;margin-top:12px;line-height:1}
+  .mgr{color:var(--dim);font-size:13px;margin-top:4px}
+  .net{display:flex;align-items:baseline;gap:8px;margin-top:16px}
+  .net b{font-size:52px;font-weight:700;line-height:.8;font-variant-numeric:tabular-nums}
+  .net span{font-family:"IBM Plex Mono";font-size:11px;text-transform:uppercase;color:var(--dim)}
+  .brk{margin-top:16px}
+  .brk div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--stroke);
+    font-size:13px;font-family:"IBM Plex Mono"}
+  .brk div:last-child{border-bottom:none}
+  .brk .k{color:var(--dim)}
+  .chart .l{font-family:"IBM Plex Mono";font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--dim);margin-bottom:12px}
+  .bar{display:flex;align-items:center;gap:10px;margin-bottom:11px;font-size:12px;font-family:"IBM Plex Mono"}
+  .bar .nm{width:66px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar .track{flex:1;height:14px;background:var(--panel2);border-radius:4px;overflow:hidden}
+  .bar .fill{height:100%;background:var(--teal);border-radius:4px;transform-origin:left;animation:grow .8s ease both}
+  .bar.hot .fill{background:var(--red)}
+  .bar .n{width:16px;text-align:right}
+  @keyframes grow{from{transform:scaleX(0)}}
+  .quip{grid-column:1/3;background:var(--panel2);border:1px solid var(--stroke);border-radius:10px;
+    padding:12px 16px;font-size:13px;color:var(--dim);font-style:italic}
+  .foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;
+    background:var(--panel);border:1px solid var(--stroke);border-radius:10px;padding:14px 18px}
+  .foot .due{font-family:"IBM Plex Mono";font-size:13px;color:var(--dim);text-transform:uppercase}
+  .foot .due b{color:var(--fg);font-size:18px}
+  .pay{font-family:"IBM Plex Mono";font-size:12px;text-transform:uppercase;letter-spacing:.05em;font-weight:600;
+    text-decoration:none;color:#05201c;background:var(--teal);padding:11px 20px;border-radius:8px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">ev<b>/</b>icted</div>
+      <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+    </header>
+
+    <div class="kpis">
+      <div class="kpi"><div class="l">Gameweek</div><div class="v">06</div></div>
+      <div class="kpi"><div class="l">Pot</div><div class="v teal">&pound;84</div></div>
+      <div class="kpi"><div class="l">Bought in</div><div class="v amber">7/12</div></div>
+      <div class="kpi"><div class="l">Status</div><div class="v">Settled</div></div>
+    </div>
+
+    <div class="hero">
+      <div class="card">
+        <span class="tag">&#9679; Bottom of the week</span>
+        <div class="team">Vardy Party</div>
+        <div class="mgr">Danny Rose</div>
+        <div class="net"><b>31</b><span>net pts · owes &pound;2</span></div>
+        <div class="brk">
+          <div><span class="k">Team score</span><span>35</span></div>
+          <div><span class="k">Transfer hits</span><span>&minus;4</span></div>
+          <div><span class="k">Bench (unused)</span><span>12</span></div>
+          <div><span class="k">Runner-up net</span><span>36</span></div>
+        </div>
+      </div>
+      <div class="card chart">
+        <div class="l">Times bottom · this season</div>
+        <div class="bar hot"><span class="nm">Vardy P.</span><span class="track"><span class="fill" style="width:100%"></span></span><span class="n">3</span></div>
+        <div class="bar"><span class="nm">Xhaka K.</span><span class="track"><span class="fill" style="width:66%;animation-delay:.08s"></span></span><span class="n">2</span></div>
+        <div class="bar"><span class="nm">Son of P.</span><span class="track"><span class="fill" style="width:33%;animation-delay:.16s"></span></span><span class="n">1</span></div>
+        <div class="bar"><span class="nm">Midf. Gen.</span><span class="track"><span class="fill" style="width:33%;animation-delay:.24s"></span></span><span class="n">1</span></div>
+        <div class="bar"><span class="nm">Kane &amp; Able</span><span class="track"><span class="fill" style="width:16%;animation-delay:.32s"></span></span><span class="n">0</span></div>
+      </div>
+      <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+    </div>
+
+    <div class="foot">
+      <span class="due">Amount due &nbsp;<b>&pound;2.00</b></span>
+      <a class="pay" href="#">Pay &pound;2 &rarr;</a>
+    </div>
+  </div>
+</body>
+</html>

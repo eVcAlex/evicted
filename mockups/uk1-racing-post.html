@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UK1 · Racing Post Form — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=Roboto+Condensed:wght@500;700&family=Roboto+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     UK BETTING VARIATION 1 — RACING POST FORM GUIDE
+     The Racing Post racecard: the paper's signature salmon-pink stock,
+     black slab headers, a form-figure column and starting price. The
+     "bottom of the week" reframed as a runner drifting to the back of
+     the field. Type: Zilla Slab + Roboto Condensed, Roboto Mono for
+     form. Signature: pink stock, a form string (1-4-6-5...) and an SP
+     in fractional odds, plus the RP-style black section bars.
+     ------------------------------------------------------------------ */
+  :root{--pink:#f9d3d9;--pink2:#f4c2ca;--ink:#1a1416;--dim:#6f5c60;--rule:#d8a9b2;--red:#b4142e;--green:#0d7a3f}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--pink);color:var(--ink);font-family:"Zilla Slab",serif}
+  .wrap{max-width:660px;margin:0 auto;padding:0 20px 40px}
+  header{padding-top:20px;border-bottom:4px solid var(--ink)}
+  .top{display:flex;justify-content:space-between;align-items:baseline}
+  .logo{font-family:"Roboto Condensed";font-weight:700;font-size:34px;text-transform:uppercase;letter-spacing:-.01em}
+  .logo b{color:var(--red)}
+  .edition{font-family:"Roboto Mono";font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+  nav{display:flex;gap:0;margin-top:12px}
+  nav a{font-family:"Roboto Condensed";font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;
+    text-decoration:none;color:var(--dim);padding:8px 14px;border-right:1px solid var(--rule)}
+  nav a:first-child{padding-left:0}
+  nav a.on{color:var(--ink);text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:4px}
+  .racehead{background:var(--ink);color:var(--pink);display:flex;justify-content:space-between;align-items:center;
+    padding:8px 14px;margin-top:16px}
+  .racehead .t{font-family:"Roboto Condensed";font-weight:700;font-size:14px;letter-spacing:.04em;text-transform:uppercase}
+  .racehead .g{font-family:"Roboto Mono";font-size:11px}
+  .runner{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:16px 14px;
+    background:var(--pink2);border-bottom:1px solid var(--rule)}
+  .num{width:34px;height:34px;border:2px solid var(--ink);border-radius:4px;display:flex;align-items:center;justify-content:center;
+    font-family:"Roboto Condensed";font-weight:700;font-size:18px}
+  .runner .name{font-family:"Roboto Condensed";font-weight:700;font-size:22px;text-transform:uppercase;line-height:1}
+  .runner .conn{font-size:13px;color:var(--dim);margin-top:2px}
+  .runner .form{font-family:"Roboto Mono";font-weight:600;font-size:15px;text-align:right}
+  .runner .form small{display:block;font-family:"Roboto Condensed";font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+  .card2{border:1px solid var(--rule);margin-top:0}
+  .row{display:flex;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--rule);
+    font-family:"Roboto Mono";font-size:13px}
+  .row:last-child{border-bottom:none}
+  .row .k{font-family:"Zilla Slab";color:var(--dim)}
+  .verdict{padding:14px;font-style:italic;font-size:15px;border-top:2px solid var(--ink)}
+  .verdict b{font-family:"Roboto Condensed";font-style:normal;text-transform:uppercase;font-size:12px;letter-spacing:.06em;color:var(--red);display:block;margin-bottom:4px}
+  .betrow{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:var(--pink);padding:14px}
+  .betrow .stake{font-family:"Roboto Mono";font-size:13px}
+  .betrow .stake b{color:#fff;font-size:16px}
+  .pay{font-family:"Roboto Condensed";font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:15px;
+    text-decoration:none;background:var(--red);color:#fff;padding:11px 22px}
+  .rg{display:flex;justify-content:space-between;align-items:center;font-family:"Roboto Mono";font-size:11px;color:var(--dim);
+    padding:12px 2px 0}
+  .rg .badge{border:1px solid var(--dim);border-radius:3px;padding:2px 6px;font-weight:600}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="top">
+        <div class="logo">RACING <b>EVICTED</b></div>
+        <div class="edition">Sat · GW6 · Final result</div>
+      </div>
+      <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+    </header>
+
+    <div class="racehead"><span class="t">4.30 &mdash; The Gameweek 6 Wooden Spoon Stakes</span><span class="g">12 ran · good to soft</span></div>
+
+    <div class="runner">
+      <div class="num">12</div>
+      <div>
+        <div class="name">Vardy Party</div>
+        <div class="conn">Mgr: D. Rose &nbsp;·&nbsp; owner: The Class of '79294</div>
+      </div>
+      <div class="form">4-6-3-5-<b style="color:var(--red)">12</b><small>Form · fin. last</small></div>
+    </div>
+
+    <div class="card2">
+      <div class="row"><span class="k">Net points (dist. beaten)</span><span>31 (5 lengths)</span></div>
+      <div class="row"><span class="k">Team score (gross)</span><span>35</span></div>
+      <div class="row"><span class="k">Transfer hits</span><span style="color:var(--red)">&minus;4</span></div>
+      <div class="row"><span class="k">Bench, left in stall</span><span>12</span></div>
+      <div class="row"><span class="k">Starting price to finish last</span><span>5/1</span></div>
+      <div class="verdict"><b>Postdata verdict</b>&ldquo;Second week running. The sofa has your shape now.&rdquo;</div>
+    </div>
+
+    <div class="betrow">
+      <span class="stake">Settlement · stake to the pot <b>&pound;2.00</b></span>
+      <a class="pay" href="#">Pay &pound;2 &rarr;</a>
+    </div>
+
+    <div class="rg">
+      <span>Pot &pound;84.00 · 7/12 bought in</span>
+      <span><span class="badge">18+</span> &nbsp;BeGambleAware.org &nbsp;·&nbsp; When the Fun Stops, Stop</span>
+    </div>
+  </div>
+</body>
+</html>

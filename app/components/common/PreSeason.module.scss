@@ -1,7 +1,7 @@
 @use '../../styles/card';
 
 .hero {
-  @include card.hero($accent: violet);
+  @include card.hero;
   padding: mantine.rem(28) mantine.rem(24) mantine.rem(30);
 }
 
@@ -36,7 +36,7 @@
 
 .deadlineCaption {
   @include card.kicker;
-  color: var(--mantine-color-yellow-4);
+  color: var(--mantine-color-yellow-8);
 }
 
 .deadlineValue {

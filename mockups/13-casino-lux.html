@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>13 · Casino Lux — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     DIRECTION 13 — CASINO LUX
+     The pot as a private-members jackpot. Matte black felt, gold foil,
+     a whisper of green baize. Type: Cormorant Garamond (fine display
+     serif) over Inter Tight for labels. Layout: centred, symmetrical,
+     generous, a gold hairline frame. Motion: a slow gold shimmer sweeps
+     the total once. Signature: thin double-gold rules + foil gradient
+     confined to the pot figure only.
+     ------------------------------------------------------------------ */
+  :root{--felt:#0b0f0c;--felt2:#0e1510;--gold:#c9a24b;--gold-hi:#f2dc9b;
+    --fg:#efe9dc;--dim:#8f8a7c;--baize:#12331f}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(circle at 50% 0%,var(--felt2),var(--felt) 70%);
+    color:var(--fg);font-family:"Inter Tight",sans-serif;min-height:100vh}
+  .wrap{max-width:540px;margin:0 auto;padding:26px 22px 80px}
+  header{display:flex;justify-content:space-between;align-items:center;
+    border-bottom:1px solid rgba(201,162,75,.28);padding-bottom:16px}
+  .logo{font-family:"Cormorant Garamond";font-weight:700;font-size:28px;letter-spacing:.04em}
+  .logo b{color:var(--gold)}
+  nav{display:flex;gap:16px}
+  nav a{font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--dim)}
+  nav a.on{color:var(--gold-hi)}
+  .frame{margin-top:40px;border:1px solid rgba(201,162,75,.4);
+    box-shadow:inset 0 0 0 4px rgba(201,162,75,.08);padding:38px 30px;text-align:center}
+  .kick{font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold)}
+  .rule{width:60px;height:1px;background:var(--gold);margin:14px auto;position:relative}
+  .rule::before,.rule::after{content:"";position:absolute;top:-1px;width:4px;height:3px;background:var(--gold)}
+  .rule::before{left:-8px}.rule::after{right:-8px}
+  h1{font-family:"Cormorant Garamond";font-weight:600;font-style:italic;font-size:44px;line-height:1;margin-top:6px}
+  .mgr{color:var(--dim);font-size:13px;margin-top:8px;letter-spacing:.06em}
+  .net{font-family:"Cormorant Garamond";font-weight:700;font-size:92px;line-height:1;margin-top:20px;color:var(--fg)}
+  .net small{display:block;font-family:"Inter Tight";font-size:11px;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--dim);margin-top:2px}
+  .chips{display:flex;justify-content:center;gap:0;margin-top:28px;
+    border-top:1px solid rgba(201,162,75,.2);border-bottom:1px solid rgba(201,162,75,.2)}
+  .chips div{flex:1;padding:16px 0;border-right:1px solid rgba(201,162,75,.14)}
+  .chips div:last-child{border-right:none}
+  .chips .l{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  .chips .v{font-family:"Cormorant Garamond";font-weight:600;font-size:26px;margin-top:4px}
+  .quip{font-family:"Cormorant Garamond";font-style:italic;font-size:18px;color:var(--fg);
+    opacity:.85;margin-top:26px}
+  .pay{display:inline-block;margin-top:26px;text-decoration:none;font-size:12px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--felt);
+    background:linear-gradient(135deg,var(--gold),var(--gold-hi));padding:14px 34px}
+  .pot{margin-top:34px;text-align:center}
+  .pot .l{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+  .pot .v{font-family:"Cormorant Garamond";font-weight:700;font-size:40px;margin-top:2px;
+    background:linear-gradient(90deg,var(--gold),var(--gold-hi),var(--gold));
+    background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+    animation:shimmer 6s ease-in-out infinite}
+  @keyframes shimmer{0%,100%{background-position:0% 0}50%{background-position:100% 0}}
+  .pot .sub{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-top:4px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">Ev<b>&middot;</b>icted</div>
+      <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+    </header>
+
+    <div class="frame">
+      <div class="kick">Gameweek Six · The House Always Collects</div>
+      <div class="rule"></div>
+      <h1>Vardy Party</h1>
+      <div class="mgr">Danny Rose · lowest net score</div>
+      <div class="net">31<small>net points · owes &pound;2</small></div>
+
+      <div class="chips">
+        <div><div class="l">Team</div><div class="v">35</div></div>
+        <div><div class="l">Hits</div><div class="v">&minus;4</div></div>
+        <div><div class="l">Bench</div><div class="v">12</div></div>
+      </div>
+
+      <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+      <a class="pay" href="#">Settle &pound;2</a>
+    </div>
+
+    <div class="pot">
+      <div class="l">The Pot</div>
+      <div class="v">&pound;84.00</div>
+      <div class="sub">Seven of twelve bought in</div>
+    </div>
+  </div>
+</body>
+</html>

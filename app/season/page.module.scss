@@ -6,6 +6,7 @@
 
 .shame {
   margin-top: mantine.rem(28);
+  margin-bottom: mantine.rem(40);
 }
 
 .shameTitle {
@@ -15,23 +16,76 @@
   color: var(--text-dim);
 }
 
-.sheet {
-  @include card.surface;
+/* Every Hall of Shame stat gets the same treatment — the app's one `hero`
+ * fill, same as the loser card, so "this is worth sharing" reads the same
+ * way for all of them rather than singling out a favoured few. `auto-fit`
+ * rather than a fixed column count: the set of stats that clear
+ * `buildHallOfShame`'s null checks varies week to week, so the grid should
+ * settle into whatever row shape the count on hand actually makes, not
+ * assume there are always exactly three. */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(mantine.rem(220), 1fr));
+  gap: mantine.rem(14);
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    grid-template-columns: 1fr;
+  }
 }
 
-.row {
-  @include card.listing-row;
-  flex-wrap: wrap;
+.card {
+  @include card.hero;
+  display: flex;
+  flex-direction: column;
+  padding: mantine.rem(22) mantine.rem(20) mantine.rem(24);
 }
 
-.name {
-  font-weight: 700;
-  font-size: mantine.rem(14);
-  color: var(--text);
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: mantine.rem(8);
 }
 
-.manager {
+.cardKicker {
+  @include card.kicker($onDark: true);
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(44);
+  line-height: 0.9;
+  margin-top: mantine.rem(12);
+}
+
+.statLabel {
   font-family: var(--font-mono);
-  font-size: mantine.rem(12);
-  color: var(--text-dim);
+  font-size: mantine.rem(11);
+  font-weight: 600;
+  letter-spacing: mantine.rem(0.5);
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+  margin-top: mantine.rem(2);
+}
+
+/* Pinned to the card's bottom edge (see the component's own comment on why),
+ * so every card in a stretched grid row keeps the same bottom clearance
+ * regardless of how long its own name/sub text runs. The divider lives here,
+ * not on `.cardName`, so it sits right above the footer as a group. */
+.cardFooter {
+  margin-top: auto;
+  padding-top: mantine.rem(14);
+  border-top: mantine.rem(1) solid rgba(255, 255, 255, 0.15);
+}
+
+.cardName {
+  font-size: mantine.rem(14);
+  font-weight: 700;
+}
+
+.cardSub {
+  font-size: mantine.rem(12.5);
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: mantine.rem(3);
 }

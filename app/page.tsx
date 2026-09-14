@@ -1,6 +1,6 @@
 import { Alert } from '@mantine/core';
 import { fetchBootstrap, fetchStandings } from '@/lib/fpl/client';
-import { checkAndNotifySettled, loadHistories } from '@/lib/league/checkAndNotify';
+import { checkAndRecordSettled, loadHistories } from '@/lib/league/checkAndRecord';
 import { eligibleFromByEntry } from '@/lib/league/eligibility';
 import { currentGameweek, nextGameweek, revalidateFor } from '@/lib/league/gameweeks';
 import { lossesByEntry } from '@/lib/league/history';
@@ -52,11 +52,11 @@ export default async function HomePage() {
 
   const histories = await loadHistories(members, revalidate);
 
-  // Reused, not refetched: `checkAndNotifySettled` already reads the full
+  // Reused, not refetched: `checkAndRecordSettled` already reads the full
   // ledger to decide what's pending, so the same map that came back covers
   // every gameweek recorded before this one — exactly the history a quip
   // needs to notice a streak.
-  const { results: recordedResults, degraded: recordDegraded } = await checkAndNotifySettled({
+  const { results: recordedResults, degraded: recordDegraded } = await checkAndRecordSettled({
     bootstrap,
     members,
     eligibleFrom,
@@ -80,6 +80,7 @@ export default async function HomePage() {
         paid={paid}
         degraded={paidDegraded}
         previousLosses={previousLosses}
+        results={recordedResults}
       />
     </>
   );

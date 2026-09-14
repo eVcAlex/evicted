@@ -25,11 +25,6 @@ export const WEBHOOK_AUTO_APPLY_CAP_PENCE = 10000;
  */
 export const MONZO_ME_URL = process.env.MONZO_ME_URL ?? null;
 
-/** Web Push VAPID identity. Unset until generated — push sends no-op without it. */
-export const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY ?? null;
-export const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY ?? null;
-export const VAPID_SUBJECT = process.env.VAPID_SUBJECT ?? null;
-
 /** Shared secret the GitHub Actions settlement check authenticates with. */
 export const CRON_SECRET = process.env.CRON_SECRET ?? null;
 

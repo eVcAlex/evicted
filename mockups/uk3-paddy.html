@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UK3 · Cheeky Bookie — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     UK BETTING VARIATION 3 — CHEEKY BOOKIE (Paddy Power lineage)
+     The irreverent Irish-bookmaker tone: bright bookmaker green, gold
+     trim, an in-your-face Archivo Black headline and mickey-taking
+     microcopy. Loud but disciplined — one green, one gold, black type.
+     Motion: none; the copy carries it. Signature: a huge green splash
+     headline + a gold "money back... nah" gag, closed by a proper 18+
+     BeGambleAware strip (the loud tone makes the compliance matter more).
+     ------------------------------------------------------------------ */
+  :root{--green:#0a8f4e;--green-d:#046b39;--green-dd:#04351f;--gold:#f7c948;--ink:#0a1f14;--cream:#f4fbf2;--dim:#bfe3cf}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--green);color:var(--cream);font-family:"Archivo",sans-serif}
+  .wrap{max-width:620px;margin:0 auto;padding:0 0 0}
+  header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--green-dd)}
+  .logo{font-family:"Archivo Black";font-size:22px;letter-spacing:-.01em;text-transform:uppercase}
+  .logo b{color:var(--gold)}
+  nav{display:flex;gap:4px}
+  nav a{font-weight:700;font-size:12px;text-transform:uppercase;text-decoration:none;color:var(--dim);padding:6px 10px;border-radius:20px}
+  nav a.on{color:var(--green-dd);background:var(--gold)}
+  .hero{padding:34px 18px 24px;background:linear-gradient(180deg,var(--green),var(--green-d))}
+  .kick{font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  h1{font-family:"Archivo Black";font-size:64px;line-height:.86;text-transform:uppercase;margin-top:8px;letter-spacing:-.01em}
+  h1 em{font-style:normal;color:var(--gold)}
+  .sub{font-size:17px;font-weight:600;margin-top:14px;max-width:32ch;color:#eafff2}
+  .sub b{background:var(--gold);color:var(--green-dd);padding:0 6px;border-radius:3px}
+  .card{background:var(--cream);color:var(--ink);margin:0 18px;border-radius:14px;transform:translateY(-8px);
+    box-shadow:0 18px 40px -18px rgba(0,0,0,.5);overflow:hidden}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr)}
+  .grid div{padding:16px 8px;text-align:center;border-right:1px solid #e0efe6}
+  .grid div:last-child{border-right:none}
+  .grid .l{font-weight:700;font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:#5a7365}
+  .grid .v{font-family:"Archivo Black";font-size:26px;margin-top:2px}
+  .grid .v.g{color:var(--green)}
+  .gag{background:var(--gold);color:var(--green-dd);font-weight:800;text-align:center;padding:12px;font-size:14px;letter-spacing:.02em}
+  .foot{display:flex;justify-content:space-between;align-items:center;padding:16px 18px}
+  .foot .due{font-weight:800;font-size:16px}
+  .foot .due span{color:#5a7365;font-weight:600;font-size:12px;text-transform:uppercase;display:block}
+  .pay{font-family:"Archivo Black";text-transform:uppercase;font-size:16px;text-decoration:none;color:var(--cream);
+    background:var(--green);padding:14px 24px;border-radius:10px}
+  .quip{font-style:italic;color:#5a7365;padding:0 18px 16px;font-size:14px;text-align:center}
+  .rg{background:var(--green-dd);color:var(--dim);font-size:11px;padding:12px 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .rg .b{border:1px solid #2e6a49;border-radius:3px;padding:2px 6px;font-weight:800;color:var(--gold)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">PADDY <b>EVICTED</b></div>
+      <nav><a class="on" href="#">Week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+    </header>
+
+    <div class="hero">
+      <div class="kick">Gameweek 6 · Result's in, no arguments</div>
+      <h1>Rose is<br>this week's<br><em>mug punter</em></h1>
+      <p class="sub">Vardy Party trudge in on a net <b>31</b> &mdash; dead last &mdash; and it's the usual <b>&pound;2</b> into the pot. Hard luck. Not really.</p>
+    </div>
+
+    <div class="card">
+      <div class="grid">
+        <div><div class="l">Team</div><div class="v">35</div></div>
+        <div><div class="l">Hits</div><div class="v">&minus;4</div></div>
+        <div><div class="l">Bench</div><div class="v g">12</div></div>
+        <div><div class="l">Missed by</div><div class="v">5</div></div>
+      </div>
+      <div class="gag">MONEY BACK IF YOU WERE JUST UNLUCKY* &nbsp;(*you weren't)</div>
+      <div class="foot">
+        <div class="due">&pound;2.00<span>Owed to the pot</span></div>
+        <a class="pay" href="#">Pay &pound;2</a>
+      </div>
+      <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+    </div>
+
+    <div class="rg">
+      <span class="b">18+</span>
+      <span>BeGambleAware.org &middot; When the Fun Stops, Stop</span>
+      <span>&middot; Pot &pound;84.00 · 7/12 bought in</span>
+    </div>
+  </div>
+</body>
+</html>

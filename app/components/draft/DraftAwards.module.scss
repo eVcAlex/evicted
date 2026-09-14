@@ -12,22 +12,23 @@
 }
 
 .sheet {
-  @include card.surface;
+  @include card.light-card;
 }
 
 .row {
   @include card.listing-row;
   flex-wrap: wrap;
+  border-bottom-color: card.$rule;
 }
 
 .name {
   font-weight: 700;
   font-size: mantine.rem(14);
-  color: var(--text);
+  color: card.$ink;
 }
 
 .detail {
   font-family: var(--font-mono);
   font-size: mantine.rem(12);
-  color: var(--text-dim);
+  color: card.$ink-dim;
 }

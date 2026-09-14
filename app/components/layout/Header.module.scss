@@ -1,14 +1,14 @@
-/* Solid ground, one violet rule beneath — no blur, no floating pill. */
+/* Solid ground, a hairline rule beneath — no blur, no heavy accent bar. */
 .header {
   position: sticky;
   top: 0;
   z-index: 100;
   background-color: var(--bg);
-  border-bottom: mantine.rem(2) solid var(--mantine-color-violet-6);
+  border-bottom: mantine.rem(1) solid var(--border);
 
   // iOS/WebKit doesn't always repaint a `position: sticky` element when only
   // its children's styles change (no scroll, no layout shift) — the active
-  // tab's underline from the very first paint can stay ghosted in after a
+  // tab's pill from the very first paint can stay ghosted in after a
   // client-side nav restyles it elsewhere. Forcing this onto its own
   // compositor layer makes WebKit recomposite the whole thing instead of
   // relying on that broken partial-repaint path.
@@ -75,15 +75,10 @@
 }
 
 .tab {
-  // Balanced top/bottom so the active underline (bottom border + padding)
-  // doesn't shift this box's visual center relative to `.wordmark`, which
-  // has no such reserved space — an unbalanced box here is what threw the
-  // baseline off against "Evicted".
-  padding-top: mantine.rem(3);
-  padding-bottom: mantine.rem(3);
-  border-top: mantine.rem(2) solid transparent;
-  border-bottom: mantine.rem(2) solid transparent;
-  font-size: mantine.rem(12);
+  padding: mantine.rem(6) mantine.rem(10);
+  border-radius: mantine.rem(6);
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: mantine.rem(0.5);
@@ -91,14 +86,22 @@
   white-space: nowrap;
   transition:
     color 150ms ease,
-    border-color 150ms ease;
+    background-color 150ms ease;
 
   @include mantine.hover {
     color: var(--text);
   }
 }
 
+/* The current tab, called out with a filled pill rather than an underline —
+   the only accent-colour surface in the nav. White on the solid fill, same
+   convention as `card.hero` (the eviction block, filled buttons) — not a
+   dimmer text-on-dark pairing found nowhere else in the app. */
 .tabActive {
-  color: var(--text);
-  border-color: var(--mantine-color-violet-6);
+  color: #fff;
+  background-color: var(--mantine-color-brand-7);
+
+  @include mantine.hover {
+    color: #fff;
+  }
 }

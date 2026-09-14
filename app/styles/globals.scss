@@ -1,16 +1,30 @@
-// Structural tokens for the card/dark direction. Mirrors the `dark` scale in
-// `layout.tsx` (dark-9/dark-7/dark-4) so hand-styled components and Mantine's
-// own internals land on the same three surfaces without fighting each other.
+// Structural tokens for the app's one dark ground direction. Same hex as
+// `card.$paper`/`card.$ink`/`card.$ink-dim`/`card.$rule` in `_card.scss` —
+// kept in sync by hand since a `@use` here would need its own namespace
+// import for every consumer anyway (see that file's header comment).
+// `--surface` is a shade lighter than `--bg`: enough separation for a
+// bordered panel to read as sitting on the page, not fused to it.
 :root {
-  --bg: #101215;
-  --surface: #17191d;
-  --border: #2b2e34;
-  --text: #eeece6;
-  --text-dim: #8d9096;
+  --bg: #0b0e14;
+  --surface: #141a24;
+  --border: #242c3a;
+  --text: #e8ecf3;
+  --text-dim: #8b93a3;
 }
 
 body {
   background-color: var(--bg);
+  // A neutral vignette, not a coloured glow — the `--surface` tone already
+  // used for cards, just lightening the ground near the top of the viewport
+  // so a narrow column doesn't sit in a flat void. No accent colour here:
+  // the app's red is reserved for the actual eviction marks.
+  background-image: radial-gradient(
+    ellipse 1100px 700px at 50% -12%,
+    color-mix(in srgb, var(--surface) 60%, transparent),
+    transparent 70%
+  );
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: var(--text);
   // Safety net against sideways pan on narrow screens — `clip` rather than
   // `hidden` so it doesn't turn the body into a scroll container, which

@@ -1,8 +1,9 @@
-// Shared pieces of the card/dark motif: a filled hero for the one thing that
-// matters most on a page, plain bordered surfaces for everything else, and a
-// consistent listing row — the vocabulary Header, PreSeason, LoserCard,
-// SeasonGrid and BalancesTable all pull from instead of each inventing their
-// own panel.
+// Shared pieces of the app's one visual language: a dark ground, a filled
+// hero (the app's red, reserved for the one thing that matters most on a
+// page) for a page's headline stat, elevated cards for supporting detail,
+// flat bordered surfaces for everything else, and a consistent listing row —
+// the vocabulary Header, PreSeason, LoserCard, SeasonGrid and BalancesTable
+// all pull from instead of each inventing their own panel.
 //
 // A consuming module's own `@use` of this partial does not inherit the
 // `mantine` namespace next.config.ts injects via `additionalData` — each
@@ -21,8 +22,8 @@
 /// The one filled, elevated block per page — the evicted card, the
 /// pre-season splash, the deadline notice. Solid fill, one neutral shadow
 /// for lift, no gradient.
-@mixin hero($accent: violet) {
-  background-color: var(--mantine-color-#{$accent}-8);
+@mixin hero($accent: brand) {
+  background-color: var(--mantine-color-#{$accent}-7);
   border: mantine.rem(1) solid rgba(255, 255, 255, 0.08);
   border-radius: mantine.rem(6);
   color: #fff;
@@ -76,27 +77,6 @@
   }
 }
 
-/// A small state label — clear / provisional / owed. `$tone` is a Mantine
-/// color name; omit for the neutral "unknown" reading.
-@mixin tag($tone: null) {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: mantine.rem(11);
-  font-weight: 700;
-  letter-spacing: mantine.rem(0.5);
-  text-transform: uppercase;
-  padding: mantine.rem(3) mantine.rem(8);
-  border-radius: mantine.rem(4);
-
-  @if $tone {
-    color: var(--mantine-color-#{$tone}-4);
-    border: mantine.rem(1) solid var(--mantine-color-#{$tone}-7);
-  } @else {
-    color: var(--text-dim);
-    border: mantine.rem(1) dashed var(--border);
-  }
-}
-
 /// Truncates to one line rather than wrapping — required once a row is a
 /// single dense line instead of a stacked card.
 @mixin truncate {
@@ -117,5 +97,68 @@
 
   @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
     font-size: mantine.rem(28);
+  }
+}
+
+// The dark ground itself. `--bg`/`--surface`/`--border`/`--text`/
+// `--text-dim` in globals.scss are set to these same values — the raw
+// hex lives here once, and the custom properties just point at it, so a
+// component that wants the literal token (rather than the "ambient page
+// colour" indirection) can reach for `card.$ink` etc. directly. First
+// built for the loser card's stats-sheet rework — real metrics, tabular
+// figures, one brand mark for the thing that matters — then rolled out
+// as the whole app's ground, not just one card's.
+$paper: #0b0e14;
+$ink: #e8ecf3;
+$ink-dim: #8b93a3;
+$rule: #242c3a;
+
+/// An elevated card, one shade lighter than the page ground it sits on —
+/// `--surface` over `--bg`, the same pairing `surface` uses, plus a hairline
+/// border so the card reads as a real object rather than depending on the
+/// shadow alone.
+@mixin light-card {
+  background-color: var(--surface);
+  color: $ink;
+  border: mantine.rem(1) solid var(--border);
+  border-radius: mantine.rem(10);
+  box-shadow: 0 mantine.rem(10) mantine.rem(24) mantine.rem(-16) rgba(0, 0, 0, 0.4);
+}
+
+/// A faint brand-coloured wash for "this row is you", legible on the dark ground.
+@mixin light-you {
+  border-left: mantine.rem(2) solid var(--mantine-color-brand-5);
+  background-color: color-mix(in srgb, var(--mantine-color-brand-5) 8%, transparent);
+}
+
+/// A status chip for the elevated card — a filled tint rather than an
+/// outline, so the colour itself carries the meaning at a glance. Tinted
+/// against the dark ground itself (`color-mix` with the tone at low
+/// opacity), not a light-mode pastel swatch — a `-1` shade reads as a stray
+/// bright patch on a dark card, the opposite of "the colour carries the
+/// meaning".
+@mixin light-tag($tone: null) {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: mantine.rem(11);
+  font-weight: 700;
+  letter-spacing: mantine.rem(0.5);
+  text-transform: uppercase;
+  padding: mantine.rem(4) mantine.rem(9);
+  border-radius: mantine.rem(20);
+  white-space: nowrap;
+
+  @if $tone == green {
+    color: var(--mantine-color-green-3);
+    background-color: color-mix(in srgb, var(--mantine-color-green-6) 22%, transparent);
+  } @else if $tone == yellow {
+    color: var(--mantine-color-yellow-3);
+    background-color: color-mix(in srgb, var(--mantine-color-yellow-6) 22%, transparent);
+  } @else if $tone == red {
+    color: var(--mantine-color-red-3);
+    background-color: color-mix(in srgb, var(--mantine-color-red-6) 22%, transparent);
+  } @else {
+    color: $ink-dim;
+    background-color: rgba(255, 255, 255, 0.08);
   }
 }

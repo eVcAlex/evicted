@@ -1,0 +1,10 @@
+/* Sits on the filled brand hero, not the plain ground — white-on-colour
+ * rather than `ShareButton`'s ink-on-surface. */
+.button {
+  color: rgba(255, 255, 255, 0.75);
+
+  @include mantine.hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+}

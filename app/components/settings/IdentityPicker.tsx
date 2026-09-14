@@ -1,7 +1,6 @@
 'use client';
 
 import { Button } from '@mantine/core';
-import { syncSubscriptionIdentity } from '@/lib/push/client';
 import { Avatar } from '../common/Avatar';
 import { useMe } from '../common/MeProvider';
 import classes from './IdentityPicker.module.scss';
@@ -21,16 +20,6 @@ export interface RosterEntry {
 export function IdentityPicker({ roster }: { roster: RosterEntry[] }) {
   const { me, setMe, clear } = useMe();
 
-  function pick(entry: RosterEntry) {
-    setMe(entry);
-    void syncSubscriptionIdentity(entry.entryId);
-  }
-
-  function clearPick() {
-    clear();
-    void syncSubscriptionIdentity(null);
-  }
-
   if (roster.length === 0) {
     return <p className={classes.empty}>Nobody to pick yet. Try again once the roster loads.</p>;
   }
@@ -43,7 +32,7 @@ export function IdentityPicker({ roster }: { roster: RosterEntry[] }) {
           <button
             key={entry.entryId}
             type="button"
-            onClick={() => pick(entry)}
+            onClick={() => setMe(entry)}
             className={isYou ? `${classes.row} ${classes.rowActive}` : classes.row}
             aria-pressed={isYou}
           >
@@ -57,7 +46,7 @@ export function IdentityPicker({ roster }: { roster: RosterEntry[] }) {
       })}
 
       {me && (
-        <Button variant="subtle" size="xs" mt="sm" onClick={clearPick}>
+        <Button variant="subtle" size="xs" mt="sm" onClick={clear}>
           Not me, clear
         </Button>
       )}

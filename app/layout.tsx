@@ -41,14 +41,24 @@ const plexMono = IBM_Plex_Mono({
 });
 
 /**
- * Dark ground, card depth, one solid accent — no gradients, no blur, no
- * glow. The `dark` scale is tuned so Mantine's own components (Modal,
- * PasswordInput, Divider) land on the same surface/border tokens the
- * hand-styled components use via the CSS custom properties in globals.scss:
- * dark-9 is --bg, dark-7 is --surface, dark-4 is --border.
+ * Dark ground, card depth, one solid accent — no gradients, no blur, no glow.
+ * `brand` is #5420ff, the app's actual chosen colour (not a palette guess) —
+ * every other shade in the ramp below is generated from that one hex. The
+ * `dark` scale is the live colour scheme now (see `defaultColorScheme`
+ * below), so it drives Mantine's own native dark-mode chrome (Modal, Menu,
+ * dropdowns) directly, in addition to being reachable as a literal
+ * `--mantine-color-dark-N` lookup regardless of what a future scheme toggle
+ * might do to `--text`/`--surface` in globals.scss.
  */
 const theme = createTheme({
-  primaryColor: 'violet',
+  primaryColor: 'brand',
+  // Mantine's own "subtle"/"light"/"outline" variant resolvers assume every
+  // colour array is a conventional light-to-dark ramp (index 0 lightest) and
+  // reach for a low index expecting a pale shade — pin `primaryShade` to the
+  // one index the hand-authored CSS below also treats as the fill/button
+  // shade, rather than letting an implicit-colour Button silently resolve
+  // to whatever index Mantine's dark-scheme default would otherwise pick.
+  primaryShade: { light: 7, dark: 7 },
   defaultRadius: 6,
   fontFamily: 'var(--font-body)',
   headings: { fontFamily: 'var(--font-display)', fontWeight: '800' },
@@ -65,18 +75,27 @@ const theme = createTheme({
       '#131519',
       '#101215',
     ],
-    /** The one brand accent — the eviction hero, header rule, marks, tags. */
-    violet: [
-      '#f3effe',
-      '#e0d4fc',
-      '#c9b3fa',
-      '#b090f7',
-      '#9c73f5',
-      '#8a58f0',
-      '#7c3aed',
-      '#6425d1',
-      '#4c1d95',
-      '#341454',
+    /**
+     * The one brand accent — the eviction hero, header pill, marks, tags.
+     * Built around the exact chosen hex, #5420ff, which sits at index 7.
+     * Three positions carry the hand-authored roles used throughout the CSS
+     * below: 3 is the brightest shade in practice, used as label/kicker text
+     * directly on the dark ground; 5 is the vivid mark colour for eviction
+     * cells, "this is you" rows and sparkline highlights; 7 is
+     * `primaryShade` — the exact brand hex, the fill behind white text (the
+     * hero block, filled buttons, the header's active-tab pill background).
+     */
+    brand: [
+      '#eee9ff',
+      '#d4c7ff',
+      '#baa6ff',
+      '#a184ff',
+      '#8763ff',
+      '#7a51ff',
+      '#693bff',
+      '#5420ff',
+      '#3715a6',
+      '#220d66',
     ],
     /** Genuine errors/failures only — data unavailable, could not load. */
     red: [
@@ -176,12 +195,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="build-sha" content={process.env.VERCEL_GIT_COMMIT_SHA ?? ''} />
       </head>
       <body>
-        <ClerkProvider appearance={{ variables: { colorPrimary: '#7c3aed' } }}>
+        <ClerkProvider appearance={{ variables: { colorPrimary: '#5420ff' } }}>
           <ReloadOnResume />
           <MantineProvider theme={theme} defaultColorScheme="dark">
             <MeProvider>
               <Header />
-              <Container size="sm" py="xl">
+              <Container size="md" py="xl">
                 {children}
               </Container>
             </MeProvider>

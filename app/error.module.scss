@@ -1,15 +1,23 @@
 @use './styles/card';
 
+/* The one deliberately light, paper card on an otherwise all-dark site —
+ * an error should interrupt, not blend into the same dark surfaces
+ * as everything else. Text colours below are explicit literal hex rather
+ * than the ambient `--text`/`--text-dim`, which now mean "light text on a
+ * dark ground" and would be unreadable here — this card inverts the page's
+ * own polarity on purpose, the same trick the app used in reverse (a forced
+ * dark card) back when the ground itself was light. */
 .card {
   @include card.surface;
-  background-color: var(--mantine-color-dark-6);
+  background-color: #f4f1ea;
   border-color: var(--mantine-color-red-7);
   padding: mantine.rem(22) mantine.rem(20) mantine.rem(24);
+  color: #26241c;
 }
 
 .kicker {
   @include card.kicker;
-  color: var(--mantine-color-red-4);
+  color: var(--mantine-color-red-7);
 }
 
 .title {
@@ -24,7 +32,7 @@
 .sub {
   font-size: mantine.rem(13);
   line-height: 1.55;
-  color: var(--text-dim);
+  color: #6b6858;
   margin-top: mantine.rem(10);
   max-width: 40ch;
 }
@@ -36,8 +44,8 @@
   font-weight: 700;
   letter-spacing: mantine.rem(0.5);
   text-transform: uppercase;
-  color: var(--mantine-color-violet-1);
-  background-color: var(--mantine-color-violet-8);
+  color: #fff;
+  background-color: var(--mantine-color-brand-7);
   border: none;
   border-radius: mantine.rem(5);
   padding: mantine.rem(9) mantine.rem(16);
@@ -45,6 +53,6 @@
   transition: background-color 150ms ease;
 
   @include mantine.hover {
-    background-color: var(--mantine-color-violet-7);
+    background-color: color-mix(in srgb, var(--mantine-color-brand-7) 85%, black);
   }
 }

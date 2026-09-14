@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UK5 · High-Street Slip — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow+Semi+Condensed:wght@500;600;700&family=Libre+Barcode+39&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     UK BETTING VARIATION 5 — HIGH-STREET SHOP SLIP (William Hill lineage)
+     The betting-shop counter slip: a printed docket on the classic
+     bookmaker blue, a bet-builder/acca receipt with fixture numbers,
+     biro-underlined selection, a till barcode and a red SETTLED stamp.
+     The most literal "walked into the shop" reading. Type: Oswald +
+     Barlow Semi Condensed, Libre Barcode for the docket code. Signature:
+     the blue counter, printed docket, barcode + a proper 18+ footer.
+     ------------------------------------------------------------------ */
+  :root{--blue:#002d72;--blue2:#001f4f;--slip:#fcfbf7;--ink:#1b1b1b;--dim:#6f6a61;
+    --rule:#d8d3c6;--red:#c8102e;--yellow:#ffcd00}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--blue);color:var(--slip);font-family:"Barlow Semi Condensed",sans-serif;
+    background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.02) 0 14px,transparent 14px 28px)}
+  .wrap{max-width:440px;margin:0 auto;padding:20px 14px 40px}
+  nav{display:flex;justify-content:center;gap:14px;margin-bottom:14px}
+  nav a{font-family:"Oswald";text-transform:uppercase;letter-spacing:.06em;font-size:12px;text-decoration:none;color:#a9c0e8;font-weight:500}
+  nav a.on{color:#fff;box-shadow:inset 0 -2px 0 var(--yellow);padding-bottom:3px}
+  .slip{background:var(--slip);color:var(--ink);box-shadow:0 22px 44px -18px rgba(0,0,0,.6);position:relative}
+  .head{text-align:center;padding:16px 18px 12px;border-bottom:2px solid var(--ink)}
+  .brand{font-family:"Oswald";font-weight:700;font-size:26px;text-transform:uppercase;letter-spacing:.02em}
+  .brand b{color:var(--blue)}
+  .shop{font-size:12px;color:var(--dim);letter-spacing:.04em;margin-top:2px}
+  .meta{display:flex;justify-content:space-between;padding:8px 18px;font-size:12px;color:var(--dim);border-bottom:1px dashed var(--rule)}
+  .body{padding:14px 18px}
+  .betline{font-family:"Oswald";font-weight:600;text-transform:uppercase}
+  .fix{display:flex;gap:8px;align-items:baseline;font-size:19px;border-bottom:2px solid var(--ink);padding-bottom:4px;margin-bottom:6px}
+  .fix .no{color:var(--blue);font-weight:700}
+  .fix .od{margin-left:auto;font-size:16px}
+  .pick{font-size:13px;color:var(--dim);margin-bottom:14px}
+  .lines div{display:flex;justify-content:space-between;font-size:14px;padding:4px 0;border-bottom:1px dotted var(--rule)}
+  .lines .k{color:var(--dim)}
+  .totals{margin-top:12px;border-top:2px solid var(--ink);padding-top:10px}
+  .totals div{display:flex;justify-content:space-between;font-family:"Oswald";text-transform:uppercase;font-size:15px;padding:3px 0}
+  .totals .big{font-size:20px;font-weight:700}
+  .stamp{border:3px solid var(--red);color:var(--red);font-family:"Oswald";font-weight:700;text-transform:uppercase;
+    letter-spacing:.14em;font-size:16px;text-align:center;padding:8px;transform:rotate(-3deg);margin:16px auto 4px;width:70%}
+  .quip{text-align:center;font-style:italic;font-size:13px;color:var(--dim);padding:8px 0}
+  .barcode{font-family:"Libre Barcode 39";font-size:52px;text-align:center;line-height:1;color:var(--ink);margin-top:6px}
+  .code{text-align:center;font-family:"Oswald";font-size:11px;letter-spacing:.24em;color:var(--dim);margin-top:-6px}
+  .pay{display:block;text-align:center;font-family:"Oswald";font-weight:600;text-transform:uppercase;letter-spacing:.06em;
+    background:var(--blue);color:#fff;text-decoration:none;padding:14px;margin-top:12px;font-size:15px}
+  .rg{display:flex;justify-content:center;gap:10px;align-items:center;flex-wrap:wrap;
+    font-size:11px;color:#a9c0e8;padding:14px 6px 0;text-align:center}
+  .rg .b{border:1px solid #5a77b0;border-radius:3px;padding:2px 6px;font-weight:700;color:var(--yellow)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+    <div class="slip">
+      <div class="head">
+        <div class="brand">WILLIAM <b>EVICTED</b></div>
+        <div class="shop">Shop 79294 · The Local Branch · GW6</div>
+      </div>
+      <div class="meta"><span>DOCKET 000006</span><span>13:42 SAT</span><span>SETTLED</span></div>
+      <div class="body">
+        <div class="betline">
+          <div class="fix"><span class="no">12</span><span>Vardy Party</span><span class="od">5/1</span></div>
+          <div class="pick">Single · to finish bottom of the gameweek · net points</div>
+        </div>
+        <div class="lines">
+          <div><span class="k">Team score (gross)</span><span>35</span></div>
+          <div><span class="k">Transfer hits</span><span>&minus;4</span></div>
+          <div><span class="k">Bench (unused)</span><span>12</span></div>
+          <div><span class="k">Net points</span><span>31</span></div>
+          <div><span class="k">Runner-up (Midfield General)</span><span>36</span></div>
+        </div>
+        <div class="totals">
+          <div><span>Stake to pot</span><span>&pound;2.00</span></div>
+          <div class="big"><span>Amount due</span><span>&pound;2.00</span></div>
+        </div>
+        <div class="stamp">Unpaid &mdash; Settle</div>
+        <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+        <div class="barcode">*EVICTED12GW6*</div>
+        <div class="code">EV-79294-GW6-12</div>
+        <a class="pay" href="#">Pay &pound;2 at the counter &rarr;</a>
+      </div>
+    </div>
+    <div class="rg">
+      <span class="b">18+</span>
+      <span>BeGambleAware.org &middot; When the Fun Stops, Stop &middot; 0808 8020 133</span>
+      <span>Pot &pound;84.00 · 7/12 bought in</span>
+    </div>
+  </div>
+</body>
+</html>

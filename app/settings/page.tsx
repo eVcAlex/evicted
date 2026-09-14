@@ -6,7 +6,6 @@ import { fetchStandings } from '@/lib/fpl/client';
 import { resolveMembers, type Member } from '@/lib/league/members';
 import { normalizeName } from '@/lib/monzo/matcher';
 import { IdentityPicker, type RosterEntry } from '../components/settings/IdentityPicker';
-import { PushToggle } from '../components/settings/PushToggle';
 import classes from './page.module.scss';
 
 export const dynamic = 'force-dynamic';
@@ -63,7 +62,7 @@ export default async function SettingsPage() {
         Settings
       </Title>
       <Text c="dimmed" size="sm" mb="lg">
-        Pick who you are on this device, and choose whether to get notified.
+        Pick who you are on this device.
       </Text>
 
       {classic.degraded && (
@@ -82,21 +81,6 @@ export default async function SettingsPage() {
       <div className={classes.section}>
         <span className={classes.sectionKicker}>Who are you</span>
         <IdentityPicker roster={roster} />
-      </div>
-
-      <div className={classes.section}>
-        <span className={classes.sectionKicker}>Notifications</span>
-        <div className={classes.notificationRow}>
-          <div>
-            <Text size="sm" fw={600}>
-              Eviction alerts
-            </Text>
-            <Text size="xs" c="dimmed">
-              Get a push notification when someone's evicted.
-            </Text>
-          </div>
-          <PushToggle />
-        </div>
       </div>
     </>
   );

@@ -4,26 +4,29 @@
   @include card.page-title;
 }
 
+/* The pot is this page's one headline number — same "hero stat" treatment
+   as the loser card's net score, on the same elevated card. */
 .summary {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: mantine.rem(12);
-  @include card.surface;
-  padding: mantine.rem(14) mantine.rem(18);
+  @include card.light-card;
+  padding: mantine.rem(16) mantine.rem(20);
   margin-bottom: mantine.rem(20);
 }
 
 .summaryLabel {
   font-family: var(--font-mono);
   font-size: mantine.rem(13);
-  color: var(--text-dim);
+  color: card.$ink-dim;
 }
 
 .summaryValue {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: mantine.rem(30);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: mantine.rem(34);
+  line-height: 0.9;
   font-variant-numeric: tabular-nums;
-  color: var(--mantine-color-violet-4);
+  color: card.$ink;
 }

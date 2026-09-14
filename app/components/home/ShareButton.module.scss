@@ -1,0 +1,14 @@
+@use '../../styles/card';
+
+// Sits on the elevated analytics card (see LoserCard.module.scss), tinted to
+// that card's own ink token rather than the ambient `--text` — both resolve
+// to the same value today, but this stays correct if a card ever diverges
+// from the page ground again.
+.button {
+  color: card.$ink-dim;
+
+  @include mantine.hover {
+    color: card.$ink;
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+}

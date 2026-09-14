@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SB5 · DFS Neon — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Chivo+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     SPORTSBOOK VARIATION 5 — DAILY-FANTASY (DFS) APP
+     The DraftKings/FanDuel lane: deep navy, one vivid green, a bold
+     "matchup card" and a LOCKED contest chip. Confident and app-like,
+     but the glow is spent in one place, not everywhere. Type: Sora +
+     Chivo Mono. Motion: the LOCKED chip pulses once. Signature: a big
+     entry-card with a neon-edged status chip and a bold slab CTA.
+     ------------------------------------------------------------------ */
+  :root{--navy:#0a1424;--navy2:#0f1d33;--card:#132540;--green:#37e07a;--green2:#12351f;
+    --orange:#ff8a3d;--fg:#eaf2ff;--dim:#7f93b3;--line:#1f3355}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:radial-gradient(120% 50% at 50% 0%,#12213a,var(--navy) 60%);color:var(--fg);font-family:"Sora",sans-serif;min-height:100vh}
+  .wrap{max-width:600px;margin:0 auto;padding:18px 16px 80px}
+  header{display:flex;justify-content:space-between;align-items:center}
+  .logo{font-weight:800;font-size:20px}
+  .logo b{color:var(--green)}
+  nav{display:flex;gap:4px}
+  nav a{font-family:"Chivo Mono";font-size:11px;text-transform:uppercase;text-decoration:none;color:var(--dim);padding:6px 9px;border-radius:8px}
+  nav a.on{color:var(--green);background:var(--navy2)}
+  .kick{font-family:"Chivo Mono";font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:24px 0 10px}
+  .entry{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    box-shadow:0 24px 60px -30px #000}
+  .ehead{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+  .ehead .cid{font-family:"Chivo Mono";font-size:12px;color:var(--dim)}
+  .locked{display:flex;align-items:center;gap:7px;font-family:"Chivo Mono";font-size:11px;font-weight:600;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--green);border:1px solid var(--green);border-radius:20px;padding:5px 12px;
+    box-shadow:0 0 16px rgba(55,224,122,.35);animation:pulse 2.6s ease-in-out infinite}
+  @keyframes pulse{50%{box-shadow:0 0 26px rgba(55,224,122,.6)}}
+  .matchup{display:flex;align-items:center;gap:18px;padding:24px 20px}
+  .score{width:96px;height:96px;border-radius:18px;background:var(--navy2);border:1px solid var(--line);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+  .score b{font-weight:800;font-size:40px;color:var(--green);line-height:.8}
+  .score span{font-family:"Chivo Mono";font-size:9px;text-transform:uppercase;color:var(--dim);margin-top:4px}
+  .who .team{font-weight:800;font-size:28px;line-height:1}
+  .who .mgr{color:var(--dim);font-size:14px;margin-top:4px}
+  .who .fine{display:inline-block;margin-top:10px;font-family:"Chivo Mono";font-size:12px;font-weight:600;
+    color:var(--orange);border:1px solid var(--orange);border-radius:6px;padding:3px 9px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line)}
+  .stats div{padding:14px 8px;text-align:center;border-right:1px solid var(--line)}
+  .stats div:last-child{border-right:none}
+  .stats .l{font-family:"Chivo Mono";font-size:10px;text-transform:uppercase;color:var(--dim)}
+  .stats .v{font-weight:800;font-size:24px;margin-top:2px}
+  .stats .v.o{color:var(--orange)}
+  .quip{padding:14px 20px;font-size:14px;font-style:italic;color:#b9c8e0;border-top:1px solid var(--line)}
+  .pay{display:block;margin:18px 0 0;text-align:center;font-weight:800;font-size:16px;text-transform:uppercase;letter-spacing:.03em;
+    text-decoration:none;color:#05210f;background:var(--green);padding:16px;border-radius:14px}
+  .pot{text-align:center;font-family:"Chivo Mono";font-size:11px;text-transform:uppercase;color:var(--dim);margin-top:16px;letter-spacing:.06em}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">EV<b>&#9670;</b>ICTED</div>
+      <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+    </header>
+
+    <p class="kick">Gameweek 6 · Contest settled</p>
+    <div class="entry">
+      <div class="ehead">
+        <span class="cid">CONTEST · GW6 · 12 ENTRIES</span>
+        <span class="locked"><span>&#9679;</span> Locked</span>
+      </div>
+      <div class="matchup">
+        <div class="score"><b>31</b><span>net pts</span></div>
+        <div class="who">
+          <div class="team">Vardy Party</div>
+          <div class="mgr">Danny Rose · finished bottom</div>
+          <span class="fine">Owes &pound;2</span>
+        </div>
+      </div>
+      <div class="stats">
+        <div><div class="l">Team</div><div class="v">35</div></div>
+        <div><div class="l">Hits</div><div class="v o">&minus;4</div></div>
+        <div><div class="l">Bench</div><div class="v">12</div></div>
+        <div><div class="l">Cut</div><div class="v">36</div></div>
+      </div>
+      <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+    </div>
+    <a class="pay" href="#">Pay entry &pound;2</a>
+    <p class="pot">Prize pot &pound;84.00 · 7 of 12 bought in</p>
+  </div>
+</body>
+</html>

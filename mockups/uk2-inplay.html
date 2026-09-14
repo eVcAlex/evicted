@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UK2 · In-Play — Evicted</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  /* ------------------------------------------------------------------
+     UK BETTING VARIATION 2 — IN-PLAY SPORTSBOOK (bet365 lineage)
+     The dense in-play coupon: a deep bookmaker-green header, a yellow
+     highlight rail, a white selection list with fractional odds, a
+     live red match clock and the signature green "Cash Out" button.
+     Type: Inter (the clean UK-bookmaker workhorse). Motion: the live
+     clock dot blinks. Signature: green top bar + yellow accent + green
+     Cash Out pill + a mandatory 18+/BeGambleAware footer.
+     ------------------------------------------------------------------ */
+  :root{--green:#00694a;--green2:#00553c;--green-btn:#22c55e;--yellow:#ffe600;
+    --bg:#eef1f4;--card:#fff;--ink:#12232b;--dim:#6b7b83;--line:#e2e7eb;--red:#e11d2a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:"Inter",sans-serif}
+  .wrap{max-width:600px;margin:0 auto;background:var(--card);min-height:100vh}
+  header{background:var(--green);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+  .logo{font-weight:800;font-size:18px;letter-spacing:-.01em}
+  .logo b{color:var(--yellow)}
+  .bal{font-size:12px;background:var(--green2);padding:5px 10px;border-radius:6px;font-weight:600}
+  nav{display:flex;background:var(--green2)}
+  nav a{flex:1;text-align:center;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.02em;
+    text-decoration:none;color:#bfe3d6;padding:10px 0}
+  nav a.on{color:#fff;box-shadow:inset 0 -3px 0 var(--yellow)}
+  .live{display:flex;align-items:center;gap:8px;background:#fff;border-bottom:1px solid var(--line);padding:10px 16px}
+  .live .clock{display:flex;align-items:center;gap:6px;color:var(--red);font-weight:700;font-size:13px}
+  .live .clock .dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:b 1s steps(1) infinite}
+  @keyframes b{50%{opacity:0}}
+  .live .comp{font-size:12px;color:var(--dim)}
+  .mkt{padding:14px 16px 8px;font-weight:700;font-size:13px;display:flex;justify-content:space-between}
+  .mkt span{color:var(--dim);font-weight:500}
+  .sel{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--line)}
+  .sel.win{background:#fffbe0}
+  .sel .name{font-weight:600;font-size:15px}
+  .sel .name small{display:block;color:var(--dim);font-weight:400;font-size:12px;margin-top:2px}
+  .odds{min-width:56px;text-align:center;font-weight:700;font-size:15px;border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:#f7f9fa}
+  .sel.win .odds{background:var(--yellow);border-color:#e6ce00}
+  .betslip{margin:14px 16px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .betslip .bh{background:#f2f5f7;padding:10px 14px;font-weight:700;font-size:13px;display:flex;justify-content:space-between}
+  .betslip .br{display:flex;justify-content:space-between;padding:8px 14px;font-size:13px}
+  .betslip .br .k{color:var(--dim)}
+  .betslip .br.tot{font-weight:700;border-top:1px solid var(--line)}
+  .cashout{display:block;margin:0 14px 12px;text-align:center;background:var(--green-btn);color:#04250f;font-weight:800;
+    text-decoration:none;padding:14px;border-radius:10px;font-size:15px}
+  .quip{padding:0 16px 12px;font-size:13px;color:var(--dim);font-style:italic}
+  .rg{background:#12232b;color:#9fb0b8;font-size:11px;padding:12px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .rg .b{border:1px solid #3a4a52;border-radius:3px;padding:2px 6px;font-weight:700;color:#cfe0e6}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">ev<b>365</b>icted</div>
+      <div class="bal">Pot &pound;84.00</div>
+    </header>
+    <nav><a class="on" href="#">This week</a><a href="#">Season</a><a href="#">Balances</a><a href="#">Draft</a></nav>
+
+    <div class="live">
+      <span class="clock"><span class="dot"></span>GW6 · FT</span>
+      <span class="comp">Evicted Classic League 79294 · settled</span>
+    </div>
+
+    <div class="mkt">Bottom of the Gameweek <span>Winner (net points, low)</span></div>
+    <div class="sel win">
+      <div class="name">Vardy Party <small>Danny Rose · net 31 · WON</small></div>
+      <div class="odds">5/1</div>
+    </div>
+    <div class="sel">
+      <div class="name">Midfield General <small>net 36</small></div>
+      <div class="odds">6/4</div>
+    </div>
+    <div class="sel">
+      <div class="name">Xhaka Khan <small>net 41</small></div>
+      <div class="odds">9/2</div>
+    </div>
+
+    <div class="betslip">
+      <div class="bh"><span>Bet slip · settlement</span><span>1 selection</span></div>
+      <div class="br"><span class="k">Vardy Party to finish bottom</span><span>5/1</span></div>
+      <div class="br"><span class="k">Team 35 · Hits &minus;4 · Bench 12</span><span>net 31</span></div>
+      <div class="br tot"><span>Amount due to pot</span><span>&pound;2.00</span></div>
+    </div>
+    <a class="cashout" href="#">Pay &pound;2 &nbsp;&middot;&nbsp; Settle now</a>
+    <p class="quip">&ldquo;Second week running. The sofa has your shape now.&rdquo;</p>
+
+    <div class="rg">
+      <span class="b">18+</span>
+      <span>BeGambleAware.org</span>
+      <span>&middot; When the Fun Stops, Stop &middot;</span>
+      <span>7/12 bought in · GambleAware helpline 0808 8020 133</span>
+    </div>
+  </div>
+</body>
+</html>
