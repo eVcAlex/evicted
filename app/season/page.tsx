@@ -1,7 +1,9 @@
 import { Alert, Text, Title } from '@mantine/core';
 import { fetchStandings } from '@/lib/fpl/client';
 import type { EntryHistory } from '@/lib/fpl/schemas';
+import type { Identity } from '@/lib/identity';
 import { loadHistories } from '@/lib/league/checkAndRecord';
+import { colorForTeam, initialsFor, photoUrlFor } from '@/lib/league/avatar';
 import { resolveMembers } from '@/lib/league/members';
 import { buildHallOfShame } from '@/lib/league/stats';
 import type { ShareCardContent } from '@/lib/shareCard';
@@ -9,6 +11,28 @@ import { safeGetResults } from '@/lib/ledger/safe';
 import { ShareStatButton } from '../components/season/ShareStatButton';
 import { SeasonGrid } from '../components/season/SeasonGrid';
 import classes from './page.module.scss';
+
+/**
+ * The avatar/manager fields the downloadable PNG (`lib/shareCard.ts`) draws
+ * for `LoserCard`'s "bottom of the week" card — same photo-or-initials mark,
+ * same manager-name subline. Without these, a Hall of Shame download renders
+ * a visibly sparser card than the one it's meant to match: no avatar circle,
+ * no manager line under the team name.
+ *
+ * Skipped for a tie (more than one identity): the mark would only ever be
+ * able to picture one of them, misrepresenting a name field that's already
+ * listing several team names.
+ */
+function identityContent(identities: Identity[]): Partial<ShareCardContent> {
+  if (identities.length !== 1) return {};
+  const [identity] = identities;
+  return {
+    meta: identity.managerName,
+    avatarUrl: photoUrlFor(identity.managerName),
+    avatarInitials: initialsFor(identity.teamName),
+    avatarColor: colorForTeam(identity.teamName),
+  };
+}
 
 export const dynamic = 'force-dynamic';
 
@@ -71,6 +95,7 @@ export default async function SeasonPage() {
                 statValue={String(shame.mostEvictions.count)}
                 statLabel={shame.mostEvictions.count === 1 ? 'eviction' : 'evictions'}
                 fileName="evicted-most-evictions"
+                {...identityContent(shame.mostEvictions.members)}
               />
             )}
             {shame.worst && (
@@ -81,6 +106,7 @@ export default async function SeasonPage() {
                 statValue={String(shame.worst.net)}
                 statLabel="net pts"
                 fileName="evicted-worst-gameweek"
+                {...identityContent([shame.worst.member])}
               />
             )}
             {shame.longestLosingStreak && (
@@ -95,6 +121,7 @@ export default async function SeasonPage() {
                 statValue={String(shame.longestLosingStreak.weeks)}
                 statLabel={shame.longestLosingStreak.weeks === 1 ? 'gameweek' : 'gameweeks'}
                 fileName="evicted-longest-losing-streak"
+                {...identityContent([shame.longestLosingStreak.member])}
               />
             )}
             {shame.worstBenchHaul && (
@@ -105,6 +132,7 @@ export default async function SeasonPage() {
                 statValue={String(shame.worstBenchHaul.bench)}
                 statLabel="pts benched"
                 fileName="evicted-worst-benching-haul"
+                {...identityContent([shame.worstBenchHaul.member])}
               />
             )}
             {shame.biggestBottler && (
@@ -115,6 +143,7 @@ export default async function SeasonPage() {
                 statValue={String(shame.biggestBottler.drop)}
                 statLabel="pt drop"
                 fileName="evicted-biggest-bottler"
+                {...identityContent([shame.biggestBottler.member])}
               />
             )}
             {shame.longestCleanRun && (
@@ -125,6 +154,7 @@ export default async function SeasonPage() {
                 statValue={String(shame.longestCleanRun.weeks)}
                 statLabel={shame.longestCleanRun.weeks === 1 ? 'gameweek' : 'gameweeks'}
                 fileName="evicted-longest-clean-run"
+                {...identityContent([shame.longestCleanRun.member])}
               />
             )}
           </div>
@@ -135,25 +165,32 @@ export default async function SeasonPage() {
 }
 
 /**
- * One downloadable Hall of Shame stat — the hero fill, plus a share button.
- * The name/sub pair sits in its own footer, pushed to the card's bottom edge
- * via `margin-top: auto` rather than following the number in normal flow —
- * every card in the grid is stretched to the tallest one, so without that,
- * a short sub line (`GW 1 to GW 2`) would leave its card looking loose while
- * a wrapped two-line one crowds its own bottom padding.
+ * One downloadable Hall of Shame stat, dressed as the same light stats-sheet
+ * card as the home page's `LoserCard` — kicker, name and sub in an identity
+ * block up top, the one big mono figure in a bordered hero row below. The
+ * only thing it drops is that card's payment status tag: a shame stat isn't
+ * a fine, so there's no "£2" to settle.
+ *
+ * The hero row is pushed to the card's bottom edge via `margin-top: auto`
+ * rather than following the identity block in normal flow — every card in
+ * the grid is stretched to the tallest one, so without that a short card
+ * would leave its number floating mid-air while a wrapped two-line name next
+ * to it sits flush; pinning keeps every big figure on the same baseline.
  */
 function ShameCard(content: ShareCardContent) {
   return (
     <div className={classes.card}>
       <div className={classes.cardHead}>
-        <span className={classes.cardKicker}>{content.kicker}</span>
+        <div className={classes.identity}>
+          <span className={classes.cardKicker}>{content.kicker}</span>
+          <div className={classes.cardName}>{content.name}</div>
+          <span className={classes.cardSub}>{content.sub}</span>
+        </div>
         <ShareStatButton content={content} />
       </div>
-      <div className={classes.statValue}>{content.statValue}</div>
-      <div className={classes.statLabel}>{content.statLabel}</div>
-      <div className={classes.cardFooter}>
-        <div className={classes.cardName}>{content.name}</div>
-        <div className={classes.cardSub}>{content.sub}</div>
+      <div className={classes.heroRow}>
+        <span className={classes.statValue}>{content.statValue}</span>
+        <span className={classes.statLabel}>{content.statLabel}</span>
       </div>
     </div>
   );
