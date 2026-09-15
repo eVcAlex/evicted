@@ -14,7 +14,12 @@
  */
 
 const WIDTH = 1200;
-const HEIGHT = 630;
+// Full height for a card with a quip (the "bottom of the week" card, which
+// fills it). A Hall of Shame stat has no quip and no status chip, so the
+// same 630px left the bottom third of both columns empty — shrink the
+// canvas to fit what's actually there instead of leaving dead space below it.
+const HEIGHT_FULL = 630;
+const HEIGHT_COMPACT = 420;
 const PAD = 56;
 
 const PAPER = '#0b0e14';
@@ -185,6 +190,7 @@ export async function drawShareCard(
   canvas: HTMLCanvasElement,
   content: ShareCardContent,
 ): Promise<void> {
+  const HEIGHT = content.quip ? HEIGHT_FULL : HEIGHT_COMPACT;
   canvas.width = WIDTH;
   canvas.height = HEIGHT;
   const ctx = canvas.getContext('2d');
@@ -225,11 +231,12 @@ export async function drawShareCard(
   ctx.stroke();
   ctx.restore();
 
-  // The stat block sits above panel-centre, not dead centre — leaves room
-  // below for the status chip instead of one clump of content in a tall
-  // empty column.
+  // The stat block sits above panel-centre when a status chip follows it —
+  // leaves room for the chip instead of crowding it. With no chip to make
+  // room for (every Hall of Shame stat), centring properly instead avoids
+  // stranding the block near the top of its own panel.
   const panelCenterX = panelX + panelWidth / 2;
-  const statCenterY = panelY + panelHeight * 0.4;
+  const statCenterY = panelY + panelHeight * (content.note ? 0.4 : 0.46);
 
   ctx.fillStyle = '#fff';
   ctx.textAlign = 'center';
