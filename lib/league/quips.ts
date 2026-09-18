@@ -26,10 +26,16 @@ function ordinal(n: number): string {
  * across reloads and still varies week to week.
  */
 const FALLBACKS = [
-  'Bottom of nine, this week.',
   'Somebody had to be here.',
   'The table has a floor. This is it.',
   'No excuses on record.',
+  "Rent's due at the bottom.",
+  "Last place doesn't apologise.",
+  'The armband pick will be relitigated.',
+  'A finish, not a fluke.',
+  'Every league needs a bottom.',
+  'Filed under unlucky.',
+  'Somebody has to hold the table up.',
 ];
 
 /**

@@ -232,11 +232,15 @@ export async function drawShareCard(
   ctx.restore();
 
   // The stat block sits above panel-centre when a status chip follows it —
-  // leaves room for the chip instead of crowding it. With no chip to make
-  // room for (every Hall of Shame stat), centring properly instead avoids
-  // stranding the block near the top of its own panel.
+  // leaves room for the chip instead of crowding it. With no chip and no
+  // quip (every Hall of Shame stat), the number+label cluster's own visual
+  // weight sits above its baseline, so true optical centring needs a touch
+  // past the panel's geometric 0.5 — 0.46 left it looking stranded near the
+  // top with the whole bottom third empty.
+  const isCompact = !content.quip;
   const panelCenterX = panelX + panelWidth / 2;
-  const statCenterY = panelY + panelHeight * (content.note ? 0.4 : 0.46);
+  const statFraction = content.note ? 0.4 : isCompact ? 0.52 : 0.46;
+  const statCenterY = panelY + panelHeight * statFraction;
 
   ctx.fillStyle = '#fff';
   ctx.textAlign = 'center';
@@ -296,12 +300,20 @@ export async function drawShareCard(
   const textX = hasAvatar ? PAD + avatarSize + 26 : PAD;
   const textWidth = hasAvatar ? leftWidth - avatarSize - 26 : leftWidth;
 
+  // Compact cards (no quip) have no lower block to fill, so the whole
+  // kicker/name/sub/meta cluster shifts up a touch to open real breathing
+  // room before the footer instead of leaving it all crowded into the last
+  // 56px above it.
+  const kickerY = isCompact ? 175 : 190;
+  const nameY = isCompact ? 235 : 250;
+  const subY = isCompact ? 300 : 324;
+
   if (hasAvatar) {
     const cx = PAD + avatarSize / 2;
     // Centred against the kicker+name block as a pair, not just the kicker
     // line — the block runs roughly from the kicker's cap-height to the
     // name's baseline plus descender.
-    const cy = 220;
+    const cy = isCompact ? 205 : 220;
     const r = avatarSize / 2;
     let drewPhoto = false;
     if (content.avatarUrl) {
@@ -321,19 +333,19 @@ export async function drawShareCard(
 
   ctx.fillStyle = ACCENT;
   ctx.font = `700 22px ${BODY_FONT}`;
-  ctx.fillText(content.kicker.toUpperCase(), textX, 190);
+  ctx.fillText(content.kicker.toUpperCase(), textX, kickerY);
 
   ctx.fillStyle = INK;
   ctx.font = fittedFont(ctx, content.name, textWidth, 800, 64, 32);
-  ctx.fillText(content.name, textX, 250);
+  ctx.fillText(content.name, textX, nameY);
 
   ctx.fillStyle = INK_DIM;
   ctx.font = `400 26px ${BODY_FONT}`;
-  ctx.fillText(content.sub, PAD, 324);
+  ctx.fillText(content.sub, PAD, subY);
 
-  let cursorY = 324;
+  let cursorY = subY;
   if (content.meta) {
-    cursorY += 38;
+    cursorY += isCompact ? 40 : 38;
     ctx.fillStyle = INK_DIM;
     ctx.globalAlpha = 0.8;
     ctx.font = `400 22px ${BODY_FONT}`;
@@ -360,7 +372,7 @@ export async function drawShareCard(
   ctx.fillStyle = INK_DIM;
   ctx.globalAlpha = 0.7;
   ctx.font = `400 18px ${BODY_FONT}`;
-  ctx.fillText('evicted.dev', PAD, HEIGHT - 40);
+  ctx.fillText('evicted.dev', PAD, HEIGHT - (isCompact ? 34 : 40));
   ctx.globalAlpha = 1;
 }
 
