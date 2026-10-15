@@ -30,7 +30,7 @@ export function DraftStandingsTable({ rows }: { rows: StandingsRow[] }) {
             <th className={classes.stat} scope="col">
               L
             </th>
-            <th className={classes.stat} scope="col">
+            <th className={`${classes.stat} ${classes.hideSm}`} scope="col">
               +/&minus;
             </th>
             <th className={classes.stat} scope="col">
@@ -67,7 +67,7 @@ export function DraftStandingsTable({ rows }: { rows: StandingsRow[] }) {
                 {/* FPL's own site labels this "+/-" but actually shows the
                     raw points scored (`points_for`), not a net difference —
                     matching that rather than computing a real differential. */}
-                <td className={classes.stat}>{row.pointsFor}</td>
+                <td className={`${classes.stat} ${classes.hideSm}`}>{row.pointsFor}</td>
                 <td className={classes.statTotal}>{row.total}</td>
               </>
             );

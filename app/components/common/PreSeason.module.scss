@@ -35,8 +35,10 @@
 }
 
 .deadlineCaption {
-  @include card.kicker;
-  color: var(--mantine-color-yellow-8);
+  font-family: var(--font-body);
+  font-size: mantine.rem(13);
+  font-weight: 600;
+  color: var(--text-dim);
 }
 
 .deadlineValue {
@@ -53,38 +55,43 @@
 }
 
 .eyebrow {
-  display: inline-block;
-  font-family: var(--font-mono);
-  font-size: mantine.rem(11);
-  font-weight: 700;
-  letter-spacing: mantine.rem(1);
-  text-transform: uppercase;
+  display: block;
+  font-family: var(--font-body);
+  font-size: mantine.rem(13);
+  font-weight: 600;
   color: var(--text-dim);
   margin-bottom: mantine.rem(10);
 }
 
+/* The roster as a grid of faces, same as the settings picker. */
 .roster {
-  @include card.surface;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(mantine.rem(150), 1fr));
+  gap: mantine.rem(12);
 }
 
 .row {
-  @include card.listing-row;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: mantine.rem(4);
+  padding: mantine.rem(18) mantine.rem(12) mantine.rem(14);
+  background-color: var(--surface);
+  border-radius: mantine.rem(18);
+  text-align: center;
 }
 
 .name {
-  @include card.truncate;
-  flex: 1;
+  max-width: 100%;
+  margin-top: mantine.rem(6);
+  overflow-wrap: anywhere;
   font-weight: 700;
   font-size: mantine.rem(14);
   color: var(--text);
 }
 
 .manager {
-  @include card.truncate;
-  flex-shrink: 0;
-  max-width: 42%;
-  font-family: var(--font-mono);
-  font-size: mantine.rem(12);
+  max-width: 100%;
+  font-size: mantine.rem(12.5);
   color: var(--text-dim);
-  text-align: right;
 }

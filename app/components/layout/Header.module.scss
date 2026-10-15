@@ -58,8 +58,9 @@
   overflow-x: auto;
   scrollbar-width: none;
 
+  // Phones get the bottom bar instead.
   @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
-    gap: mantine.rem(10);
+    display: none;
   }
 
   &::-webkit-scrollbar {
@@ -93,15 +94,64 @@
   }
 }
 
-/* The current tab, called out with a filled pill rather than an underline —
-   the only accent-colour surface in the nav. White on the solid fill, same
-   convention as `card.hero` (the eviction block, filled buttons) — not a
-   dimmer text-on-dark pairing found nowhere else in the app. */
+/* The current tab: full-strength text with a thin accent underline. Quiet
+   on purpose, so the nav is not the loudest thing on the page. */
 .tabActive {
-  color: #fff;
-  background-color: var(--mantine-color-brand-7);
+  color: var(--text);
+  border-radius: 0;
+  box-shadow: inset 0 mantine.rem(-2) 0 var(--mantine-color-brand-4);
 
   @include mantine.hover {
-    color: #fff;
+    color: var(--text);
+  }
+}
+
+/* Phone navigation: fixed to the bottom edge, four equal tabs, icon over
+   label, clear of the iOS home indicator. */
+.bottomBar {
+  display: none;
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    background-color: var(--bg);
+    border-top: mantine.rem(1) solid var(--border);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+.bottomTab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: mantine.rem(4);
+  min-height: mantine.rem(58);
+  padding: mantine.rem(8) mantine.rem(4);
+  color: var(--text-dim);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: mantine.rem(11);
+  font-weight: 600;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bottomTabActive {
+  color: var(--text);
+
+  svg {
+    color: var(--mantine-color-brand-3);
+  }
+}
+
+// Keep page content clear of the fixed bar on phones.
+:global(body) {
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    padding-bottom: calc(#{mantine.rem(58)} + env(safe-area-inset-bottom, 0px));
   }
 }

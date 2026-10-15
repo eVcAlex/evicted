@@ -110,3 +110,29 @@
   font-variant-numeric: tabular-nums;
   padding-left: mantine.rem(52);
 }
+
+.groupLabel {
+  margin: mantine.rem(24) 0 mantine.rem(10);
+  font-family: var(--font-body);
+  font-size: mantine.rem(13);
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: mantine.rem(8);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: mantine.rem(8);
+  padding: mantine.rem(5) mantine.rem(12) mantine.rem(5) mantine.rem(5);
+  border-radius: 999px;
+  background-color: var(--surface);
+  font-family: var(--font-body);
+  font-size: mantine.rem(13);
+  color: var(--text);
+}

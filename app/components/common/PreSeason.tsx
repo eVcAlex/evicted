@@ -44,7 +44,7 @@ export function PreSeason({
         <div className={classes.roster}>
           {members.map((member) => (
             <div key={member.entryId} className={classes.row}>
-              <Avatar teamName={member.teamName} managerName={member.managerName} size={44} />
+              <Avatar teamName={member.teamName} managerName={member.managerName} size={64} />
               <span className={classes.name}>{member.teamName}</span>
               <span className={classes.manager}>{member.managerName}</span>
             </div>

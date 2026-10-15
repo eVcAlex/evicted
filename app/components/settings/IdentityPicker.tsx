@@ -25,28 +25,29 @@ export function IdentityPicker({ roster }: { roster: RosterEntry[] }) {
   }
 
   return (
-    <div className={classes.list}>
-      {roster.map((entry) => {
-        const isYou = me?.entryId === entry.entryId;
-        return (
-          <button
-            key={entry.entryId}
-            type="button"
-            onClick={() => setMe(entry)}
-            className={isYou ? `${classes.row} ${classes.rowActive}` : classes.row}
-            aria-pressed={isYou}
-          >
-            <Avatar teamName={entry.teamName} managerName={entry.managerName} size={36} />
-            <div className={classes.identity}>
+    <div>
+      <div className={classes.grid}>
+        {roster.map((entry) => {
+          const isYou = me?.entryId === entry.entryId;
+          return (
+            <button
+              key={entry.entryId}
+              type="button"
+              onClick={() => setMe(entry)}
+              className={isYou ? `${classes.card} ${classes.cardActive}` : classes.card}
+              aria-pressed={isYou}
+            >
+              <Avatar teamName={entry.teamName} managerName={entry.managerName} size={72} />
               <span className={classes.name}>{entry.teamName}</span>
               <span className={classes.manager}>{entry.managerName}</span>
-            </div>
-          </button>
-        );
-      })}
+              {isYou && <span className={classes.you}>This is you</span>}
+            </button>
+          );
+        })}
+      </div>
 
       {me && (
-        <Button variant="subtle" size="xs" mt="sm" onClick={clear}>
+        <Button variant="subtle" size="xs" mt="md" onClick={clear}>
           Not me, clear
         </Button>
       )}

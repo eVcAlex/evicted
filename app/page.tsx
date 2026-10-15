@@ -63,12 +63,21 @@ export default async function HomePage() {
   });
   const previousLosses = lossesByEntry(recordedResults);
 
+  const scores = scoresForGameweek(histories, current.id, eligibleFrom);
   const summary = buildSummary({
     gameweek: current.id,
     provisional: !current.data_checked,
     members,
-    scores: scoresForGameweek(histories, current.id, eligibleFrom),
+    scores,
   });
+  const membersById = new Map(members.map((m) => [m.entryId, m]));
+  const bottom = [...scores]
+    .sort((a, b) => a.net - b.net)
+    .slice(0, 5)
+    .flatMap((score) => {
+      const member = membersById.get(score.entryId);
+      return member ? [{ member, net: score.net }] : [];
+    });
 
   const { paid, degraded: paidDegraded } = await safeGetPaid();
 
@@ -81,6 +90,7 @@ export default async function HomePage() {
         degraded={paidDegraded}
         previousLosses={previousLosses}
         results={recordedResults}
+        bottom={bottom}
       />
     </>
   );

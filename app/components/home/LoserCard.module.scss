@@ -81,7 +81,7 @@ $rule: card.$rule;
   grid-template-columns: 1fr;
   gap: mantine.rem(14);
 
-  &:has(.formCard) {
+  &:has(.side) {
     grid-template-columns: 1.3fr 1fr;
 
     @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
@@ -91,9 +91,17 @@ $rule: card.$rule;
 }
 
 .card,
-.formCard {
+.formCard,
+.bottomCard {
   @include card.light-card;
-  padding: mantine.rem(20) mantine.rem(20) mantine.rem(22);
+  display: flex;
+  flex-direction: column;
+  border-radius: mantine.rem(24);
+  padding: mantine.rem(28);
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    padding: mantine.rem(20);
+  }
 }
 
 .head {
@@ -111,21 +119,20 @@ $rule: card.$rule;
 
 .kicker {
   font-family: var(--font-mono);
-  font-size: mantine.rem(10);
+  font-size: mantine.rem(11);
   font-weight: 700;
-  letter-spacing: mantine.rem(1);
+  letter-spacing: mantine.rem(1.4);
   text-transform: uppercase;
-  color: $ink-dim;
+  color: var(--mantine-color-brand-3);
 }
 
 .team {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: mantine.rem(22);
-  line-height: 1.05;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: mantine.rem(24);
+  line-height: 1.15;
   color: $ink;
-  margin-top: mantine.rem(1);
+  margin-top: mantine.rem(4);
 }
 
 .manager {
@@ -139,9 +146,8 @@ $rule: card.$rule;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-top: mantine.rem(16);
-  padding-top: mantine.rem(16);
-  border-top: mantine.rem(1) solid $rule;
+  margin-top: mantine.rem(24);
+  margin-bottom: mantine.rem(8);
 }
 
 .net {
@@ -151,11 +157,15 @@ $rule: card.$rule;
 }
 
 .netVal {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: mantine.rem(48);
-  line-height: 0.8;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: mantine.rem(112);
+  line-height: 0.85;
   color: $ink;
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    font-size: mantine.rem(88);
+  }
 }
 
 .netLabel {
@@ -179,7 +189,8 @@ $rule: card.$rule;
 }
 
 .metrics {
-  margin-top: mantine.rem(16);
+  margin-top: mantine.rem(12);
+  border-top: mantine.rem(1) solid $rule;
 }
 
 .metricRow {
@@ -187,7 +198,7 @@ $rule: card.$rule;
   align-items: center;
   justify-content: space-between;
   gap: mantine.rem(12);
-  padding: mantine.rem(8) 0;
+  padding: mantine.rem(14) 0;
   border-bottom: mantine.rem(1) solid $rule;
 
   &:last-child {
@@ -197,7 +208,7 @@ $rule: card.$rule;
 
 .metricKey {
   font-family: var(--font-body);
-  font-size: mantine.rem(13);
+  font-size: mantine.rem(14);
   color: $ink-dim;
 }
 
@@ -228,8 +239,8 @@ $rule: card.$rule;
 
 .sparkline {
   display: flex;
-  gap: mantine.rem(7);
-  height: mantine.rem(96);
+  gap: mantine.rem(12);
+  height: mantine.rem(140);
   margin-top: mantine.rem(12);
 }
 
@@ -246,7 +257,7 @@ $rule: card.$rule;
 .barFillNow {
   width: 100%;
   min-height: mantine.rem(3);
-  border-radius: mantine.rem(2) mantine.rem(2) 0 0;
+  border-radius: mantine.rem(8);
   background-color: $rule;
 }
 
@@ -257,7 +268,7 @@ $rule: card.$rule;
 
 .barLabel {
   font-family: var(--font-mono);
-  font-size: mantine.rem(8);
+  font-size: mantine.rem(10);
   color: $ink-dim;
 }
 
@@ -266,7 +277,7 @@ $rule: card.$rule;
   padding-left: mantine.rem(12);
   border-left: mantine.rem(2) solid var(--mantine-color-brand-5);
   font-family: var(--font-body);
-  font-size: mantine.rem(13);
+  font-size: mantine.rem(15);
   font-style: italic;
   color: $ink-dim;
 }
@@ -308,4 +319,118 @@ $rule: card.$rule;
 .ctaUnknown {
   color: $ink-dim;
   border: mantine.rem(1) dashed $rule;
+}
+
+/* Right-hand column: who else was near the bottom, then the form chart. */
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: mantine.rem(14);
+  min-width: 0;
+}
+
+.bottomList {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-top: mantine.rem(8);
+}
+
+.bottomRow {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: mantine.rem(12);
+  padding: mantine.rem(10) 0;
+  border-bottom: mantine.rem(1) solid $rule;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.bottomRank {
+  width: mantine.rem(14);
+  font-family: var(--font-mono);
+  font-size: mantine.rem(12);
+  color: $ink-dim;
+}
+
+.bottomName,
+.bottomNameOut {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-body);
+  font-size: mantine.rem(14);
+  color: $ink-dim;
+}
+
+.bottomNameOut {
+  font-weight: 700;
+  color: $ink;
+}
+
+.bottomNet,
+.bottomNetOut {
+  font-family: var(--font-mono);
+  font-size: mantine.rem(14);
+  font-variant-numeric: tabular-nums;
+  color: $ink-dim;
+}
+
+.bottomNetOut {
+  font-weight: 700;
+  color: var(--mantine-color-brand-3);
+}
+
+.bottomYou .bottomName {
+  color: var(--mantine-color-brand-2);
+}
+
+/* Metrics as four small tiles instead of a ruled list. */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: mantine.rem(10);
+  border-top: none;
+  margin-top: auto;
+  padding-top: mantine.rem(20);
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.metricRow {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: mantine.rem(6);
+  padding: mantine.rem(12) mantine.rem(14);
+  border: mantine.rem(1) solid $rule;
+  border-radius: mantine.rem(14);
+  background-color: var(--bg);
+
+  &:last-child {
+    border-bottom: mantine.rem(1) solid $rule;
+  }
+}
+
+.metricVal {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(28);
+  line-height: 1;
+}
+
+/* The form chart spans both columns under the two cards. */
+.formCard {
+  grid-column: 1 / -1;
+}
+
+.side > .bottomCard {
+  flex: 1;
 }

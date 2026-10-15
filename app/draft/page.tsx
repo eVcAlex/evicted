@@ -3,7 +3,9 @@ import { REVALIDATE_LIVE, revalidateForGame } from '@/lib/draft/gameweeks';
 import { resolveDraftMembers } from '@/lib/draft/members';
 import { buildStandingsRows } from '@/lib/draft/standings';
 import { isDraftLive } from '@/lib/draft/status';
+import { Text, Title } from '@mantine/core';
 import { DraftStandingsTable } from '../components/draft/DraftStandingsTable';
+import classes from './page.module.scss';
 import { PreSeason } from '../components/common/PreSeason';
 
 export const dynamic = 'force-dynamic';
@@ -28,5 +30,15 @@ export default async function DraftPage() {
   // table — correct even preseason, when every row is still tied at zero.
   const rows = buildStandingsRows(members, details.standings);
 
-  return <DraftStandingsTable rows={rows} />;
+  return (
+    <>
+      <Title order={1} className={classes.title} mb="xs">
+        Draft league
+      </Title>
+      <Text c="dimmed" size="sm" mb="lg">
+        Head to head table. Three points for a win.
+      </Text>
+      <DraftStandingsTable rows={rows} />
+    </>
+  );
 }

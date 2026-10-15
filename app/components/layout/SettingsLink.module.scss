@@ -1,15 +1,47 @@
 .link {
   color: var(--text-dim);
-
-  @include mantine.hover {
-    color: var(--text);
-  }
 }
 
 .active {
-  color: var(--mantine-color-brand-3);
+  color: var(--text);
 }
 
 .avatar {
-  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Once you have picked yourself: your face and team name, as a quiet pill. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 14px 4px 4px;
+  border-radius: 999px;
+  background-color: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  max-width: 220px;
+}
+
+.chipActive {
+  outline: 1px solid var(--mantine-color-brand-4);
+}
+
+.chipName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 48em) {
+  .chip {
+    padding-right: 4px;
+  }
+
+  .chipName {
+    display: none;
+  }
 }

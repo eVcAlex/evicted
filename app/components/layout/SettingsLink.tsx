@@ -18,8 +18,22 @@ export function SettingsLink() {
   const { me, ready } = useMe();
   const active = pathname === '/settings';
 
+  if (ready && me) {
+    return (
+      <Link
+        href="/settings"
+        aria-label={`Settings, signed in as ${me.teamName}`}
+        aria-current={active ? 'page' : undefined}
+        className={active ? `${classes.chip} ${classes.chipActive}` : classes.chip}
+      >
+        <Avatar teamName={me.teamName} managerName={me.managerName} size={30} className={classes.avatar} />
+        <span className={classes.chipName}>{me.teamName}</span>
+      </Link>
+    );
+  }
+
   return (
-    <Tooltip label={me ? me.teamName : 'Settings'}>
+    <Tooltip label="Settings">
       <ActionIcon
         component={Link}
         href="/settings"
@@ -29,19 +43,15 @@ export function SettingsLink() {
         aria-current={active ? 'page' : undefined}
         className={active ? `${classes.link} ${classes.active}` : classes.link}
       >
-        {ready && me ? (
-          <Avatar teamName={me.teamName} managerName={me.managerName} size={26} className={classes.avatar} />
-        ) : (
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-            <circle cx="12" cy="8" r="3.4" stroke="currentColor" strokeWidth="1.6" />
-            <path
-              d="M5 19c0-3.3 3.1-6 7-6s7 2.7 7 6"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-            />
-          </svg>
-        )}
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.4" stroke="currentColor" strokeWidth="1.6" />
+          <path
+            d="M5 19c0-3.3 3.1-6 7-6s7 2.7 7 6"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+          />
+        </svg>
       </ActionIcon>
     </Tooltip>
   );
