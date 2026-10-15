@@ -10,10 +10,12 @@
 }
 
 .shameTitle {
-  font-family: var(--font-mono);
-  letter-spacing: mantine.rem(1);
-  margin-bottom: mantine.rem(10);
-  color: var(--text-dim);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(28);
+  letter-spacing: 0;
+  margin-bottom: mantine.rem(12);
+  color: var(--text);
 }
 
 /* Every Hall of Shame stat gets the same treatment as the home page's loser
@@ -34,10 +36,11 @@
 }
 
 .card {
-  @include card.light-card;
   display: flex;
   flex-direction: column;
-  padding: mantine.rem(24) mantine.rem(22) mantine.rem(26);
+  padding: mantine.rem(20) mantine.rem(20) mantine.rem(22);
+  background-color: var(--surface);
+  border-radius: mantine.rem(18);
 }
 
 .cardHead {
@@ -55,16 +58,18 @@
 }
 
 .cardKicker {
-  @include card.kicker;
+  font-family: var(--font-body);
+  font-size: mantine.rem(13);
+  font-weight: 600;
   line-height: 1.3;
+  color: card.$ink-dim;
 }
 
 .cardName {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: mantine.rem(22);
-  line-height: 1.05;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: mantine.rem(16);
+  line-height: 1.25;
   color: card.$ink;
   margin-top: mantine.rem(6);
 }
@@ -74,35 +79,29 @@
   font-size: mantine.rem(13);
   line-height: 1.4;
   color: card.$ink-dim;
-  margin-top: mantine.rem(5);
+  margin-top: mantine.rem(4);
 }
 
-/* The big figure in its own bordered row, same as the loser card's `heroRow`
- * — minus that card's payment status tag, which a shame stat has no use for.
- * Pinned to the card's bottom edge (see the component's own comment on why),
- * so every card in a stretched grid row keeps its number on the same
- * baseline regardless of how long its own name text runs. */
+/* The big figure at the bottom of every card, so a stretched grid row keeps
+ * every number on the same baseline. */
 .heroRow {
   display: flex;
   align-items: baseline;
   gap: mantine.rem(10);
   margin-top: auto;
-  padding-top: mantine.rem(20);
-  border-top: mantine.rem(1) solid card.$rule;
+  padding-top: mantine.rem(22);
 }
 
 .statValue {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: mantine.rem(44);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: mantine.rem(60);
   line-height: 0.8;
   color: card.$ink;
 }
 
 .statLabel {
-  font-family: var(--font-mono);
-  font-size: mantine.rem(11);
-  text-transform: uppercase;
-  letter-spacing: mantine.rem(0.5);
+  font-family: var(--font-body);
+  font-size: mantine.rem(13);
   color: card.$ink-dim;
 }

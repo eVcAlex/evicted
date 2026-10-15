@@ -82,7 +82,7 @@ export default async function SeasonPage() {
 
       {shame && (
         <div className={classes.shame}>
-          <Text fw={600} size="sm" tt="uppercase" c="dimmed" className={classes.shameTitle}>
+          <Text fw={600} size="sm" tt="uppercase" className={classes.shameTitle}>
             Hall of shame
           </Text>
 

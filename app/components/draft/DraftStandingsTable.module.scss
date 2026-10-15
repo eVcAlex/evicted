@@ -1,7 +1,8 @@
 @use '../../styles/card';
 
+/* A plain table on the page ground: hairlines between rows, no card, so it
+ * reads as a leaderboard rather than a boxed widget. */
 .scroll {
-  @include card.light-card;
   overflow-x: auto;
 }
 
@@ -14,13 +15,11 @@ thead {
   .rank,
   .team,
   .stat {
-    padding: mantine.rem(10);
-    font-family: var(--font-mono);
-    font-size: mantine.rem(11);
+    padding: mantine.rem(10) mantine.rem(10);
+    font-family: var(--font-body);
+    font-size: mantine.rem(12.5);
     font-weight: 600;
-    letter-spacing: mantine.rem(0.5);
-    text-transform: uppercase;
-    color: var(--mantine-color-brand-3);
+    color: card.$ink-dim;
     border-bottom: mantine.rem(1) solid card.$rule;
     white-space: nowrap;
   }
@@ -40,24 +39,23 @@ thead {
 
 .rank {
   width: mantine.rem(48);
-  padding: mantine.rem(10);
+  padding: mantine.rem(14) mantine.rem(10);
   text-align: center;
   font-family: var(--font-mono);
-  font-size: mantine.rem(12);
-  font-weight: 600;
+  font-size: mantine.rem(13);
   color: card.$ink-dim;
   font-variant-numeric: tabular-nums;
 }
 
 .team {
-  padding: mantine.rem(10) mantine.rem(14);
+  padding: mantine.rem(14) mantine.rem(14);
   text-align: left;
 }
 
 .identity {
   display: flex;
   align-items: center;
-  gap: mantine.rem(10);
+  gap: mantine.rem(12);
   min-width: 0;
 }
 
@@ -70,37 +68,55 @@ thead {
 .teamName {
   @include card.truncate;
   font-weight: 700;
-  font-size: mantine.rem(13);
+  font-size: mantine.rem(14.5);
   color: card.$ink;
 }
 
 .managerName {
   @include card.truncate;
-  font-family: var(--font-mono);
-  font-size: mantine.rem(11);
+  font-size: mantine.rem(12.5);
   color: card.$ink-dim;
 }
 
 .stat {
-  padding: mantine.rem(10);
+  padding: mantine.rem(14) mantine.rem(10);
   text-align: center;
   font-family: var(--font-mono);
-  font-size: mantine.rem(13);
+  font-size: mantine.rem(14);
   font-variant-numeric: tabular-nums;
   color: card.$ink-dim;
 }
 
 .statTotal {
   @extend .stat;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(24);
   color: card.$ink;
 }
 
+/* The league-average benchmark: set apart with dashed rules, not italics. */
 .average {
-  opacity: 0.6;
-  font-style: italic;
+  border-top: mantine.rem(1) dashed card.$rule;
+  border-bottom: mantine.rem(1) dashed card.$rule;
+
+  .teamName,
+  .stat,
+  .statTotal,
+  .rank {
+    color: card.$ink-dim;
+    font-weight: 500;
+  }
 }
 
 .you {
   @include card.light-you;
+}
+
+/* The raw points-for column is the first to go on a phone, so the total
+ * stays on screen without sideways scrolling. */
+.hideSm {
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    display: none;
+  }
 }
