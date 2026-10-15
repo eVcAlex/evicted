@@ -368,12 +368,6 @@ export async function drawShareCard(
       ctx.fillText(line, PAD + 20, cursorY + i * lineHeight);
     });
   }
-
-  ctx.fillStyle = INK_DIM;
-  ctx.globalAlpha = 0.7;
-  ctx.font = `400 18px ${BODY_FONT}`;
-  ctx.fillText('evicted.dev', PAD, HEIGHT - (isCompact ? 34 : 40));
-  ctx.globalAlpha = 1;
 }
 
 /**

@@ -120,7 +120,7 @@ export function LoserCard({
               <div className={classes.grid}>
                 <div className={classes.card}>
                   <div className={classes.head}>
-                    <Avatar teamName={member.teamName} managerName={member.managerName} size={48} />
+                    <Avatar teamName={member.teamName} managerName={member.managerName} size={56} />
                     <div className={classes.identity}>
                       <span className={classes.kicker}>Bottom of the week</span>
                       <Title order={2} className={classes.team}>
