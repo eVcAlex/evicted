@@ -181,11 +181,22 @@ export function LoserCard({
                       </div>
                     )}
                   </div>
+
+                <blockquote className={classes.quip}>&ldquo;{quip}&rdquo;</blockquote>
+
+                {degraded ? (
+                  <span className={classes.ctaUnknown}>Status unknown</span>
+                ) : settled ? (
+                  <span className={classes.ctaPaid}>Paid</span>
+                ) : MONZO_ME_URL ? (
+                  <a className={classes.cta} href={MONZO_ME_URL} target="_blank" rel="noopener noreferrer">
+                    Pay {pounds(FINE_PENCE)}
+                  </a>
+                ) : null}
                 </div>
 
-                {(bottom.length > 1 || priorForm.length > 0) && (
-                <div className={classes.side}>
                 {bottom.length > 1 && (
+                <div className={classes.side}>
                   <div className={classes.bottomCard}>
                     <span className={classes.formHeading}>Bottom five &middot; net</span>
                     <div className={classes.bottomList}>
@@ -209,6 +220,7 @@ export function LoserCard({
                       ))}
                     </div>
                   </div>
+                </div>
                 )}
                 {priorForm.length > 0 && (
                   <div className={classes.formCard}>
@@ -233,21 +245,8 @@ export function LoserCard({
                     {marginCopy && <p className={classes.marginNote}>{marginCopy}</p>}
                   </div>
                 )}
-                </div>
-                )}
               </div>
 
-              <blockquote className={classes.quip}>&ldquo;{quip}&rdquo;</blockquote>
-
-              {degraded ? (
-                <span className={classes.ctaUnknown}>Status unknown</span>
-              ) : settled ? (
-                <span className={classes.ctaPaid}>Paid</span>
-              ) : MONZO_ME_URL ? (
-                <a className={classes.cta} href={MONZO_ME_URL} target="_blank" rel="noopener noreferrer">
-                  Pay {pounds(FINE_PENCE)}
-                </a>
-              ) : null}
             </div>
           );
         })}

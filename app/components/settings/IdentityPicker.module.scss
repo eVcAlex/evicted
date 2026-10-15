@@ -1,42 +1,39 @@
 @use '../../styles/card';
 
-.list {
-  display: flex;
-  flex-direction: column;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(mantine.rem(150), 1fr));
+  gap: mantine.rem(12);
 }
 
-.row {
-  @include card.listing-row;
-  border-bottom-color: card.$rule;
-  width: 100%;
-  background: none;
-  border-left: none;
-  border-right: none;
-  border-top: none;
-  border-radius: mantine.rem(6);
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: mantine.rem(6);
+  padding: mantine.rem(20) mantine.rem(12) mantine.rem(16);
+  background-color: var(--surface);
+  border: mantine.rem(1) solid transparent;
+  border-radius: mantine.rem(18);
+  color: inherit;
   cursor: pointer;
-  text-align: left;
+  text-align: center;
   transition: background-color 150ms ease;
 
   @include mantine.hover {
-    background-color: color-mix(in srgb, var(--mantine-color-brand-5) 8%, transparent);
+    background-color: #1a2130;
   }
 }
 
-.rowActive {
-  @include card.light-you;
-}
-
-.identity {
-  display: flex;
-  flex-direction: column;
-  gap: mantine.rem(2);
-  min-width: 0;
-  flex: 1;
+.cardActive {
+  border-color: var(--mantine-color-brand-4);
+  background-color: color-mix(in srgb, var(--mantine-color-brand-5) 10%, var(--surface));
 }
 
 .name {
-  @include card.truncate;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  margin-top: mantine.rem(6);
   font-weight: 700;
   font-size: mantine.rem(14);
   color: card.$ink;
@@ -44,9 +41,16 @@
 
 .manager {
   @include card.truncate;
-  font-family: var(--font-mono);
-  font-size: mantine.rem(12);
+  max-width: 100%;
+  font-size: mantine.rem(12.5);
   color: card.$ink-dim;
+}
+
+.you {
+  margin-top: mantine.rem(4);
+  font-size: mantine.rem(12);
+  font-weight: 700;
+  color: var(--mantine-color-brand-3);
 }
 
 .empty {

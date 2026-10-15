@@ -4,28 +4,35 @@
   @include card.page-title;
 }
 
-/* The pot is this page's one headline number — same "hero stat" treatment
-   as the loser card's net score, on the same elevated card. */
-.summary {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+/* Pot and outstanding as two plain tiles: the headline number in the
+   display font, a quiet label above it. */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(mantine.rem(220), 1fr));
   gap: mantine.rem(12);
-  @include card.light-card;
-  padding: mantine.rem(16) mantine.rem(20);
   margin-bottom: mantine.rem(20);
 }
 
-.summaryLabel {
-  font-family: var(--font-mono);
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: mantine.rem(10);
+  padding: mantine.rem(18) mantine.rem(20);
+  background-color: var(--surface);
+  border-radius: mantine.rem(18);
+}
+
+.tileLabel {
+  font-family: var(--font-body);
   font-size: mantine.rem(13);
+  font-weight: 600;
   color: card.$ink-dim;
 }
 
-.summaryValue {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: mantine.rem(34);
+.tileValue {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: mantine.rem(56);
   line-height: 0.9;
   font-variant-numeric: tabular-nums;
   color: card.$ink;

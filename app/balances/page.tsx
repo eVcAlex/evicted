@@ -53,12 +53,20 @@ export default async function BalancesPage() {
         £20 buy-in, plus £2 per gameweek finished bottom. All into the pot.
       </Text>
       {pot && (
-        <div className={classes.summary}>
-          <span className={classes.summaryLabel}>
-            Pot &middot; {pot.buyinsPaid} of {pot.buyinsTotal} paid in
-            {pot.creditPence > 0 && ` · ${pounds(pot.creditPence)} credit`}
-          </span>
-          <span className={classes.summaryValue}>{pounds(pot.potPence)}</span>
+        <div className={classes.tiles}>
+          <div className={classes.tile}>
+            <span className={classes.tileLabel}>
+              The pot &middot; {pot.buyinsPaid} of {pot.buyinsTotal} paid in
+              {pot.creditPence > 0 && ` · ${pounds(pot.creditPence)} credit`}
+            </span>
+            <span className={classes.tileValue}>{pounds(pot.potPence)}</span>
+          </div>
+          {!resultsDegraded && totalOwedPence > 0 && (
+            <div className={classes.tile}>
+              <span className={classes.tileLabel}>Still owed across the group</span>
+              <span className={classes.tileValue}>{pounds(totalOwedPence)}</span>
+            </div>
+          )}
         </div>
       )}
       {resultsDegraded ? (
@@ -75,11 +83,6 @@ export default async function BalancesPage() {
       )}
       {!resultsDegraded && (
         <>
-          {totalOwedPence > 0 && (
-            <Text c="dimmed" size="sm" mb="lg">
-              {pounds(totalOwedPence)} still outstanding across the group.
-            </Text>
-          )}
           <YourBalance balances={balances} monzoUrl={MONZO_ME_URL} />
         </>
       )}

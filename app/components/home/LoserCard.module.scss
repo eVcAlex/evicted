@@ -332,11 +332,13 @@ $rule: card.$rule;
 .bottomList {
   display: flex;
   flex-direction: column;
+  flex: 1;
   margin-top: mantine.rem(8);
 }
 
 .bottomRow {
   display: flex;
+  flex: 1;
   align-items: center;
   gap: mantine.rem(12);
   padding: mantine.rem(10) 0;
@@ -422,4 +424,13 @@ $rule: card.$rule;
   font-weight: 800;
   font-size: mantine.rem(28);
   line-height: 1;
+}
+
+/* The form chart spans both columns under the two cards. */
+.formCard {
+  grid-column: 1 / -1;
+}
+
+.side > .bottomCard {
+  flex: 1;
 }

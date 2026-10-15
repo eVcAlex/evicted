@@ -62,7 +62,7 @@ export default async function SettingsPage() {
         Settings
       </Title>
       <Text c="dimmed" size="sm" mb="lg">
-        Pick who you are on this device.
+        Pick yourself once. This device will highlight your team and put your payment link first.
       </Text>
 
       {classic.degraded && (
@@ -78,10 +78,7 @@ export default async function SettingsPage() {
         </Alert>
       )}
 
-      <div className={classes.section}>
-        <span className={classes.sectionKicker}>Who are you</span>
-        <IdentityPicker roster={roster} />
-      </div>
+      <IdentityPicker roster={roster} />
     </>
   );
 }
