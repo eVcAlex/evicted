@@ -7,7 +7,9 @@ import { paidKey } from '@/lib/ledger/store';
 import { recentForm } from '@/lib/league/form';
 import { quipFor } from '@/lib/league/quips';
 import type { LoserSummary } from '@/lib/league/summary';
+import type { Member } from '@/lib/league/members';
 import { Avatar } from '../common/Avatar';
+import { MeRow } from '../common/MeRow';
 import { ShareButton } from './ShareButton';
 import classes from './LoserCard.module.scss';
 
@@ -29,6 +31,7 @@ export function LoserCard({
   degraded,
   previousLosses,
   results,
+  bottom = [],
 }: {
   summary: LoserSummary;
   paid: Set<string>;
@@ -38,6 +41,8 @@ export function LoserCard({
   previousLosses: Map<number, number[]>;
   /** The full recorded ledger — feeds the form sparkline's real history. */
   results: Map<number, GridResult>;
+  /** The lowest net scores this gameweek, worst first, for the side list. */
+  bottom?: Array<{ member: Member; net: number }>;
 }) {
   const noScores = summary.losers.length === 0;
   // Nine managers level on zero between the deadline and the first kick-off are
@@ -178,6 +183,33 @@ export function LoserCard({
                   </div>
                 </div>
 
+                {(bottom.length > 1 || priorForm.length > 0) && (
+                <div className={classes.side}>
+                {bottom.length > 1 && (
+                  <div className={classes.bottomCard}>
+                    <span className={classes.formHeading}>Bottom five &middot; net</span>
+                    <div className={classes.bottomList}>
+                      {bottom.map(({ member: m, net }, index) => (
+                        <MeRow
+                          key={m.entryId}
+                          league="classic"
+                          entryId={m.entryId}
+                          className={classes.bottomRow}
+                          meClassName={classes.bottomYou}
+                        >
+                          <span className={classes.bottomRank}>{index + 1}</span>
+                          <Avatar teamName={m.teamName} managerName={m.managerName} size={28} />
+                          <span className={net === score.net ? classes.bottomNameOut : classes.bottomName}>
+                            {m.teamName}
+                          </span>
+                          <span className={net === score.net ? classes.bottomNetOut : classes.bottomNet}>
+                            {net}
+                          </span>
+                        </MeRow>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 {priorForm.length > 0 && (
                   <div className={classes.formCard}>
                     <span className={classes.formHeading}>
@@ -200,6 +232,8 @@ export function LoserCard({
                     </div>
                     {marginCopy && <p className={classes.marginNote}>{marginCopy}</p>}
                   </div>
+                )}
+                </div>
                 )}
               </div>
 

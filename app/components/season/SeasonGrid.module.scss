@@ -59,132 +59,152 @@
   opacity: 0.8;
 }
 
-/* Same elevated card as the loser card — the season grid is the single
- * densest readout in the app, exactly the kind of "real data, tabular
- * figures" moment the rework is for. */
-.scroll {
-  @include card.light-card;
-  overflow-x: auto;
+/* One fixed-width strip per manager: a square per gameweek, so the board is
+ * the same width at GW6 and GW38. No outer card border and no per-cell
+ * boxes; rows are separated by hairlines only. */
+.board {
+  padding: 0 0 mantine.rem(4);
 }
 
-.table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-.corner,
-.rowHeader {
-  position: sticky;
-  left: 0;
-  z-index: 1;
-  background-color: var(--surface);
-}
-
-.gwHeader {
-  padding: mantine.rem(10) mantine.rem(10);
-  font-family: var(--font-mono);
-  font-size: mantine.rem(11);
-  font-weight: 600;
-  letter-spacing: mantine.rem(0.5);
-  color: var(--mantine-color-brand-3);
-  text-align: center;
-  white-space: nowrap;
-  border-bottom: mantine.rem(1) solid card.$rule;
-}
-
-.corner {
-  border-bottom: mantine.rem(1) solid card.$rule;
-}
-
-.rowHeader {
-  display: flex;
+.headRow,
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, mantine.rem(220)) mantine.rem(36) minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
-  gap: mantine.rem(10);
-  padding: mantine.rem(10) mantine.rem(14);
-  border-bottom: mantine.rem(1) solid card.$rule;
-  border-right: mantine.rem(1) solid card.$rule;
-  text-align: left;
-  white-space: nowrap;
-  font-family: var(--font-body);
+  column-gap: mantine.rem(8);
 
-  tr:last-child & {
-    border-bottom: none;
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    grid-template-columns: minmax(0, mantine.rem(124)) mantine.rem(22) minmax(0, 1fr);
+    column-gap: mantine.rem(6);
   }
 }
 
-.rowIdentity {
+.headRow {
+  padding: 0 0 mantine.rem(8);
+}
+
+.row {
+  min-height: mantine.rem(52);
+  border-top: mantine.rem(1) solid card.$rule;
+}
+
+.cells {
   display: flex;
-  align-items: center;
-  gap: mantine.rem(8);
+  gap: mantine.rem(3);
   min-width: 0;
 }
 
-.teamName {
-  flex: 1;
+.tick {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: mantine.rem(10);
+  color: card.$ink-dim;
+  overflow: visible;
+  white-space: nowrap;
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: mantine.rem(10);
+  min-width: 0;
+}
+
+.teamName,
+.teamNameQuiet {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: 700;
-  font-size: mantine.rem(13);
+  white-space: nowrap;
+  font-family: var(--font-body);
+  font-size: mantine.rem(14);
+}
+
+.teamName {
+  font-weight: 600;
   color: card.$ink;
 }
 
-.evictionCount {
-  flex-shrink: 0;
+.teamNameQuiet {
+  font-weight: 500;
+  color: card.$ink-dim;
+}
+
+.count,
+.countQuiet {
   font-family: var(--font-mono);
-  font-size: mantine.rem(11);
-  font-weight: 600;
-  color: var(--mantine-color-brand-3);
+  font-size: mantine.rem(13);
   font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
-.cell {
-  padding: mantine.rem(10);
-  border-bottom: mantine.rem(1) solid card.$rule;
-  text-align: center;
-
-  tr:last-child & {
-    border-bottom: none;
-  }
+.count {
+  color: card.$ink;
+  font-weight: 600;
 }
 
-.evicted,
-.played,
-.absent {
-  display: inline-block;
-  width: mantine.rem(14);
-  height: mantine.rem(14);
-  border-radius: mantine.rem(3);
-}
-
-.evicted {
-  background-color: var(--mantine-color-brand-5);
-}
-
-.played {
-  border: mantine.rem(1.5) solid card.$ink-dim;
-}
-
-.absent {
-  border: mantine.rem(1) dashed card.$rule;
+.countQuiet {
+  color: card.$ink-dim;
   opacity: 0.6;
 }
 
-.you {
-  .rowHeader {
-    @include card.light-you;
+.cell {
+  flex: 1 1 0;
+  min-width: 0;
+  height: mantine.rem(22);
+  border-radius: mantine.rem(5);
+}
+
+.evicted {
+  background-color: var(--mantine-color-brand-4);
+}
+
+.played {
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+.absent,
+.todo {
+  border: mantine.rem(1) dashed card.$rule;
+}
+
+.absent {
+  opacity: 0.5;
+}
+
+/* Phones show a window of the latest gameweeks; the rest are still in the
+ * DOM (and in the tooltips) but not drawn. */
+.farCell {
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    display: none;
   }
 }
 
-.srOnly {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+.legend {
+  display: flex;
+  justify-content: space-between;
+  gap: mantine.rem(12);
+  padding-top: mantine.rem(12);
+  border-top: mantine.rem(1) solid card.$rule;
+  font-family: var(--font-body);
+  font-size: mantine.rem(12.5);
+  color: card.$ink-dim;
+}
+
+.legendKeys {
+  display: flex;
+  gap: mantine.rem(14);
+}
+
+.keyEvicted {
+  color: var(--mantine-color-brand-3);
+}
+
+.you {
+  .teamName,
+  .teamNameQuiet {
+    color: var(--mantine-color-brand-2);
+  }
 }

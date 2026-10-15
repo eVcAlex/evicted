@@ -18,9 +18,20 @@ export function BalancesTable({
 }) {
   const { me } = useMe();
 
+  const stateOf = (b: Balance) =>
+    resultsDegraded ? 'unknown' : b.owedPence > 0 ? 'owes' : b.owedPence < 0 ? 'credit' : 'clear';
+  const owing = balances.filter((b) => stateOf(b) !== 'clear');
+  const square = balances.filter((b) => stateOf(b) === 'clear');
+
   return (
+    <>
+      {owing.length > 0 && (
+        <p className={classes.groupLabel}>
+          {resultsDegraded ? 'Status unknown' : 'Owes'} &middot; {owing.length}
+        </p>
+      )}
     <div className={classes.sheet}>
-      {balances.map((balance) => {
+      {owing.map((balance) => {
         const isYou = me?.entryId === balance.member.entryId;
         const state = resultsDegraded
           ? 'unknown'
@@ -89,5 +100,24 @@ export function BalancesTable({
         );
       })}
     </div>
+
+      {square.length > 0 && (
+        <>
+          <p className={classes.groupLabel}>All square &middot; {square.length}</p>
+          <div className={classes.chips}>
+            {square.map((balance) => (
+              <span key={balance.member.entryId} className={classes.chip}>
+                <Avatar
+                  teamName={balance.member.teamName}
+                  managerName={balance.member.managerName}
+                  size={24}
+                />
+                {balance.member.teamName}
+              </span>
+            ))}
+          </div>
+        </>
+      )}
+    </>
   );
 }

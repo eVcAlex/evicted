@@ -81,7 +81,7 @@ $rule: card.$rule;
   grid-template-columns: 1fr;
   gap: mantine.rem(14);
 
-  &:has(.formCard) {
+  &:has(.side) {
     grid-template-columns: 1.3fr 1fr;
 
     @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
@@ -91,8 +91,11 @@ $rule: card.$rule;
 }
 
 .card,
-.formCard {
+.formCard,
+.bottomCard {
   @include card.light-card;
+  display: flex;
+  flex-direction: column;
   border-radius: mantine.rem(24);
   padding: mantine.rem(28);
 
@@ -316,4 +319,107 @@ $rule: card.$rule;
 .ctaUnknown {
   color: $ink-dim;
   border: mantine.rem(1) dashed $rule;
+}
+
+/* Right-hand column: who else was near the bottom, then the form chart. */
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: mantine.rem(14);
+  min-width: 0;
+}
+
+.bottomList {
+  display: flex;
+  flex-direction: column;
+  margin-top: mantine.rem(8);
+}
+
+.bottomRow {
+  display: flex;
+  align-items: center;
+  gap: mantine.rem(12);
+  padding: mantine.rem(10) 0;
+  border-bottom: mantine.rem(1) solid $rule;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+.bottomRank {
+  width: mantine.rem(14);
+  font-family: var(--font-mono);
+  font-size: mantine.rem(12);
+  color: $ink-dim;
+}
+
+.bottomName,
+.bottomNameOut {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-body);
+  font-size: mantine.rem(14);
+  color: $ink-dim;
+}
+
+.bottomNameOut {
+  font-weight: 700;
+  color: $ink;
+}
+
+.bottomNet,
+.bottomNetOut {
+  font-family: var(--font-mono);
+  font-size: mantine.rem(14);
+  font-variant-numeric: tabular-nums;
+  color: $ink-dim;
+}
+
+.bottomNetOut {
+  font-weight: 700;
+  color: var(--mantine-color-brand-3);
+}
+
+.bottomYou .bottomName {
+  color: var(--mantine-color-brand-2);
+}
+
+/* Metrics as four small tiles instead of a ruled list. */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: mantine.rem(10);
+  border-top: none;
+  margin-top: auto;
+  padding-top: mantine.rem(20);
+
+  @include mantine.smaller-than(mantine.$mantine-breakpoint-sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.metricRow {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: mantine.rem(6);
+  padding: mantine.rem(12) mantine.rem(14);
+  border: mantine.rem(1) solid $rule;
+  border-radius: mantine.rem(14);
+  background-color: var(--bg);
+
+  &:last-child {
+    border-bottom: mantine.rem(1) solid $rule;
+  }
+}
+
+.metricVal {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: mantine.rem(28);
+  line-height: 1;
 }
