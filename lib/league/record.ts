@@ -4,7 +4,7 @@ import { getResults, saveResult, type GameweekResult } from '@/lib/ledger/store'
 import { isEligible } from './eligibility';
 import { settledGameweeks } from './gameweeks';
 import { lossesByEntry } from './history';
-import type { Member } from './members';
+import { isTruncatedLeague, type Member } from './members';
 import { findLosers, scoresForGameweek } from './scoring';
 import { buildSummary, type LoserSummary } from './summary';
 
@@ -59,6 +59,11 @@ export async function recordSettledGameweeks(params: RecordParams): Promise<{
   // Nothing to record: do not pay for a second round of history fetches on
   // every page load just to leave the store exactly as we found it.
   if (pending.length === 0) return { results, newlyRecorded: [] };
+
+  if (isTruncatedLeague(members, results)) {
+    console.warn(`Refusing to record: only ${members.length} members from FPL standings`);
+    return { results, newlyRecorded: [] };
+  }
 
   const histories = await fetchHistories();
   const newlyRecorded: NewlyRecordedGameweek[] = [];

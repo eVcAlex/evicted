@@ -4,7 +4,7 @@ import { checkAndRecordSettled, loadHistories } from '@/lib/league/checkAndRecor
 import { eligibleFromByEntry } from '@/lib/league/eligibility';
 import { currentGameweek, nextGameweek, revalidateFor } from '@/lib/league/gameweeks';
 import { lossesByEntry } from '@/lib/league/history';
-import { resolveMembers } from '@/lib/league/members';
+import { isTruncatedLeague, resolveMembers } from '@/lib/league/members';
 import { scoresForGameweek } from '@/lib/league/scoring';
 import { buildSummary } from '@/lib/league/summary';
 import { safeGetPaid } from '@/lib/ledger/safe';
@@ -62,6 +62,16 @@ export default async function HomePage() {
     eligibleFrom,
   });
   const previousLosses = lossesByEntry(recordedResults);
+
+  if (isTruncatedLeague(members, recordedResults)) {
+    return (
+      <Alert color="red" variant="outline" title="League data unavailable" mb="lg">
+        FPL returned only {members.length} of your league's managers, so the
+        bottom of the week can't be worked out reliably. Nothing has been
+        recorded. This should fix itself once FPL does.
+      </Alert>
+    );
+  }
 
   const scores = scoresForGameweek(histories, current.id, eligibleFrom);
   const summary = buildSummary({

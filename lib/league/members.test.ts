@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { LeagueStandings } from '@/lib/fpl/schemas';
-import { resolveMembers } from './members';
+import { isTruncatedLeague, resolveMembers } from './members';
 
 function standings(overrides: Partial<LeagueStandings>): LeagueStandings {
   return {
@@ -154,5 +154,21 @@ describe('resolveMembers', () => {
 
   it('returns an empty list for an empty league', () => {
     expect(resolveMembers(standings({}))).toEqual([]);
+  });
+});
+
+describe('isTruncatedLeague', () => {
+  const member = (entryId: number) => ({ entryId, managerName: '', teamName: '', joinedTime: null });
+  const field = (n: number) => Object.fromEntries(Array.from({ length: n }, (_, i) => [i + 1, 50]));
+  const results = new Map([[1, { scores: field(8) }], [2, { scores: field(8) }]]);
+
+  it('flags a sharply shorter member list', () => {
+    expect(isTruncatedLeague([member(1), member(2)], results)).toBe(true);
+  });
+
+  it('accepts a full list, one departure, and an empty ledger', () => {
+    expect(isTruncatedLeague(Array.from({ length: 8 }, (_, i) => member(i)), results)).toBe(false);
+    expect(isTruncatedLeague(Array.from({ length: 7 }, (_, i) => member(i)), results)).toBe(false);
+    expect(isTruncatedLeague([member(1)], new Map())).toBe(false);
   });
 });

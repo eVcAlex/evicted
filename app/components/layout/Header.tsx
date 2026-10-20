@@ -47,8 +47,8 @@ const LINKS: Array<{ href: string; label: string; icon: ReactNode }> = [
     label: 'Balances',
     icon: (
       <svg {...ICON_PROPS}>
-        <circle cx="12" cy="12" r="8" />
-        <path d="M14.5 9.2c-.5-.7-1.4-1-2.4-1-1.5 0-2.6.9-2.6 2.1 0 2.8 4.9 1.4 4.9 4.1 0 1.2-1.1 2.1-2.6 2.1-1.1 0-2-.4-2.5-1.1M8.8 12h5.4" />
+        <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6H18a2 2 0 0 1 2 2v9.5a2 2 0 0 1-2 2H6.5A2.5 2.5 0 0 1 4 17V8.5Z" />
+        <path d="M4 8.5C4 7.7 4.7 7 5.5 7H17M20 12h-3.5a1.75 1.75 0 0 0 0 3.5H20" />
       </svg>
     ),
   },
