@@ -10,6 +10,7 @@ import {
   mantineHtmlProps,
 } from '@mantine/core';
 import { ClerkProvider } from '@clerk/nextjs';
+import { leagueIsBroken } from '@/lib/league/health';
 import { Header } from './components/layout/Header';
 import { MeProvider } from './components/common/MeProvider';
 import { ReloadOnResume } from './components/common/ReloadOnResume';
@@ -183,7 +184,8 @@ const theme = createTheme({
   },
 });
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const leagueBroken = await leagueIsBroken();
   return (
     <html
       lang="en"
@@ -199,7 +201,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ReloadOnResume />
           <MantineProvider theme={theme} defaultColorScheme="dark">
             <MeProvider>
-              <Header />
+              <Header leagueBroken={leagueBroken} />
               <Container size="md" py="xl">
                 {children}
               </Container>

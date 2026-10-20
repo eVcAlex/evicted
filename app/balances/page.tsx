@@ -1,4 +1,6 @@
+import { redirect } from 'next/navigation';
 import { Alert, Text, Title } from '@mantine/core';
+import { leagueIsBroken } from '@/lib/league/health';
 import { MONZO_ME_URL } from '@/lib/config';
 import { fetchStandings } from '@/lib/fpl/client';
 import { pounds } from '@/lib/format';
@@ -13,6 +15,7 @@ import classes from './page.module.scss';
 export const dynamic = 'force-dynamic';
 
 export default async function BalancesPage() {
+  if (await leagueIsBroken()) redirect('/');
   const [standings, resultsState, paidState, buyinsState, creditState] = await Promise.all([
     fetchStandings(3600),
     safeGetResults(),

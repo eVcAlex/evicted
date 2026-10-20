@@ -74,8 +74,12 @@ function isActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function Header() {
+/** Tabs that read the classic league; greyed out while FPL's standings are bad. */
+const CLASSIC_ONLY = new Set(['/season', '/balances']);
+
+export function Header({ leagueBroken = false }: { leagueBroken?: boolean }) {
   const pathname = usePathname();
+  const blocked = (href: string) => leagueBroken && CLASSIC_ONLY.has(href);
 
   return (
     <>
@@ -91,17 +95,23 @@ export function Header() {
               instead of trying to coax WebKit into repainting the old ones.
               Hidden on phones, where the bottom bar below takes over. */}
           <nav key={pathname} className={classes.tabs} aria-label="Primary">
-            {LINKS.map(({ href, label }) => (
-              <Anchor
-                key={href}
-                component={Link}
-                href={href}
-                underline="never"
-                className={`${classes.tab} ${isActive(pathname, href) ? classes.tabActive : ''}`.trim()}
-              >
-                {label}
-              </Anchor>
-            ))}
+            {LINKS.map(({ href, label }) =>
+              blocked(href) ? (
+                <span key={href} aria-disabled="true" className={`${classes.tab} ${classes.tabDisabled}`}>
+                  {label}
+                </span>
+              ) : (
+                <Anchor
+                  key={href}
+                  component={Link}
+                  href={href}
+                  underline="never"
+                  className={`${classes.tab} ${isActive(pathname, href) ? classes.tabActive : ''}`.trim()}
+                >
+                  {label}
+                </Anchor>
+              ),
+            )}
           </nav>
           <div className={classes.actions}>
             <SettingsLink />
@@ -112,17 +122,28 @@ export function Header() {
       {/* Phone navigation: a bottom bar within thumb reach instead of a
           sideways-scrolling strip squeezed next to the wordmark. */}
       <nav key={`bottom-${pathname}`} className={classes.bottomBar} aria-label="Primary, mobile">
-        {LINKS.map(({ href, label, icon }) => (
-          <Link
-            key={href}
-            href={href}
-            aria-current={isActive(pathname, href) ? 'page' : undefined}
-            className={`${classes.bottomTab} ${isActive(pathname, href) ? classes.bottomTabActive : ''}`.trim()}
-          >
-            {icon}
-            <span>{label}</span>
-          </Link>
-        ))}
+        {LINKS.map(({ href, label, icon }) =>
+          blocked(href) ? (
+            <span
+              key={href}
+              aria-disabled="true"
+              className={`${classes.bottomTab} ${classes.tabDisabled}`}
+            >
+              {icon}
+              <span>{label}</span>
+            </span>
+          ) : (
+            <Link
+              key={href}
+              href={href}
+              aria-current={isActive(pathname, href) ? 'page' : undefined}
+              className={`${classes.bottomTab} ${isActive(pathname, href) ? classes.bottomTabActive : ''}`.trim()}
+            >
+              {icon}
+              <span>{label}</span>
+            </Link>
+          ),
+        )}
       </nav>
     </>
   );

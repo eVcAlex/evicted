@@ -1,4 +1,6 @@
+import { redirect } from 'next/navigation';
 import { Alert, Text, Title } from '@mantine/core';
+import { leagueIsBroken } from '@/lib/league/health';
 import { fetchStandings } from '@/lib/fpl/client';
 import type { EntryHistory } from '@/lib/fpl/schemas';
 import type { Identity } from '@/lib/identity';
@@ -40,6 +42,7 @@ export const dynamic = 'force-dynamic';
 const MIN_GAMEWEEKS_FOR_STATS = 3;
 
 export default async function SeasonPage() {
+  if (await leagueIsBroken()) redirect('/');
   const [standings, { results, degraded }] = await Promise.all([
     fetchStandings(3600),
     safeGetResults(),

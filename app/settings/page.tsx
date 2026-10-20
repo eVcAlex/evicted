@@ -1,4 +1,6 @@
+import { redirect } from 'next/navigation';
 import { Alert, Text, Title } from '@mantine/core';
+import { leagueIsBroken } from '@/lib/league/health';
 import { fetchDraftGame, fetchDraftLeague } from '@/lib/draft/client';
 import { REVALIDATE_LIVE, revalidateForGame } from '@/lib/draft/gameweeks';
 import { resolveDraftMembers } from '@/lib/draft/members';
@@ -53,6 +55,7 @@ function buildRoster(classicMembers: Member[], draftEntryByName: Map<string, num
 }
 
 export default async function SettingsPage() {
+  if (await leagueIsBroken()) redirect('/');
   const [classic, draft] = await Promise.all([loadClassicRoster(), loadDraftRoster()]);
   const roster = buildRoster(classic.members, draft.draftEntryByName);
 
