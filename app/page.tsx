@@ -79,6 +79,7 @@ export default async function HomePage() {
     provisional: !current.data_checked,
     members,
     scores,
+    histories,
   });
   const membersById = new Map(members.map((m) => [m.entryId, m]));
   const bottom = [...scores]

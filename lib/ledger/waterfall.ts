@@ -1,4 +1,5 @@
 import { BUYIN_PENCE, FINE_PENCE } from '@/lib/config';
+import { affordableFines } from './fines';
 
 export interface PaymentAllocation {
   /** Unpaid fine gameweeks this payment covers, oldest first. */
@@ -22,14 +23,17 @@ export function planWaterfall(params: {
   unpaidFines: number[];
   buyinPaid: boolean;
   creditPence: number;
+  /** Fine for a gameweek in pence; defaults to the standard fine. */
+  finePenceFor?: (gameweek: number) => number;
 }): PaymentAllocation {
   const { amountPence, unpaidFines, buyinPaid, creditPence } = params;
+  const finePenceFor = params.finePenceFor ?? (() => FINE_PENCE);
 
   let pool = amountPence + Math.max(creditPence, 0);
 
-  const affordableFines = Math.floor(pool / FINE_PENCE);
-  const fineGameweeks = unpaidFines.slice(0, affordableFines);
-  pool -= fineGameweeks.length * FINE_PENCE;
+  const covered = affordableFines(pool, unpaidFines, finePenceFor);
+  const fineGameweeks = covered.gameweeks;
+  pool -= covered.spentPence;
 
   const buyin = !buyinPaid && pool >= BUYIN_PENCE;
   if (buyin) pool -= BUYIN_PENCE;

@@ -8,6 +8,10 @@ classic league `79294` (real money - £2 per gameweek finished bottom, plus a
 
 - **Fine** - £2 (`FINE_PENCE`) owed by whoever posts the lowest *net* score in
   a settled gameweek. Ties: everyone tied pays.
+- **Chip Tax** - the fine is £10 (`CHIP_FINE_PENCE`) instead of £2 when the
+  bottom manager played a chip (Wildcard, Free Hit, Bench Boost, Triple
+  Captain) that gameweek. Recorded per result as `chipLosers`; results
+  recorded before the rule have none and stay at £2.
 - **Buy-in** - the one-off £20 (`BUYIN_PENCE`) season entry. **Binary**: a
   member has paid it or not; there is no partial buy-in.
 - **Pot** - every fine actually collected, plus every buy-in paid, plus every

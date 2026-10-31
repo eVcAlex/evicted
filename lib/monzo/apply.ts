@@ -7,6 +7,7 @@ import {
   safeGetPayments,
   safeGetResults,
 } from '@/lib/ledger/safe';
+import { fineFor } from '@/lib/ledger/fines';
 import { appendPayment, setBuyin, setCredit, setPaid } from '@/lib/ledger/store';
 import { planWaterfall, type PaymentAllocation } from '@/lib/ledger/waterfall';
 
@@ -92,6 +93,7 @@ export async function applyPayment(params: {
     unpaidFines: mine.unpaid,
     buyinPaid: !mine.buyinOwed,
     creditPence,
+    finePenceFor: (gw) => fineFor(resultsState.results.get(gw), entryId),
   });
 
   // A departed member's `creditPence` is masked to 0 by `buildBalances` and

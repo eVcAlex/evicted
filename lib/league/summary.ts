@@ -1,3 +1,4 @@
+import type { EntryHistory } from '@/lib/fpl/schemas';
 import type { Member } from './members';
 import { findLosers, type GameweekScore } from './scoring';
 
@@ -8,7 +9,7 @@ export interface LoserSummary {
    * Every manager tied at the lowest net score. Empty when nobody has a score
    * for the gameweek yet — the deadline passes hours before the first match.
    */
-  losers: Array<{ member: Member; score: GameweekScore }>;
+  losers: Array<{ member: Member; score: GameweekScore; playedChip?: boolean }>;
   /**
    * True when more than one manager has a score and every one of them is the
    * same. While the gameweek is still provisional this is the "everyone is on
@@ -28,8 +29,10 @@ export function buildSummary(params: {
   provisional: boolean;
   members: Member[];
   scores: GameweekScore[];
+  /** When given, losers who played a chip this gameweek are flagged (Chip Tax). */
+  histories?: Map<number, EntryHistory>;
 }): LoserSummary {
-  const { gameweek, provisional, members, scores } = params;
+  const { gameweek, provisional, members, scores, histories } = params;
   const membersById = new Map(members.map((m) => [m.entryId, m]));
   const scoresById = new Map(scores.map((s) => [s.entryId, s]));
 
@@ -37,7 +40,9 @@ export function buildSummary(params: {
     const member = membersById.get(entryId);
     const score = scoresById.get(entryId);
     if (!member || !score) return [];
-    return [{ member, score }];
+    const playedChip =
+      histories?.get(entryId)?.chips?.some((chip) => chip.event === gameweek) ?? false;
+    return [{ member, score, playedChip }];
   });
 
   const allTied =

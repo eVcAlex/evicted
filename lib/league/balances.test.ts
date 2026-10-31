@@ -242,3 +242,14 @@ describe('buildBalances', () => {
     });
   });
 });
+
+describe('buildBalances - Chip Tax', () => {
+  it('owes £10 for a bottom finish with a chip, £2 otherwise', () => {
+    const chipResults = new Map([
+      [1, { losers: [1], chipLosers: [1], scores: { 1: 30 }, recordedAt: '2026-08-24T00:00:00Z' }],
+      [2, { losers: [1], scores: { 1: 25 }, recordedAt: '2026-08-31T00:00:00Z' }],
+    ]);
+    const [first] = buildBalances({ members, results: chipResults, paid: new Set(), buyins: allBoughtIn });
+    expect(first.owedPence).toBe(1200);
+  });
+});

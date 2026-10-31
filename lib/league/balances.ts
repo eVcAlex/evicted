@@ -1,4 +1,5 @@
-import { BUYIN_PENCE, FINE_PENCE } from '@/lib/config';
+import { BUYIN_PENCE } from '@/lib/config';
+import { fineFor } from '@/lib/ledger/fines';
 import { paidKey, type GameweekResult } from '@/lib/ledger/store';
 import type { Member } from './members';
 
@@ -72,7 +73,10 @@ export function buildBalances(params: {
       const isDeparted = departed.has(member.entryId);
       const buyinOwed = !isDeparted && !buyins.has(member.entryId);
       const creditPence = isDeparted ? 0 : (credit.get(member.entryId) ?? 0);
-      const grossOwed = unpaid.length * FINE_PENCE + (buyinOwed ? BUYIN_PENCE : 0);
+      const sumFines = (gameweeks: number[]) =>
+        gameweeks.reduce((sum, gw) => sum + fineFor(results.get(gw), member.entryId), 0);
+      const paidFines = lost.filter((gw) => paid.has(paidKey(gw, member.entryId)));
+      const grossOwed = sumFines(unpaid) + (buyinOwed ? BUYIN_PENCE : 0);
 
       return {
         member,
@@ -82,7 +86,7 @@ export function buildBalances(params: {
         creditPence,
         owedPence: grossOwed - creditPence,
         paidPence:
-          (lost.length - unpaid.length) * FINE_PENCE + (!isDeparted && !buyinOwed ? BUYIN_PENCE : 0),
+          sumFines(paidFines) + (!isDeparted && !buyinOwed ? BUYIN_PENCE : 0),
         departed: isDeparted,
       };
     })
