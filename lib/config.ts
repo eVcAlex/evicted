@@ -7,6 +7,9 @@ export const ADMIN_ENTRY = 394534;
 /** The fine for finishing bottom of a gameweek, in pence. */
 export const FINE_PENCE = 200;
 
+/** Chip Tax: the fine for finishing bottom in a gameweek you played a chip, in pence. */
+export const CHIP_FINE_PENCE = 1000;
+
 /** The one-off season buy-in, in pence. */
 export const BUYIN_PENCE = 2000;
 

@@ -1,6 +1,6 @@
 import { Stack, Text, Title } from '@mantine/core';
 import type { GridResult } from '@/lib/gameweekResult';
-import { FINE_PENCE, MONZO_ME_URL } from '@/lib/config';
+import { CHIP_FINE_PENCE, FINE_PENCE, MONZO_ME_URL } from '@/lib/config';
 import { pounds } from '@/lib/format';
 import { colorForTeam, initialsFor, photoUrlFor } from '@/lib/league/avatar';
 import { paidKey } from '@/lib/ledger/store';
@@ -83,7 +83,8 @@ export function LoserCard({
       )}
 
       {!undecided &&
-        summary.losers.map(({ member, score }) => {
+        summary.losers.map(({ member, score, playedChip }) => {
+          const finePence = playedChip ? CHIP_FINE_PENCE : FINE_PENCE;
           const settled = paid.has(paidKey(summary.gameweek, member.entryId));
           const quip = quipFor({
             gameweek: summary.gameweek,
@@ -111,7 +112,7 @@ export function LoserCard({
             ? { label: 'Status unknown', tone: classes.statusUnknown }
             : settled
               ? { label: 'Paid', tone: classes.statusPaid }
-              : { label: `Owes ${pounds(FINE_PENCE)}`, tone: classes.statusOwed };
+              : { label: `Owes ${pounds(finePence)}${playedChip ? ' · Chip Tax' : ''}`, tone: classes.statusOwed };
 
           const marginCopy =
             margin === null
@@ -190,7 +191,7 @@ export function LoserCard({
                   <span className={classes.ctaPaid}>Paid</span>
                 ) : MONZO_ME_URL ? (
                   <a className={classes.cta} href={MONZO_ME_URL} target="_blank" rel="noopener noreferrer">
-                    Pay {pounds(FINE_PENCE)}
+                    Pay {pounds(finePence)}
                   </a>
                 ) : null}
                 </div>

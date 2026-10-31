@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { FINE_PENCE } from '@/lib/config';
+import { affordableFines, fineFor } from './fines';
 import { buildBalances } from '@/lib/league/balances';
 import type { Member } from '@/lib/league/members';
 import { safeGetBuyins, safeGetCredit, safeGetPaid, safeGetResults } from './safe';
@@ -46,11 +46,14 @@ export async function reconcileCredit(members: Member[]): Promise<void> {
   for (const balance of balances) {
     if (balance.departed || balance.creditPence <= 0 || balance.unpaid.length === 0) continue;
 
-    const affordable = Math.floor(balance.creditPence / FINE_PENCE);
-    const fineGameweeks = balance.unpaid.slice(0, affordable);
+    const entryIdForFines = balance.member.entryId;
+    const covered = affordableFines(balance.creditPence, balance.unpaid, (gw) =>
+      fineFor(resultsState.results.get(gw), entryIdForFines),
+    );
+    const fineGameweeks = covered.gameweeks;
     if (fineGameweeks.length === 0) continue;
 
-    const spent = fineGameweeks.length * FINE_PENCE;
+    const spent = covered.spentPence;
     const entryId = balance.member.entryId;
 
     try {

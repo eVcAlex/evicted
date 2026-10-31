@@ -47,3 +47,19 @@ describe('planWaterfall', () => {
       .toEqual({ fineGameweeks: [], buyin: false, creditDeltaPence: 1000 });
   });
 });
+
+describe('planWaterfall with Chip Tax fines', () => {
+  const finePenceFor = (gw: number) => (gw === 4 ? 1000 : 200);
+
+  it('charges £10 for a chip gameweek and stops at the first unaffordable fine', () => {
+    expect(
+      planWaterfall({ amountPence: 1000, unpaidFines: [3, 4, 5], buyinPaid: true, creditPence: 0, finePenceFor }),
+    ).toEqual({ fineGameweeks: [3], buyin: false, creditDeltaPence: 800 });
+  });
+
+  it('pays a chip fine in full when affordable', () => {
+    expect(
+      planWaterfall({ amountPence: 1200, unpaidFines: [3, 4], buyinPaid: true, creditPence: 0, finePenceFor }),
+    ).toEqual({ fineGameweeks: [3, 4], buyin: false, creditDeltaPence: 0 });
+  });
+});

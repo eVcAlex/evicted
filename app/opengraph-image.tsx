@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { fetchBootstrap, fetchStandings } from '@/lib/fpl/client';
-import { FINE_PENCE } from '@/lib/config';
+import { CHIP_FINE_PENCE, FINE_PENCE } from '@/lib/config';
 import { pounds } from '@/lib/format';
 import { paidKey } from '@/lib/ledger/store';
 import { safeGetPaid, safeGetResults } from '@/lib/ledger/safe';
@@ -101,6 +101,7 @@ export default async function Image() {
     provisional: !current.data_checked,
     members,
     scores,
+    histories,
   });
 
   const noScores = summary.losers.length === 0;
@@ -154,7 +155,9 @@ export default async function Image() {
               ))}
             </div>
             <div style={{ display: 'flex', fontSize: 24, color: INK_DIM, marginTop: 20 }}>
-              Everyone tied pays {pounds(FINE_PENCE)}.
+              {summary.losers.some((l) => l.playedChip)
+                ? `Everyone tied pays ${pounds(FINE_PENCE)} - ${pounds(CHIP_FINE_PENCE)} with a chip (Chip Tax).`
+                : `Everyone tied pays ${pounds(FINE_PENCE)}.`}
             </div>
           </div>
         </Frame>
@@ -163,11 +166,12 @@ export default async function Image() {
     );
   }
 
-  const { member, score } = summary.losers[0];
+  const { member, score, playedChip } = summary.losers[0];
+  const finePence = playedChip ? CHIP_FINE_PENCE : FINE_PENCE;
   const settled = !paidDegraded && paid.has(paidKey(summary.gameweek, member.entryId));
   const form = resultsDegraded ? [] : recentForm(results, member.entryId, summary.gameweek);
   const maxNet = Math.max(...form.map((p) => p.net), score.net, 1);
-  const status = paidDegraded ? 'Status unknown' : settled ? 'Paid' : `Owes ${pounds(FINE_PENCE)}`;
+  const status = paidDegraded ? 'Status unknown' : settled ? 'Paid' : `Owes ${pounds(finePence)}${playedChip ? ' - Chip Tax' : ''}`;
 
   return new ImageResponse(
     (

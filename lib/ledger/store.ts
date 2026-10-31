@@ -7,6 +7,12 @@ const BUYIN_KEY = 'evicted:buyin';
 export interface GameweekResult {
   /** Entry ids of everyone tied at the bottom. */
   losers: number[];
+  /**
+   * Subset of `losers` who played a chip that gameweek and so owe the Chip Tax.
+   * Absent on results recorded before the rule existed - those stay at the
+   * standard fine.
+   */
+  chipLosers?: number[];
   /** Net score per entry id, kept so the record survives FPL changing its mind. */
   scores: Record<number, number>;
   recordedAt: string;

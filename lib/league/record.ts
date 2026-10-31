@@ -94,8 +94,12 @@ export async function recordSettledGameweeks(params: RecordParams): Promise<{
       continue;
     }
 
+    const losers = findLosers(scores);
     const result: GameweekResult = {
-      losers: findLosers(scores),
+      losers,
+      chipLosers: losers.filter((entryId) =>
+        histories.get(entryId)?.chips?.some((chip) => chip.event === gameweek),
+      ),
       scores: Object.fromEntries(scores.map((s) => [s.entryId, s.net])),
       recordedAt: new Date().toISOString(),
     };
